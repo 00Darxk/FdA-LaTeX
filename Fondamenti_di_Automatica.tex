@@ -1190,18 +1190,18 @@ positiva. La curva si trova interamente sull'asse immaginario, la chiusura avvie
 
 \begin{center}
     \begin{tikzpicture}[scale=2]
-        \draw[->,very thick](-0.5,0)--(1,0)node[above]{$\Re$};
-        \draw[->,very thick](0,-1)--(0,1)node[right]{$\Im$};
+        \draw[->,very thick](-0.5,0)--(1.5,0)node[above]{$\Re$};
+        \draw[->,very thick](0,-1.5)--(0,1.5)node[right]{$\Im$};
 
-        \draw[->,snake it, ultra thick](0,-1.5)--(0,-0.75);
-        \draw[-,snake it, ultra thick](0,-0.75)--(0,0);
-        \draw[->,snake it, ultra thick](0,0)--(0,0.75);
-        \draw[-,snake it, ultra thick](0,0.75)--(0,1.5);
+        \draw[->,snake it, ultra thick](0,-1)--(0,-0.5);
+        \draw[-,snake it, ultra thick](0,-0.5)--(0,-0);
+        \draw[->,snake it, ultra thick](0,0)--(0,0.5);
+        \draw[-,snake it, ultra thick](0,0.5)--(0,1);
         
-        \draw[->, snake it, ultra thick](0,1.5)arc(90:45:1.5cm);
-        \draw[-, snake it, ultra thick](1.5,0)arc(0:45:1.5cm);       
-        \draw[->, snake it, ultra thick](1.5,0)arc(0:-45:1.5cm);
-        \draw[-, snake it, ultra thick](0,-1.5)arc(-90:-45:1.5cm);
+        \draw[->, snake it, ultra thick](0,1)arc(90:45:1cm);
+        \draw[-, snake it, ultra thick](1,0)arc(0:45:1cm);       
+        \draw[->, snake it, ultra thick](1,0)arc(0:-45:1cm);
+        \draw[-, snake it, ultra thick](0,-1)arc(-90:-45:1cm);
 
     \end{tikzpicture}
 \end{center}
@@ -1242,9 +1242,39 @@ forniti dal diagramma di Bode è possibile realizzare il diagramma polare di Nyq
 Poiché su un diagramma di Bode vengono rappresentati solo incrementi positivi di $\omega$, si ottiene solo una metà del diagramma di Nyquist. Considerando frequenze negative, 
 il modulo poiché deriva da un quadrato rimarrà invariato, mentre la fase sarà opposta. Per cui per il diagramma di Nyquist è simmetrico rispetto alla retta delle ascisse.\\
 
-Se la fase di una funzione di trasferimento non scende al di sotto dei $-180^{\circ}$ allora non potrà mai girare intorno al punto $-1$, poiché il modulo tende semper 
-a $0$ per ogni funzione di trasferimento stabile. 
+Se la fase di una funzione di trasferimento non scende al di sotto dei $-180^{\circ}$ allora non potrà mai girare intorno al punto $-1$, poiché il modulo tende sempre 
+a $0$ per ogni funzione di trasferimento stabile, per $\omega\to\infty$ il diagramma tende asintoticamente verso l'origine. Il sistema sarà quindi stabile per ogni 
+controllore proporzionale maggiore di zero, se invece si sceglie un $Kc$ minore di zero, il sistema sarà stabile fino a quando il diagramma di Nyquist non include il 
+punto $-1$. Aumentando il guadagno il diagramma si espande o si comprime, mentre la fase rimane costante, per cui esiste un intrvallo di guadagni negativi per cui il 
+diagramma non si espanda oltre il punto $-1$, di conseguenza il sistema è stabile in quell'intervallo. 
 
+\begin{center}
+    \includegraphics[width=6cm]{Nyquist2.png}
+    \includegraphics[width=6cm]{Nyquist1.png}
+\end{center}
+
+In caso la curva di Nyquist passi sopra un ad un polo, allora si considera un percorso uncinato in modo che $s$ gira intorno al polo $p$, questa rotazione attorno al polo 
+causa una variazione di fase aggiuntiva di $180^{\circ}$. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,very thick](-0.5,0)--(1.5,0)node[above]{$\Re$};
+        \draw[->,very thick](0,-1.5)--(0,1.5)node[right]{$\Im$};
+
+        \draw[->,snake it, ultra thick](0,-1)--(0,-0.5);
+        \draw[-,snake it, ultra thick](0,-0.5)--(0,-0.3);
+        \draw[->,snake it, ultra thick](0,0.3)--(0,0.5);
+        \draw[-,snake it, ultra thick](0,0.5)--(0,1);
+
+        \draw[-,snake it,ultra thick](0,0.3)arc(90:-90:0.3cm);
+        
+        \draw[->, snake it, ultra thick](0,1)arc(90:45:1cm);
+        \draw[-, snake it, ultra thick](1,0)arc(0:45:1cm);       
+        \draw[->, snake it, ultra thick](1,0)arc(0:-45:1cm);
+        \draw[-, snake it, ultra thick](0,-1)arc(-90:-45:1cm);
+
+    \end{tikzpicture}
+\end{center}
 
 
 
