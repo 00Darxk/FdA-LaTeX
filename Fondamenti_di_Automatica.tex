@@ -1098,6 +1098,153 @@ Nei sistemi causali ci saranno sempre più poli che zeri, per cui i loro diagram
 \end{figure}
 
 \subsection{Diagramma di Nyquist}
+Data una funzione di trasferimento $M(s)=\displaystyle\frac{s-a}{s-b}$. Si definisce una qualsiasi curva chiusa $\mathbf{G}$ sul piano, e un punto $s$ che percorre la curva in senso 
+orario. Allora per uno spostamento di $s$, comporterà uno spostamento di $M(s)$ nel piano di Gauss. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=3]
+        \draw[->,very thick](0,-0.5)--(0,1.5)node[right]{$\Im$};
+        \draw[->,very thick](-0.5,0)--(1.5,0)node[above]{$\Re$};
+
+        \draw[->,very thick]plot[smooth]coordinates{(0.3,0.8) (0.2,0.9) (1,1) (0.8,0.6)};
+        \draw[->,very thick]plot[smooth]coordinates{(0.8,0.6) (0.9,0.3) (0.5,0.4) (0.2,0.4)(0.3,0.8)};
+
+        \node[right]at(0.8,0.6){$\mathbf{G}$};
+
+        \node[above]at(1,1){$s$};
+        \node[above]at(0.6,0.6){$a$};
+        \filldraw[black](0.6,0.6)circle(0.5pt);
+        \node[above]at(1.2,0.6){$b$};
+        \filldraw[black](1.2,0.6)circle(0.5pt);
+        
+        \draw[->](0.6,0.6)--(1,1);
+        \draw[->](1.2,0.6)--(1,1);
+    \end{tikzpicture}
+\end{center}
+
+Per determinare se lo spostamento effettuato da $M(s)$ nel piano di Gauss a seguito di una variazione di $s$ formi una curva chiusa, si analizza il cambiamento di 
+fase $\phase{M(s)}$. Se il cambiamento di fase della funzione rispetto ad $s$ è nullo allora la curva non ruota attorno all'origine, è un multiplo di $2\pi$: $2k\pi$ 
+allora la curva ha ruotato $k$ volte attorno all'origine. Per determinare il cambiamento di fase: 
+
+\begin{equation}
+    \phase({M(s)})=\phase{s-a}-\phase{s-b}\\
+\end{equation}
+
+Poiché $s$ ruota attorno allo zero $a$, mentre non ruota attorno al polo $b$, il cambiamento di fase $\phase{s-a}$ risulta essere uguale ad una rotazione completa, ovvero 
+$2\pi$, mentre $\phase{s-b}=0$ poiché la curva non ruota attorno a $b$. In base alla fase di $\vec{as}$ e $\vec{bs}$ si può ottenere il cambiamento di fase della funzione 
+di trasfermento iniziale. Se un punto $s$ ruota intorno ad uno zero od un polo, la fase del vettore distanza $\vec{\alpha s}$ aumenterà fino a $k$-volte le rotazioni 
+attorno a quello zero o polo. Si avrà quindi in questo caso:
+
+\begin{equation}
+    \phase{M(s)}=2\pi+0
+\end{equation}
+
+Quindi la funzione $M(s)$ ruoterà attorno all'origine. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=3]
+        \draw[->, very thick](0,0.6)--(1.5,0.6)coordinate(x)node[above]{$\Re$};
+        \draw[->, very thick](0.6,0)--(0.6,1.5)node[right]{$\Im$};
+
+        \draw[->,very thick]plot[smooth]coordinates{(0.3,0.8) (0.2,0.9) (1,1) (1.2,0.6)};
+        \draw[->,very thick]plot[smooth]coordinates{(1.2,0.6) (0.9,0.3) (0.5,0.4) (0.2,0.4)(0.3,0.8)};
+
+        \draw[->](0.6,0.6)coordinate(O)--(1,1)coordinate(M)node[above]{$M(s)$};
+        \pic["$\phase{M(s)}$",draw, angle eccentricity=1.2, angle radius=1cm]{angle=x--O--M};
+    \end{tikzpicture}
+\end{center}
+
+Gli unici termini che contribuiscono al cambiamneto di fase di $M(s)$ sono gli elementi interni alla curva. Poiché il cambiamneto di fase sarà sempre un numero intero di 
+rotazioni complete intorno all'origine del piano di Gauss. Si definisce l'indicatore logaritimico $R_{M,0}$, che rappresenta il numero di queste rotazioni. Risulterà 
+essere dato da:
+
+\begin{equation}
+    R_{M,0}=\#zeri_{\in \mathbf{G}}[M(s)]-\#poli_{\in \mathbf{G}}[M(s)]
+\end{equation}
+
+Tramite questo indicatore è possibile determinare graficamente la differenza poli-zeri di una qualsiasi funzione di trasfermineto in $s$. 
+
+Dato un sistema controreazionato, avente una funzione a ciclo aperto $F(s)$, ed una funzione a ciclo chiuso 
+$W(s)=\displaystyle\frac{F(s)}{1+F(s)}=1+\frac{N(s)}{D(s)}=\frac{D(s)+N(s)}{D(s)}$. 
+
+\begin{center}\begin{tikzpicture}[scale=2]
+    \node[sum](sum)at(-1,0){};
+    \draw[->,ultra thick](-1.5,0)--(sum.180)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+
+    \node[block, right of=sum, node distance=1.5cm](g){$F(s)$};
+
+    \draw[->,ultra thick](sum.0)--(g.180);
+    \draw[-,ultra thick](g.0)--(0.75,0);
+    \filldraw[black](0.75,0)circle(1pt);
+
+    \draw[->,ultra thick](0.75,0)--(1.25,0);
+    \draw[-,ultra thick](0.75,-0.75)--(0.75,0);
+    \draw[-,ultra thick](0.75,-0.75)--(-1,-0.75);
+
+    \draw[->,ultra thick](-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
+\end{tikzpicture}\end{center}
+
+I poli della funzione a ciclo chiuso corrispodono ai poli di $F$. \\
+Applicando il teoroma dell'indicatore logaritimico su $1+F(s)$, si traccia il percorso di Nyquist, una curva chiusa che contiene tutti gli oggetti aventi parte reale 
+positiva. La curva si trova interamente sull'asse immaginario, la chiusura avviene all'infinito, per cui la risposta armonica corrisponde al percorso di Nyquist. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,very thick](-0.5,0)--(1,0)node[above]{$\Re$};
+        \draw[->,very thick](0,-1)--(0,1)node[right]{$\Im$};
+
+        \draw[->,snake it, ultra thick](0,-1.5)--(0,-0.75);
+        \draw[-,snake it, ultra thick](0,-0.75)--(0,0);
+        \draw[->,snake it, ultra thick](0,0)--(0,0.75);
+        \draw[-,snake it, ultra thick](0,0.75)--(0,1.5);
+        
+        \draw[->, snake it, ultra thick](0,1.5)arc(90:45:1.5cm);
+        \draw[-, snake it, ultra thick](1.5,0)arc(0:45:1.5cm);       
+        \draw[->, snake it, ultra thick](1.5,0)arc(0:-45:1.5cm);
+        \draw[-, snake it, ultra thick](0,-1.5)arc(-90:-45:1.5cm);
+
+    \end{tikzpicture}
+\end{center}
+
+Per cui si ha: 
+
+\begin{equation}
+    R_{1+F,0}=\#zeri_{Nyq}[1+F(s)]-\#poli_{Nyq}[1+F(s)]
+\end{equation}
+
+Dato che $1+F(s)=\displaystyle\frac{N(s)+D(s)}{D(s)}$, e la funione a ciclo chiuso $W(s)=\displaystyle\frac{N(s)}{D(s)+N(s)}$, gli zeri della funzione $1+F(s)$ equivalgono ai 
+poli della funzione a ciclo chiuso, e i poli della funzione $1+F(s)$ equivalgono agli zeri della funzione a ciclo aperto $F(s)$, per cui la differenza poli zeri è data da: 
+
+\begin{equation}
+    R_{1+F,0}=\#poli_{Nyq}[W(s)]-\#poli_{Nyq}[F(s)]
+\end{equation}
+
+Un sistema è stabile se tutti i poli della sua funzione di trasferimento hanno parte reale positiva, per se il sistema è stabile il numero di poli a parte reale positiva 
+sarà nullo: $\#poli_{Nyq}[W(s)]=0$, allora il numero di rotazioni attorno al punto zero di $W(s)$ sarà dato dal solo numero dei poli di $1+F(s)$. Questa relazione è 
+reciproca per cui si ha che:
+
+\begin{equation}
+    \#poli_{Nyq}[W(s)]=0:\mbox{ sistema stabile}\iff R_{1+F(s),0}=-\#poli_{Nyq}[1+F(s)]
+\end{equation}
+
+Traslando la curva di Nyquist di $-1$, si ottiene la risposta armonica della funzione a ciclo aperto $F(s)$. L'indicatore logaritmico di $1+F(s)$ attorno a $0$, quindi 
+corrisponde all'indicatore logaritimico di $F(s)$ attorno a $-1$:
+
+\begin{equation}
+    R_{F(s),-1}=R_{1+F(s),0}=-\#poli_{Nyq}[F(s)]
+\end{equation}
+
+Tramite questa relazione è possibile analizzare il sistema molto più facilmente, poiché la funzione a ciclo aperto è più facilmente alterabile. Se la funzione a ciclo aperto 
+è asintoticamente stabile, allora la funzione affinché la funzione a ciclo chiuso stia anch'essa stabile, è necessario e sufficiente che il grafico di $F(s)$ non ruoti 
+intorno a $-1$. Questo grafico corrisponde alla risposta armonica della funzione $F(s)$, e viene definito diagramma di Nyquist. A partire dai dati sulla risposta armonica 
+forniti dal diagramma di Bode è possibile realizzare il diagramma polare di Nyquist di $F(s)$.  \\
+
+Poiché su un diagramma di Bode vengono rappresentati solo incrementi positivi di $\omega$, si ottiene solo una metà del diagramma di Nyquist. Considerando frequenze negative, 
+il modulo poiché deriva da un quadrato rimarrà invariato, mentre la fase sarà opposta. Per cui per il diagramma di Nyquist è simmetrico rispetto alla retta delle ascisse.\\
+
+Se la fase di una funzione di trasferimento non scende al di sotto dei $-180^{\circ}$ allora non potrà mai girare intorno al punto $-1$, poiché il modulo tende semper 
+a $0$ per ogni funzione di trasferimento stabile. 
+
 
 
 
