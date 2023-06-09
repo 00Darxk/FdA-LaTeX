@@ -36,6 +36,7 @@
 % V Sostituire Immagini Screenate da Simulink con Blocchi Fatti in Tikz(https://latexdraw.com/block-diagram-in-latex-step-by-step-tikz-tutorial)e
 %                                                                       (https://tex.stackexchange.com/questions/175969/block-diagrams-using-tikz);
 %   Rotore DC grafico in CiruiTikz;
+%   Figures Description;
 
 
 
@@ -1015,7 +1016,7 @@ $90^{\circ}$.
 Per cui $\phase{(j\omega\tau+1)}\in[0^{\circ},90^{\circ})$, in caso si tratti di uno zero, mentre se si considera un polo si avrà: 
 
 \begin{equation}
-    \phase{\displaystyle\frac{1}{j\omega\tau+1}}=\left(\phase{1}-\phase{(j\omega\tau+1)}\right)\in(90^{\circ},0^{\circ}]
+    \phase{\displaystyle\frac{1}{j\omega\tau+1}}=\left(\phase{1}-\phase{(j\omega\tau+1)}\right)\in(-90^{\circ},0^{\circ}]
 \end{equation}
 
 Si approsima il cambiamento di fase come se fosse lineare nell'intervallo $\left(\displaystyle\frac{0.1}{\tau},\frac{10}{\tau}\right)$. 
@@ -1239,14 +1240,14 @@ Tramite questa relazione è possibile analizzare il sistema molto più facilment
 intorno a $-1$. Questo grafico corrisponde alla risposta armonica della funzione $F(s)$, e viene definito diagramma di Nyquist. A partire dai dati sulla risposta armonica 
 forniti dal diagramma di Bode è possibile realizzare il diagramma polare di Nyquist di $F(s)$.  \\
 
-Poiché su un diagramma di Bode vengono rappresentati solo incrementi positivi di $\omega$, si ottiene solo una metà del diagramma di Nyquist. Considerando frequenze negative, 
-il modulo poiché deriva da un quadrato rimarrà invariato, mentre la fase sarà opposta. Per cui per il diagramma di Nyquist è simmetrico rispetto alla retta delle ascisse.\\
+Poiché su un diagramma di Bode vengono rappresentati solo incrementi positivi di $\omega$, si ottiene solo una metà del diagramma di Nyquist. Considerando frequenze negative 
+il modulo rimarrà invariato, mentre la fase sarà opposta. Per cui per il diagramma di Nyquist è simmetrico rispetto all'asse delle ascisse.\\
 
 Se la fase di una funzione di trasferimento non scende al di sotto dei $-180^{\circ}$ allora non potrà mai girare intorno al punto $-1$, poiché il modulo tende sempre 
 a $0$ per ogni funzione di trasferimento stabile, per $\omega\to\infty$ il diagramma tende asintoticamente verso l'origine. Il sistema sarà quindi stabile per ogni 
 controllore proporzionale maggiore di zero, se invece si sceglie un $Kc$ minore di zero, il sistema sarà stabile fino a quando il diagramma di Nyquist non include il 
-punto $-1$. Aumentando il guadagno il diagramma si espande o si comprime, mentre la fase rimane costante, per cui esiste un intrvallo di guadagni negativi per cui il 
-diagramma non si espanda oltre il punto $-1$, di conseguenza il sistema è stabile in quell'intervallo. 
+punto $-1$. Aumentando il guadagno il diagramma si espande o si comprime, mentre la fase rimane costante, per cui esiste un intervallo di guadagni negativi dove il 
+diagramma non contenga il punto $-1$, di conseguenza il sistema è stabile in quell'intervallo. 
 
 \begin{center}
     \includegraphics[width=6cm]{Nyquist2.png}
@@ -1254,7 +1255,8 @@ diagramma non si espanda oltre il punto $-1$, di conseguenza il sistema è stabi
 \end{center}
 
 In caso la curva di Nyquist passi sopra un ad un polo, allora si considera un percorso uncinato in modo che $s$ gira intorno al polo $p$, questa rotazione attorno al polo 
-causa una variazione di fase aggiuntiva di $180^{\circ}$. 
+causa una variazione di fase aggiuntiva di $+180^{\circ}$, il raggio di questa semicirconferenza è arbitrariamente piccolo, poiché deve escludere solo il punto coincidente 
+con il polo. Può succedere per ogni polo immaginario puro, o per un polo nell'origine. 
 
 \begin{center}
     \begin{tikzpicture}[scale=2]
@@ -1262,11 +1264,11 @@ causa una variazione di fase aggiuntiva di $180^{\circ}$.
         \draw[->,very thick](0,-1.5)--(0,1.5)node[right]{$\Im$};
 
         \draw[->,snake it, ultra thick](0,-1)--(0,-0.5);
-        \draw[-,snake it, ultra thick](0,-0.5)--(0,-0.3);
-        \draw[->,snake it, ultra thick](0,0.3)--(0,0.5);
+        \draw[-,snake it, ultra thick](0,-0.5)--(0,-0.1);
+        \draw[->,snake it, ultra thick](0,0.1)--(0,0.5);
         \draw[-,snake it, ultra thick](0,0.5)--(0,1);
 
-        \draw[-,snake it,ultra thick](0,0.3)arc(90:-90:0.3cm);
+        \draw[-,snake it,ultra thick](0,0.1)arc(90:-90:0.1cm);
         
         \draw[->, snake it, ultra thick](0,1)arc(90:45:1cm);
         \draw[-, snake it, ultra thick](1,0)arc(0:45:1cm);       
@@ -1276,23 +1278,216 @@ causa una variazione di fase aggiuntiva di $180^{\circ}$.
     \end{tikzpicture}
 \end{center}
 
+In caso la fase cominci da $-90^{\circ}$ e raggiunga $-180^{\circ}$, il diagramma di Nyquist non completerà una curva chiusa, poiché tenderà ad essere parallelo all'asse 
+immaginario per $\omega\to\pm\infty$. Si considera quindi una chiusura all'infinito in senso orario da $+90^{\circ}$ a $-90^{\circ}$, aggiungendo una variazione 
+di fase di $-180^{\circ}$. Per cui sarà sempre stabile per controllori proporzionali maggiori di zero, mentre sarà instabile per valori di $K_c$ minori di zero, poiché 
+la chiusura all'infinito considera tutti gli elementi con parte reale maggiore di zero, per valori negativi di $K_c$ comprenderà sicuramente il punto $-1$. 
 
+\begin{center}
+    \includegraphics[width=8cm]{Nyquist3.png}
+\end{center}
+
+Se la fase parte da $-90^{\circ}$ e finisce a $-270^{\circ}$, il diagramma intersecerà l'asse delle ascisse in un punto negativo $\alpha$, potrebbe essere necessario comprimere 
+il grafico con $K_c\in(0,K_{max})$, per allontanare il punto di intersezione da $-1$. 
+
+\begin{center}
+    \includegraphics[width=8cm]{Nyquist4.png}
+\end{center}
 
 \subsection{Margini di Stabilità}
 
+Viene definito questo guadagno massimo margine di guadagno $m_g$, il valore massimo per cui il modulo valga $-1$. 
+
+\begin{equation}
+    m_g\cdot\alpha\geq|-1|\Rightarrow m_g=\displaystyle\frac{1}{\alpha}
+\end{equation}
+
+dove $\alpha$ è il punto di intersezione del grafico con l'asse dei reali. Per un guadagno uguale al margine di guadagno, il sistema oscilla sul limite di stabilità, 
+per valori di guadagno maggiore del maringe di guadagno il sistema ha dinamiche oscillatorie marcate. \\
+
+Viene definito margine di fase $m_{\varphi}$, il massimo angolo di cui si può ruotare il diagramma di Nyquist prima di intersecare il punto $-1$. Ovvero la distanza del diagramma di Bode 
+della fase da $-180^{\circ}$, per $\omega=\omega_t$, dove $\omega_t$ viene definita pulsazione di taglio per cui il modulo in decibel per quella frequenza è nullo. Rappresenta 
+di quando si può sfasare il ciclo aperto. 
+
+\begin{equation}
+    m_{\varphi}=180^{\circ}-|\phase{F(j\omega_t)}|
+\end{equation}
+
+
+In caso si considerasse una funzione con zeri a parte reale positiva, bisogna calcolare i margini per ruotare abbastanza volte intorno al punto $-1$, non si calcolano 
+direttamente dal diagramma di Bode. \\
+
+Aumentando il guadagno, si diminuiscono gli errori a regime permanente e il tempo di salita, ma si diminuiscono i margini di stabilità, ciò destabilizza il sistema poiché è 
+più suscettibile ad errori. Viene defintia robustezza di un sistema la sua capacità di resistere ad errori. Viene definita resilienza la capacità di un sistema di ritornare 
+autonomamente allo stato di funzionomante in seguito a destabilizzazioni, è necessaria una "coscienza" del sistema per determinare se si trova in uno stato di funzionamento. \\
+
 \subsection{Sistemi con Ritardo}
+
+Per alcuni sistemi fisici è presente un ritardo nella misurazione dello stato del sistema, indotto da fenomeni intrinsechi al sistema o per esterni ad esso. 
+Nel dominio del tempo un ritardo di tempo $\tau$ su un sistema $f(t)$ viene implementato come: $f(t-\tau)$, nel dominio della frequenza: 
+$\mathscr{L}_-(f(t-\tau))=F(s)e^{-s\tau}$, per cui la funzione di trasferimento di un ritardo viene rappresentata come un esponenziale sulla catena di misura, prima del'oggetto 
+di misurazione. 
+
+\begin{center}\begin{tikzpicture}[scale=2]
+
+    \node[sum](sum)at(-1,0){};
+    \draw[->,ultra thick](-1.5,0)node[above]{$U(s)$}--(sum.180)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+    \node[block, right of=sum, node distance=2cm](c){$C(s)$};
+
+    \draw[->,ultra thick](sum.0)--(c.180);
+    \filldraw[black](2.5,0)circle(1pt);
+
+    \draw[->,ultra thick](2.5,0)node[above right]{$Y(s)$}--(3,0);
+    \draw[-,ultra thick](2.5,-0.75)--(2.5,0);
+
+    \node[block]at(1.75,0)(p){$P(s)$};
+
+    \draw[-,ultra thick](p.0)--(2.5,0);
+    \draw[->,ultra thick](c.0)--(p.180);
+
+    \node[block]at(0,-0.75)(h){$H(s)$};
+    \node[block]at(1.75,-0.75)(e){$e^{-s\tau}$};
+    
+    \draw[->,ultra thick](2.5,-0.75)--(e.0);
+    \draw[->,ultra thick](e.180)--(h.0);
+    \draw[-,ultra thick](-1,-0.75)--(h.180);
+    \draw[->,ultra thick](-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
+
+\end{tikzpicture}\end{center}
+
+Il modulo del ritardo per una sinusoide in entrata sarà: $|e^{-\tau j\omega}|=1$, per cui avrà un modulo nullo in decibel, mentre la fase sarà: 
+$\phase{e^{-\tau j\omega}}=-\tau\omega$. Per frequenze molto basse il ritardo non diminuisce la fase del sistema, per cui se il ritardo è troppo elevato o se il sistema 
+opera su frequenze elevate può destabilizzare il sistema. 
+
+\begin{center}
+    \includegraphics[width=12cm]{Bode2.png}
+\end{center}
 
 \subsection{Sistemi a Fase Non Minima}
 
+Se il sistema presenta almeno uno zero a parte reale positiva, scomponendo l'uscita in fratti semplici rispetto ad un'enrata a gradino $\delta_{-1}(t)$, si avrà il residuo 
+del gradino minore di zero, per un numero dispari di zeri a parte reale posisitiva. Il transitorio potrà avere una risposta nel transitorio opposto alla risposta a pieno regime. 
+
+\begin{gather}
+    Y(s)=\displaystyle\frac{R_0}{s}+\frac{R_1}{s\tau_1+1}+...+\frac{R_n}{s\tau_n+1},\:R_0<0\\
+    y(t)=-|R_0|\delta_{-1}(t)+R_1e^{-\tau_1t}+...+R_ne^{-\tau_nt}
+\end{gather}
+
+\begin{center}
+    \includegraphics[width=10cm]{Step1.png}
+\end{center}
+
 \subsection{Sintesi Diretta}
 
-\subsection{Stabilità Interna}
+Dato un sistema avente una funzione a ciclo chiuso $W(s)=\displaystyle\frac{C(s)P(s)}{1+C(s)P(s)}$, se si vuole ottenere una specifica funzione di trasferimento, si può 
+calcolare direttamente un controllore $C(s)$ per ottenerla: 
+
+\begin{gather}
+    W(s)(1+C(sP(s)))=C(s)P(s)\\
+    C(s)=\displaystyle\frac{1}{P(s)}\cdot\frac{W(s)}{1-W(s)}
+\end{gather}
+
+Se il processo $P(s)$ è causale, allora il suo inverso $\displaystyle\frac{1}{P(s)}$ non potrà essere causale, poiché presenterà più zeri che poli. Allora il controllore $C(s)$ 
+potrà essere stabile solo se l'eccesso poli-zeri di $\displaystyle\frac{1}{P(s)}$ viene bilanciato da $1-W(s)=D(s)-N(s)$: 
+
+\begin{equation}
+    C(s)=\displaystyle\frac{1}{P(s)}\frac{N(s)}{D(s)-N(s)}
+\end{equation}
+
+Se si sceglie una funzione $W(s)$ asintoticamente stabile, allora il controllore cancella il processo, contenendo $\displaystyle\frac{1}{P(s)}$. Se il processo contiene zeri 
+a parte reale positiva, allora il controllore contiene poli a parte reale positiva, analiticamente si cancellano, ma non si possono cancellare le dinamiche di un sistema.  
+Per cui un sistema con un controllore ottenuto tramite sintesi diretta presenta delle dinamiche instabili, non è stabile internamente. 
 
 \subsection{Guadagno}
 
+Il guadagno ad anello oltre a diminuire l'errore di riproduzione di segnali di tipo $k$ e rigettare disturbi di tipo $k$, diminuisce la sensibilità diretta del 
+sistema, ottenendo presetazioni più costanti. \\
+
 \subsubsection{Sensibilità}
 
+Viene definita la funzione sensibilità di una funzione $Q(\alpha)$, il rapporto tra le variazioni percentuali della funzione e della variabila indipendente:
+
+\begin{equation}
+    S_{\alpha}^Q:=\displaystyle\frac{\displaystyle\frac{dQ}{Q}}{\displaystyle\frac{d\alpha}{\alpha}}=\frac{\alpha}{Q}\frac{dQ}{d\alpha}
+\end{equation}
+
+Per un sistema a controreazione avente una funzione $G(s)$ in catena diretta ed una funzione $H(s)$ in catena di misura, si può considerare la sensibilità del sistema 
+sia rispetto a $G(s)$ che rispetto a $H(s)$:
+
+\begin{gather}
+    S_H^W(s)=\displaystyle\frac{H}{W}\frac{dW}{dH}=-\frac{G(s)H(s)}{1+G(s)H(s)}\\
+    S_G^W(s)=\displaystyle\frac{G}{W}\frac{dW}{dG}=\frac{1}{1+G(s)H(s)}
+\end{gather}
+
+La sensibilità del sistema rispetto alla funzione a $H(s)$ è complementare alla sensibiltà diretta del sistema rispetto a $G(s)$:
+
+\begin{equation}
+    S^W_G(s)-S^W_H(s)=1
+\end{equation}
+
+Se si considera una funzione $G(s,p)$ la sensibiltà del sistema rispetto ad una delle variabili indipendenti di $G$ è data da:
+
+\begin{gather}
+    S^W_p(s)=\displaystyle\frac{p}{W}\frac{dW}{dp}=\frac{p}{W}\frac{dW}{dG}\frac{dG}{dp}\left(\frac{G}{G}\right)\\
+    \left(\frac{p}{G}\frac{dG}{dp}\right)\left(\frac{W}{G}\frac{dW}{dG}\right)\\
+    S^W_p(s)=S^G_p(s)S^W_G(s)
+\end{gather}
+
+Considerando un sistema con un errore in catena diretta, si può calcolare l'effetto dell'errore sul sistema tramite la sensibilità diretta. Si considera l'uscita 
+di un errore $d$:
+
+\begin{equation}
+    Y_d(s)=\displaystyle\frac{G_2(s)}{1+G_1(s)G_2(s)H(s)}D(s)=S^W_{G_1}(s)G_2(s)D(s)
+\end{equation}
+
+L'effetto dell'errore è direttamente proporzionale alla sensibilità diretta, per cui all'aumentare del gaudagno ad anello l'effetto dell'errore diminuisce.  
+Se si considera un errore $h$ in catena di misura, non potrà essere alterato facilmente dal guadagno ad anello, per cui risulta più problematico. 
+
+\begin{center}\begin{tikzpicture}[scale=2]
+    \node[sum](sum)at(-1,0){};
+    \node[sum](sum2)at(0.75,0){};
+    \draw[->,ultra thick](-1.5,0)node[above]{$U(s)$}--(sum.180)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+
+
+    \node[block, right of=sum, node distance=2cm](g){$G_1(s)$};
+    \draw[->,ultra thick](sum.0)--(g.180);
+    \draw[->,ultra thick](g.0)--(sum2.180)node[below]{$\scriptscriptstyle\boldsymbol{+}$};
+    
+
+    \filldraw[black](2.5,0)circle(1pt);
+
+
+    \draw[->,ultra thick](0.75,0.5)node[below right]{$z$}--(sum2.90)node[right]{$\scriptscriptstyle\boldsymbol{+}$};
+
+    \node[block]at(1.75,0)(k){$G_2(s)$};
+    \draw[->,ultra thick](sum2.0)--(k.180);
+    \draw[-,ultra thick](k.0)--(2.5,0);
+
+    \draw[->,ultra thick](2.5,0)node[above right]{$Y(s)$}--(3,0);
+    \draw[-,ultra thick](2.5,-0.75)--(2.5,0);
+
+    \node[sum](sum3)at(1.75,-0.75){};
+    \draw[->,ultra thick](2.5,-0.75)--(sum3.0)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+    \draw[->,ultra thick](1.75,-1.25)node[right]{$h$}--(sum3.270)node[left]{$\scriptscriptstyle\boldsymbol{+}$};
+
+    \node[block, below of=g, node distance=1.5cm](h){$H(s)$};
+    \draw[->,ultra thick](sum3.180)--(h.0);
+    \draw[-,ultra thick](h.180)--(-1,-0.75);
+
+    \draw[->,ultra thick](-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
+\end{tikzpicture}\end{center}
+
 \subsubsection{Amplificatori Operazionali}
+
+Data una funzione di trasferimento a ciclo chiuso $W(s)=\displaystyle\frac{G(s)}{1+G(s)H(s)}$, si considera $H(s)=h$. Per il modulo della funzione a catena diretta molto alto: 
+
+\begin{equation}
+    |G(j\omega)|>>0\Rightarrow|W(j\omega)|=\displaystyle\frac{|G(j\omega)|}{|1+G(j\omega)h|}=\frac{1}{h}
+\end{equation}
+
+Quindi per guadagno ad anello molto elevato e basse frequenze la funzione a ciclo chiuso sarà l'inverso della funzione sulla catena di misura. 
+
+
 
 \subsection{Carta di Nichols}
 
