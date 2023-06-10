@@ -31,14 +31,14 @@
 % V Modellistica;
 %   Ingressi di Tipo Sinusoidale;
 %   Controllori Digitali;
-%   Esonero, potenzialmente;
+% V Esonero, potenzialmente;
 %   Finire Con Equazioni Differenziali e Laplace;
 % V Sostituire Immagini Screenate da Simulink con Blocchi Fatti in Tikz(https://latexdraw.com/block-diagram-in-latex-step-by-step-tikz-tutorial)e
 %                                                                       (https://tex.stackexchange.com/questions/175969/block-diagrams-using-tikz);
 %   Rotore DC grafico in CiruiTikz;
 %   Figures Description;
 %   Linearization;
-
+%   Rumori Aleatori;
 
 
 
@@ -1043,10 +1043,9 @@ Avrà una fase costante pari a $90^{\circ}$. \\
 Per un polo in $0$, il modulo diminuirà di $20dB$ ogni decade partendo da $+\infty dB$, ed avrà una fase costante di $-90^{\circ}$. Si tratterà di un oggetto 
 al limite di stabilità. 
 
-\begin{figure}
-    \includegraphics[width=\textwidth]{Bode1Polo}
-    \caption{Singolo Polo}
-\end{figure}
+\begin{center}
+    \includegraphics[width=10cm]{Bode1Polo}
+\end{center}
 
 Si considera un trinomio $\displaystyle\frac{s^2}{\omega_n^2}+\frac{2\xi s}{\omega_n}+1\to_{s=j\omega}-\frac{\omega^2}{\omega_n^2}+\frac{2\xi\omega}{\omega_n}j+1$. 
 Per $\omega>>\omega_n$ il modulo sarà: 
@@ -1090,13 +1089,12 @@ Mentre per $\omega=\omega_n$, la fase sarà:
     \phase{2\xi j}=90^{\circ}
 \end{equation}
 Quindi avverrà un cambiamento di fase nell'intorno di $\omega_n$, il cambiamento sarà sempre più rapido per smorzamenti sempre più piccoli, fino a presentare una 
-discontinuità per smorzamenti nulli. Per smorzamenti sempre più piccoli la curva nel diagramma di Bode apparirà sempre più schiacciata. \\
-Nei sistemi causali ci saranno sempre più poli che zeri, per cui i loro diagrammi di Bode tenderanno sempre a scendere. 
+discontinuità per smorzamenti nulli. Per smorzamenti sempre più piccoli la curva nel diagramma di Bode apparirà sempre più schiacciata. 
+Nei sistemi causali ci saranno sempre più poli che zeri, per cui i loro diagrammi di Bode tenderanno sempre a scendere. \\
 
-\begin{figure}
-    \includegraphics{BodeRisonanza}
-    \caption{Fenomeno della Risonanza}
-\end{figure}
+\begin{center}
+    \includegraphics[width=10cm]{BodeRisonanza}
+\end{center}
 
 \subsection{Diagramma di Nyquist}
 Data una funzione di trasferimento $M(s)=\displaystyle\frac{s-a}{s-b}$. Si definisce una qualsiasi curva chiusa $\mathbf{G}$ sul piano, e un punto $s$ che percorre la curva in senso 
@@ -1560,7 +1558,10 @@ Per ottenere un derivatore si considera invece un induttore al posto del resisto
     \end{circuitikz}
 \end{center}
 
-L'amplificatore presenta un comportamento non lineare, ma in controreazione ha un comportamento lineare. 
+L'amplificatore presenta un comportamento non lineare, ma in controreazione ha un comportamento lineare. Un amplificatore ha una risposta in frequenza, si può determinare 
+sperimentalmente usando un generatore di funzioni in entrata ed un oscilloscopio in uscita. In ciclo aperto presenta una banda passante piccola, se si inserisce un 
+fattore $\displaystyle\frac{1}{K_d}$ in controreazione aumenta la banda passante, ma diminuise il guadagno del sistema. Poiché un amplificatore è un oggetto a guadagno 
+molto elevato, è possibile aumentare la banda passante considerevolmente senza disturbare di troppo le funzioni dell'amplificatore. 
 
 \subsubsection{Linearizzazione}
 
@@ -1591,7 +1592,7 @@ L'errore sarà dato da:
 \end{equation}
 
 Per un guadagno ad anello molto elevato si ha un errore piccolo: 
-$|G(j\omega)|>>0\Rightarrow \tilde{e}(\omega)=\frac{Kd}{|F(j\omega)|}<<1$. Intorno alla pulsazione di taglio, si ha un guadagno ad anello basso, per cui si ha un errore 
+$|G(j\omega)|>>0\Rightarrow \tilde{e}(\omega)=\displaystyle\frac{Kd}{|F(j\omega)|}<<1$. Intorno alla pulsazione di taglio, si ha un guadagno ad anello basso, per cui si ha un errore 
 $W_e(s)=Kd$. \\
 
 \subsection{Carta di Nichols}
@@ -1601,18 +1602,185 @@ ed il picco del modulo, se il modulo rispetto alla frequenza è strettamente dec
 frequenza per cui il modulo della funzione a ciclo chiuso scende al di sotto di $-3\:dB$. Analogamente al tempo caratteristico, rappresenta la massima pulsazione trattata dal 
 sistema prima che l'effetto dimnuisca considerevolmente. \\
 La sovraelongazione $s$ è direttamente proporzionale al modulo alla risonanza $s\propto Mr$, il tempo di salita $t_s$ e la banda passante sono circa inversamente proporzionali 
-$t_s\cdot\omega_{-3}\approx0$. Per un aumento del guadagno, aumentano sia la banda passante che la pulsazione di taglio, per cui le due frequenze sono direttamente proporzionali, 
-mentre diminuisce il tempo di salita, per cui $\omega_t\propto\omega_{-3}\cdot t_s$. \\
+$t_s\cdot\omega_{-3}\approx cost.$. Per un aumento del guadagno, aumentano sia la banda passante che la pulsazione di taglio, per cui le due frequenze sono direttamente proporzionali, 
+mentre diminuisce il tempo di salita, per cui $\omega_t\propto\omega_{-3}\cdot t_s$.
 
-La carta di Nichols è un diagramma che rappresenta l'andamento della fase e del modulo di una funzione di trasferimento rispetto alla frequenza. Considera la fase nell'intervallo 
-$[-360^{\circ},0^{\circ}]$, ed il modulo in $[-40dB, 40dB]$, sistema di coordinate rettilineo usato per la funzione a ciclo aperto. Mentre per la funzione a ciclo chiusco 
-si usa un sistema di coordinate curvilineo, formato da luogo delle curve a modulo costante, fino a $-3dB$, ed a fase costante. Ovvero si considera o la fase o il modulo costante e si traccia 
-l'andamento della funzione a ciclo chiuso $W=|W|e^{\phase{W}}$ per la variazione della rimanente. Ha l'origine nel punto $(0db,-180^{\circ})$. \\
-Data $W=\displaystyle\frac{F}{1+F}$, ci si può ricavare la funzione a ciclo aperto: $F=\displaystyle\frac{W}{1-W}$. 
+\begin{center}
+    \includegraphics[width=10cm]{Bode3.png}
+\end{center}
+
+La carta di Nichols è un diagramma che rappresenta l'andamento della fase e del modulo di una funzione di trasferimento. Considera la fase nell'intervallo 
+$[-360^{\circ},0^{\circ}]$, ed il modulo in $[-80\:dB, 40\:dB]$, viene usato un sistema di coordinate rettilineo usato per la funzione a ciclo aperto. Mentre per la funzione 
+a ciclo chiusco si usa un sistema di coordinate curvilineo, formato da luogo delle curve a modulo costante, fino a $-3dB$, ed a fase costante. Ovvero si considera o la fase 
+o il modulo costante e si traccia l'andamento della funzione a ciclo chiuso $W=|W|e^{\phase{W}}$ per la variazione della rimanente. Ha l'origine nel punto 
+$(0\:db,-180^{\circ})$: $-1$. \\
+
+Data $W=\displaystyle\frac{F}{1+F}$, ci si può ricavare la funzione a ciclo aperto: $F=\displaystyle\frac{W}{1-W}$. Si ricava il modulo della funzione a ciclo chiuso in 
+una data fase dall'intersezione della curva a modulo costante con la funzione a ciclo aperto. Per $|W|_{dB}=-20\:dB$, le curve a modulo costante sono quasi rettilinere nella 
+carta di Nichols, per cui il comportamento della funzione a ciclo chiuso è molto simile alla funzione a ciclo aperto: 
+$W=\displaystyle\frac{F}{1+\cancelto{\approx0}{F}}\approx F$. \\
+
+Dall'intersezione di $F$ con la curva di modulo $-3\:dB$ si può determinare il valore della banda passante $\omega_{-3}$, dalla fase corrispondente all'intersezione. La 
+distanza sull'asse a $0:dB$ della curva $F$ dall'origine rappresenta il margine di fase $m_{\varphi}$, mentre la distanza sull'asse a $-180^{\circ}$ della curva dall'origine 
+rappresenta il margine di guadagno $m_g$. Per questo curve che passano l'asse a $0\:dB$ da destra avranno una funzione a ciclo chiuso stabile. Il modulo alla risonanza è la 
+curva a modulo costante maggiore che interseca la funzione a ciclo aperto, per $K_d=1$. Per un modulo alla risonanza maggiore, la funzione $F$ si avvicina all'origine della 
+carta di Nichols, dimnuendo il margine di fase, per cui $Mr\propto\displaystyle\frac{1}{m_{\varphi}}$; il fenomeno della risonanza è presente per $m_{\varphi}<<1$. 
+
+Dalle relazioni ottenute precedentemente: 
+\begin{equation}
+    \begin{cases}
+        s\propto Mr\propto\displaystyle\frac{1}{m_{\varphi}}\\
+        t_s\cdot\omega_{-3}\propto\omega_t
+    \end{cases}
+\end{equation}
+
+\begin{center}
+    \includegraphics[width=10cm]{Nichols1.png}
+\end{center}
 
 \subsection{Reti Corretrici}
 
+
+
+\subsection{Rumori Aleatori}
+
+Dei rumori aleatori sono dei tipi di errori che agiscono su un sistema il cui comportamento può essere descritto solo 
+statisticamente. Per rigettare questo tipo di errori, si analizza l'intervallo di frequenze su cui agiscono. 
+
+\begin{center}\begin{tikzpicture}[scale=2]
+    \node[sum](sum)at(-1,0){};
+    \node[sum](sum2)at(0.75,0){};
+    \draw[->,ultra thick](-1.5,0)node[above]{$U(s)$}--(sum.180)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+
+
+    \node[block, right of=sum, node distance=2cm](g){$G_1(s)$};
+    \draw[->,ultra thick](sum.0)--(g.180);
+    \draw[->,ultra thick](g.0)--(sum2.180)node[below]{$\scriptscriptstyle\boldsymbol{+}$};
+    
+
+    \filldraw[black](2.5,0)circle(1pt);
+
+
+    \draw[->,ultra thick](0.75,0.5)node[below right]{$z$}--(sum2.90)node[right]{$\scriptscriptstyle\boldsymbol{+}$};
+
+    \node[block]at(1.75,0)(k){$G_2(s)$};
+    \draw[->,ultra thick](sum2.0)--(k.180);
+    \draw[-,ultra thick](k.0)--(2.5,0);
+
+    \draw[->,ultra thick](2.5,0)node[above right]{$Y(s)$}--(3,0);
+    \draw[-,ultra thick](2.5,-0.75)--(2.5,0);
+
+    %\node[sum](sum3)at(1.75,-0.75){};
+    %\draw[->,ultra thick](2.5,-0.75)--(sum3.0)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+    %\draw[->,ultra thick](1.75,-1.25)node[right]{$h$}--(sum3.270)node[left]{$\scriptscriptstyle\boldsymbol{+}$};
+
+
+    \node[block, below of=g, node distance=1.5cm](h){$H(s)$};
+    %\draw[->,ultra thick](sum3.180)--(h.0);
+    \draw[->,ultra thick](2.5,-0.75)--(h.0);
+    \draw[-,ultra thick](h.180)--(-1,-0.75);
+
+    \draw[->,ultra thick](-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
+\end{tikzpicture}\end{center}
+
+A ciclo aperto il rumore ha un effetto sull'uscita $y_{z,F}=G_2z$, a ciclo chiuso ha un effetto $y_{z,W}=\displaystyle\frac{G_2z}{1+F}$. Il rumore ha un fattore di riduzione 
+$1+F$, per determinare l'effetto del rumore sul ciclo chiuso si considera $\displaystyle\frac{y_{z,W}}{y_{z,F}}$. Si considera l'errore massimo causato dal rumore in quell'
+intervallo di frequenze $K$, per poter filtrare il rumore in quell'intervallo di frequenze bisogna che il suo effetto sul ciclo chiuso sia minore di questo errore:
+$\left|\displaystyle\frac{y_{z,W}}{y_{z,F}}\right|=\frac{1}{|1+F|}<\frac{1}{K}\Rightarrow|1+F|>K$. Per poter rigettare l'errore la funzione a ciclo aperto deve avere 
+modulo maggiore di $K$ nell'intervallo di frequenze su cui agisce l'errore.
+
 \subsection{Teoria di Lyapunov}
+
+Lyapunov alle fine dell'$800$ descrisse i sistemi non lineari ed un criterio sulla loro stabilità. \\
+
+Per un sistema lineare autonomo $\dot x=f(x)$, si può considerare come un 
+sistema a controreazione con un controllore che ne calcola l'entrata per cui non ha bisogno di un entrata esterna. Il sistema è in uno stato di equilibrio per 
+$\dot x=0\Rightarrow f(x)=0$, può presentare un numero infinito di punti di equilibrio. Se per un valore di $\varepsilon$ arbitrariamente piccolo, raggio di un intorno 
+circolare di un punto di equilirbio del sistema, esiste un intorno circolare di raggio $\delta_{\varepsilon}$ che contiene l'effetto del sistema, il sistema ha un'evoluzione 
+limitata. Un sistema si dice quindi semplicemente stabile se:
+
+\begin{equation}
+    \exists\varepsilon>0\mbox{ t.c. }||x-x_{eq}||<\varepsilon\Rightarrow||x(t)-x_{eq}||<\delta_{\varepsilon}
+\end{equation}
+
+Per ogni intorno $\delta_{\varepsilon}$ del punto di equilibrio deve esistere un punto tale che la sua evoluzione rimanga contenuta in quel intorno circolare. 
+Se $\lim_{t\to+\infty}x(t)=x_{eq}$ il sistema si dice asintoticamente stabile. \\
+
+Poiché i sistemi linearei convergono esponenzialmente, se un sistema non lineare converge più velocemente di un qualsiasi esponenziale, si dice stabile esponenzialmente. 
+Un sistema non lineare è stabile se esiste un intorno di stabilità, dove ogni evoluzione del sistema è almeno semplicemente stabile. Se esiste un unico punto di equilibrio del 
+sistema è possibile che l'intorno sia infinto. \\
+
+Sia $V(x)$ la funzione di stato del sistema, positiva per ogni valore di $x$, questa funzione avrà un valore vicino allo zero solo 
+nell'intorno del punto di equilibrio, minimo della funzione. Si rappresenta con delle curve di livello, curve dove il valore di $V(x)$ è costante fino al valore 
+$V(x_{eq})$, se il sistema è stabile nel punto $X_{eq}$ allora le curve di livello tenderanno a restringersi intorno a quel punto. \\
+
+Se la derivata della funzione di stato, in ogni punto del sistema, è defintia e negativa, allora il sistema è asintoticamente stabile, per ogni stato del sistema $V$ la sua 
+evoluzione non potrà che diminuire.
+
+\begin{equation}
+    \dot V(x)=\displaystyle\frac{dV}{dx}\frac{dx}{dt}=\frac{dV}{dx}f(x)<0,\:\forall x
+\end{equation}
+
+Questa funzione di stato viene chiamata funzione di Lyapunov, dopo aver determinato la funzione di Lyapunov di un sistema non lineare si può controllare la sua stabilità. 
+Il teorema di LaSalle afferma che lo stato di un sistema non lineare tende asintoticamente al valore del suo invariante massimo, dove l'invariante massimo $M$ è un sottoinsieme 
+dell'insieme $E$ dei punti per cui la derivata della funzione di Lyapunov si annulla: $M\subset E:=\{x\in I_{\delta_{\varepsilon}}(x_{eq})\big|\dot V(x)=0\}$. \\
+
+Un sistema non lineare si può linearizzare intorno ad un suo punto di equilibrio, con $\Delta x=x-x_{eq}$, considerando l'espansione di Taylor della funzione $f(x)$ che 
+definisce il sistema:
+
+\begin{gather}
+    f(x)=\cancelto{0}{f(x_{eq})}+\displaystyle\frac{f'(x_{eq})}{1!}{(x-x_e)}+...\\
+    f(x)\approx f'(x_{eq})\Delta x\\
+    \begin{cases}
+        \dot x=f(x)\\
+        f(x_{eq})=0
+    \end{cases}\\
+    \begin{cases}
+        \Delta\dot x=f(x)\\
+        f(x_{eq})=f'(x_{eq})\Delta x
+    \end{cases}\\
+    \Delta\dot x=f'(x_{eq})\Delta x
+\end{gather}
+
+Considerando un sistema non lineare con un entrata $u(t)$, definito da $\dot x=f(x,u)$, si può linearizzare considerando: 
+
+\begin{equation}
+    \Delta\dot x=\displaystyle\frac{\partial f}{\partial x}\bigg|_{x_{eq}}\Delta x+\frac{\partial f}{\partial u}\bigg|_{u_{eq}}\Delta u=\left(\mathbf{J}f\bigg|_{(x_{eq},u_{eq})}\cdot
+    \begin{bmatrix}
+        \Delta x\\
+        \Delta u
+    \end{bmatrix}
+    \right)
+\end{equation}
+
+Dove $\mathbf{J}f$ è il Jacobiano della funzione $f$. \\
+
+Se il sistema $\sum_L$ linearizzato è asintoticamente stabile allora anche il sistema non lineare $\sum_{NL}$ è asintoticamente stabile, se $\sum_L$ è instabile lo è 
+anche $\sum_{NL}$, se $\sum_L$ è al limite di stabiltià, non si può stabilire il comportamento di $\sum_{NL}$. Per cui il sistema $\sum_{NL}$ si può stabilizzare 
+localmente, agendo sul sistema linearizzato $\sum_L$. Per controllare l'intorno di stabilità, si simula l'evoluzione del sistema. 
+
+\begin{center}\begin{tikzpicture}[scale=2]
+    \coordinate(sum)at(-1,0){};
+    \draw[->,ultra thick](-1,0)node[above right]{$u$}--(c.180);
+    \node[block, right of=sum, node distance=2cm](c){$f(x,u)$};
+
+    %\draw[->,ultra thick](sum.0)--(c.180);
+    \filldraw[black](2.5,0)circle(1pt);
+
+    \draw[->,ultra thick](2.5,0)node[above right]{$x$}--(3,0);
+    \draw[-,ultra thick](2.5,-0.75)--(2.5,0);
+
+    %\node[block]at(0.75,-0.75)(h){$H(s)$};
+    \node[block]at(1.75,0)(p){$\displaystyle\frac{1}{s}$};
+
+    \draw[-,ultra thick](p.0)--(2.5,0);
+    \draw[->,ultra thick](c.0)node[above right]{$\dot x$}--(p.180);
+
+    %\draw[->,ultra thick](2.5,-0.75)--(h.0);
+    %\draw[-,ultra thick](h.180)--(-1,-0.75);
+    \draw[-,ultra thick](2.5,-0.75)--(0,-0.75);
+    \draw[->,ultra thick](0,-0.75)--(c.270);
+\end{tikzpicture}\end{center}
 
 \clearpage
 
