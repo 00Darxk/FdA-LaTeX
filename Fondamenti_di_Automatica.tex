@@ -37,7 +37,7 @@
 %                                                                       (https://tex.stackexchange.com/questions/175969/block-diagrams-using-tikz);
 %   Rotore DC grafico in CiruiTikz;
 %   Figures Description;
-
+%   Linearization;
 
 
 
@@ -1485,15 +1485,134 @@ Data una funzione di trasferimento a ciclo chiuso $W(s)=\displaystyle\frac{G(s)}
     |G(j\omega)|>>0\Rightarrow|W(j\omega)|=\displaystyle\frac{|G(j\omega)|}{|1+G(j\omega)h|}=\frac{1}{h}
 \end{equation}
 
-Quindi per guadagno ad anello molto elevato e basse frequenze la funzione a ciclo chiuso sarà l'inverso della funzione sulla catena di misura. 
+Quindi per guadagno ad anello molto elevato e basse frequenze la funzione a ciclo chiuso sarà l'inverso della funzione sulla catena di misura. \\
 
+Un integratore è un operazionale descritto dal seguente circuito:
 
+\begin{center}
+    \begin{circuitikz}
+        \draw
+        (-1,0) node[ground]{} to[short] ++(1,0)node[above left]{$v_X$}
+        node[op amp, noinv input up, anchor=+](OA){$A$}
+        (OA.-) -- ++(0,-1) coordinate(FB)
+        to[R=$R$,*-o] ++(0,-2)node[right]{$v_{in}$}
+        (FB) to[C=$C$, *-] (FB -| OA.out) -- (OA.out)
+        to [short, *-o] ++(1,0) node[above]{$v_{out}$}
+        ;
+    \end{circuitikz}
+\end{center}
+
+Si definisce impedenza di un circuito il rapporto tra la tensione applicata ai capi del circuito e la corrente che vi ci scorre, nel dominio di Laplace, misura la facilità 
+con cui una corrente alternata attraversa un circuito. Le impedenze 
+derivano dalle tensioni generate dai vari oggetti di un circuito come un resistore, un capacitore ed un induttore: 
+
+\begin{gather}
+    Z_R:R=\displaystyle\frac{v(t)}{i(t)}\Rightarrow Z_R=\frac{V(s)}{I(s)}=R\\
+    Z_C:v_{in}=\displaystyle\frac{1}{C}\int i\:d\tau\\
+    \dot v_{in}=\displaystyle\frac{1}{C}i\\
+    sV(s)_{in}=\frac{1}{C}I(s)\Rightarrow Z_C=\frac{1}{Cs}\\
+    Z_L: v(t)=L\dot i(t)\\
+    V(s)=sLI(s)\Rightarrow Z_L=sL
+\end{gather}
+
+Si definisce amplificatore operazionale un oggetto avente un guadagno molto elevato ed un'impedenza elevata in entrata proporzionale al suo guadagno, perciò si 
+considera il caso dove . Si può quindi rappresentare in un sistema a bloccchi 
+il circuito di un integratore operazionale:
+
+\begin{center}\begin{tikzpicture}[scale=2]
+    \node[sum](sum)at(-1,0){};
+    \draw[->,ultra thick](-1.5,0)node[above]{$0$}--(sum.180)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+    \node[triangle, right of=sum, node distance=1.5cm](g){$K_A$};
+
+    \draw[->,ultra thick](sum.0)--(g.180);
+    \draw[-,ultra thick](g.0)--(0.75,0);
+    \filldraw[black](0.75,0)circle(1pt);
+
+    \draw[->,ultra thick](0.75,0)--(1.25,0)node[above left]{$V_{out}$};
+    \draw[-,ultra thick](0.75,-1)--(0.75,0);
+    \node[block, below of=g, node distance=2cm](h){$\displaystyle\frac{R}{R+\displaystyle\frac{1}{Cs}}$};
+
+    \draw[->,ultra thick](0.75,-1)--(h.0);
+    \draw[-,ultra thick](h.180)--(-1,-1);
+    \draw[->,ultra thick](-1,-1)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
+\end{tikzpicture}\end{center}
+
+Poiché il guadagno $K_A$ è molto elevato, si può approssimare la funzione a ciclo chiuso come: 
+
+\begin{equation}
+    W(s)=\displaystyle\frac{R+\displaystyle\frac{1}{Cs}}{R}=\frac{RCs+1}{RCs}
+\end{equation}
+
+Rappresenta un integratore con uno zero in $-\displaystyle\frac{1}{RC}$, per un intervallo di frequenze può essere approssimato come un integratore puro. \\
+
+Per ottenere un derivatore si considera invece un induttore al posto del resistore:
+
+\begin{center}
+    \begin{circuitikz}
+        \draw
+        (-1,0) node[ground]{} to[short] ++(1,0)node[above left]{$v_X$}
+        node[op amp, noinv input up, anchor=+](OA){$A$}
+        (OA.-) -- ++(0,-1) coordinate(FB)
+        to[L=$L$,*-o] ++(0,-2)node[right]{$v_{in}$}
+        (FB) to[C=$C$, *-] (FB -| OA.out) -- (OA.out)
+        to [short, *-o] ++(1,0) node[above]{$v_{out}$}
+        ;
+    \end{circuitikz}
+\end{center}
+
+L'amplificatore presenta un comportamento non lineare, ma in controreazione ha un comportamento lineare. 
+
+\subsubsection{Linearizzazione}
+
+Un qualsiasi sistema non lineare definito da una funzione $f$, se messo in controreazione con nun guadagno $K$, avrà una risposta: 
+
+\begin{gather}
+    \begin{cases}
+        y=f(v)\\
+        v=k(u-y)
+    \end{cases}\\
+    y=f(k(u-y))\\
+    \displaystyle\frac{y}{k}=f(u-y)\\
+    k>>0,\:f(u-y)=0\iff u=y
+\end{gather}
+
+Quindi ogni sistema non lineare messo in controreazione con un guadagno molto elevato avrà un comportamento lineare, se non diventa instabile. \\
+Un transistor è un oggetto non lineare, ma ha un guadagno molto elevato, per cui viene costruito in controreazione per avere comportamenti lineari. 
+
+\subsection{Errore di Tipo Sinusoidale}
+
+Si vuole determinare l'errore $\tilde{e}(t)=\tilde{y}_d-\tilde{y}(t)$ rispetto ad un riferimento ideale per un entrata sinusoidale $\tilde{u}(t)=sin(\tilde{\omega}t)$, di un'uscita 
+$\tilde{y}(t)=Msin(\tilde{\omega}t+{\varphi}(\tilde{\omega}))$, dove $M(\tilde{\omega})=|W(j\omega)|_{\omega=\tilde{\omega}}$ e 
+$\varphi(\tilde{\omega})=\phase{W(j\omega)}_{\omega=\tilde{\omega}}$. 
+L'errore sarà dato da:
+
+\begin{equation}
+    W_e(s)=|Kd-W(j\omega)|=\left|\displaystyle\frac{Kd^2}{Kd+G(j\omega)}\right|=\left|\frac{Kd}{1+F(j\omega)}\right|
+\end{equation}
+
+Per un guadagno ad anello molto elevato si ha un errore piccolo: 
+$|G(j\omega)|>>0\Rightarrow \tilde{e}(\omega)=\frac{Kd}{|F(j\omega)|}<<1$. Intorno alla pulsazione di taglio, si ha un guadagno ad anello basso, per cui si ha un errore 
+$W_e(s)=Kd$. \\
 
 \subsection{Carta di Nichols}
 
+Tracciando il modulo della funzione a ciclo chiuso rispetto alla frequenza, si individuano il modulo alla risonanza $Mr$ definito come la distanza tra il guadagno statico 
+ed il picco del modulo, se il modulo rispetto alla frequenza è strettamente decrescente, il modulo alla risonanza è nullo. Si definisce banda passante $\omega_{-3}$, la 
+frequenza per cui il modulo della funzione a ciclo chiuso scende al di sotto di $-3\:dB$. Analogamente al tempo caratteristico, rappresenta la massima pulsazione trattata dal 
+sistema prima che l'effetto dimnuisca considerevolmente. \\
+La sovraelongazione $s$ è direttamente proporzionale al modulo alla risonanza $s\propto Mr$, il tempo di salita $t_s$ e la banda passante sono circa inversamente proporzionali 
+$t_s\cdot\omega_{-3}\approx0$. Per un aumento del guadagno, aumentano sia la banda passante che la pulsazione di taglio, per cui le due frequenze sono direttamente proporzionali, 
+mentre diminuisce il tempo di salita, per cui $\omega_t\propto\omega_{-3}\cdot t_s$. \\
+
+La carta di Nichols è un diagramma che rappresenta l'andamento della fase e del modulo di una funzione di trasferimento rispetto alla frequenza. Considera la fase nell'intervallo 
+$[-360^{\circ},0^{\circ}]$, ed il modulo in $[-40dB, 40dB]$, sistema di coordinate rettilineo usato per la funzione a ciclo aperto. Mentre per la funzione a ciclo chiusco 
+si usa un sistema di coordinate curvilineo, formato da luogo delle curve a modulo costante, fino a $-3dB$, ed a fase costante. Ovvero si considera o la fase o il modulo costante e si traccia 
+l'andamento della funzione a ciclo chiuso $W=|W|e^{\phase{W}}$ per la variazione della rimanente. Ha l'origine nel punto $(0db,-180^{\circ})$. \\
+Data $W=\displaystyle\frac{F}{1+F}$, ci si può ricavare la funzione a ciclo aperto: $F=\displaystyle\frac{W}{1-W}$. 
+
 \subsection{Reti Corretrici}
 
-\subsection{Linearizzazione}
+\subsection{Teoria di Lyapunov}
 
 \clearpage
 
