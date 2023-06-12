@@ -18,7 +18,8 @@
 \tikzset{snake it/.style={decorate, decoration=snake},
          block/.style = {draw, fill=white, very thick, rectangle, minimum height=1cm, minimum width=2cm},
          sum/.style= {draw, fill=white, very thick, circle, node distance=1cm},
-         triangle/.style= {draw, fill=white, very thick, isosceles triangle, minimum height=2cm, minimum width=1cm}}  
+         triangle/.style= {draw, fill=white, very thick, isosceles triangle, minimum height=2cm, minimum width=1cm},
+         lblock/.style={draw,fill=white,very thick, rectangle, minimum height=3cm, minimum width=1cm}}  
 \numberwithin{equation}{subsection}
 \graphicspath{ {./Immagini/} }
 
@@ -36,11 +37,15 @@
 % V Sostituire Immagini Screenate da Simulink con Blocchi Fatti in Tikz(https://latexdraw.com/block-diagram-in-latex-step-by-step-tikz-tutorial)e
 %                                                                       (https://tex.stackexchange.com/questions/175969/block-diagrams-using-tikz);
 %   Rotore DC grafico in CiruiTikz;
-%   Figures Description;
+% X Figures Description;
 %   Linearization;
 %   Rumori Aleatori;
-
-
+%   Figura Operazionale in Frequenza;
+%   Reti Correttrici Grafico Circuito;
+%   Grafico Quantizzazione;
+%   Grafico Temporale Tc elaborazione controllore;
+%   Grafico Impulso Discreto x(t);
+%   Grafico Piano di Gauss x_c(s);
 
 \title{Fondamenti di Automatica}
 \author{}
@@ -1485,7 +1490,7 @@ Data una funzione di trasferimento a ciclo chiuso $W(s)=\displaystyle\frac{G(s)}
 
 Quindi per guadagno ad anello molto elevato e basse frequenze la funzione a ciclo chiuso sarà l'inverso della funzione sulla catena di misura. \\
 
-Un integratore è un operazionale descritto dal seguente circuito:
+Un integratore è un operazionale descritto dal seguente circuito, in configurazione invertente:
 
 \begin{center}
     \begin{circuitikz}
@@ -1513,9 +1518,8 @@ derivano dalle tensioni generate dai vari oggetti di un circuito come un resisto
     V(s)=sLI(s)\Rightarrow Z_L=sL
 \end{gather}
 
-Si definisce amplificatore operazionale un oggetto avente un guadagno molto elevato ed un'impedenza elevata in entrata proporzionale al suo guadagno, perciò si 
-considera il caso dove . Si può quindi rappresentare in un sistema a bloccchi 
-il circuito di un integratore operazionale:
+Si definisce amplificatore operazionale un oggetto avente un guadagno elevato $K_A\approx10^5$ ed un'impedenza elevatissima in entrata proporzionale al suo guadagno, perciò si 
+considera il caso dove l'entrata sia nulla. Si può quindi rappresentare in un sistema a bloccchi il circuito di un integratore operazionale:
 
 \begin{center}\begin{tikzpicture}[scale=2]
     \node[sum](sum)at(-1,0){};
@@ -1558,14 +1562,18 @@ Per ottenere un derivatore si considera invece un induttore al posto del resisto
     \end{circuitikz}
 \end{center}
 
-L'amplificatore presenta un comportamento non lineare, ma in controreazione ha un comportamento lineare. Un amplificatore ha una risposta in frequenza, si può determinare 
+L'amplificatore presenta un comportamento non lineare, ma in controreazione ha un comportamento lineare; ha una risposta in frequenza che si può determinare 
 sperimentalmente usando un generatore di funzioni in entrata ed un oscilloscopio in uscita. In ciclo aperto presenta una banda passante piccola, se si inserisce un 
-fattore $\displaystyle\frac{1}{K_d}$ in controreazione aumenta la banda passante, ma diminuise il guadagno del sistema. Poiché un amplificatore è un oggetto a guadagno 
+fattore $\displaystyle\frac{1}{K_d}<1$ in controreazione aumenta la banda passante, ma diminuise il guadagno del sistema. Poiché un amplificatore è un oggetto a guadagno 
 molto elevato, è possibile aumentare la banda passante considerevolmente senza disturbare di troppo le funzioni dell'amplificatore. 
+
+\begin{center}
+    \includegraphics[width=10cm]{Amplificatore.png}
+\end{center}
 
 \subsubsection{Linearizzazione}
 
-Un qualsiasi sistema non lineare definito da una funzione $f$, se messo in controreazione con nun guadagno $K$, avrà una risposta: 
+Un qualsiasi sistema non lineare definito da una funzione $f$, se messo in controreazione con un guadagno $K$, avrà una risposta: 
 
 \begin{gather}
     \begin{cases}
@@ -1573,11 +1581,9 @@ Un qualsiasi sistema non lineare definito da una funzione $f$, se messo in contr
         v=k(u-y)
     \end{cases}\\
     y=f(k(u-y))\\
-    \displaystyle\frac{y}{k}=f(u-y)\\
-    k>>0,\:f(u-y)=0\iff u=y
 \end{gather}
 
-Quindi ogni sistema non lineare messo in controreazione con un guadagno molto elevato avrà un comportamento lineare, se non diventa instabile. \\
+Dove $f(x)$ è una funzione non lineare, considerando un guadagno molto elevato $k>>0$, allora $y\propto u-y$, se il sistema non diventa stabile prima. \\
 Un transistor è un oggetto non lineare, ma ha un guadagno molto elevato, per cui viene costruito in controreazione per avere comportamenti lineari. 
 
 \subsection{Errore di Tipo Sinusoidale}
@@ -1640,7 +1646,64 @@ Dalle relazioni ottenute precedentemente:
 
 \subsection{Reti Corretrici}
 
+Per modificare in maniere selettiva l'andamento di un sistema si agisce direttamente sui poli e gli zeri del sistema. Un metodo per eliminare una dinamica sfavorevole per 
+introdurne un'altra consiste nell'inserire una funzione in catena diretta contente una coppia polo-zero a guadagno unitario. In questo modo si mantiene il guadagno statico 
+del sistema e si agisce direttamente sull'andamento di Bode del processo. Questo metodo non si può utilizzare per eliminare elementi instabili da un processo, poiché le 
+dinamiche di un sistema anche se vengono cancellate analiticamente rimangono fisicamente in esso. Per questo motivo anche il controllore deve avere una coppia poli-zeri 
+stabile. \\
 
+Un controllore di questo tipo viene chiamato rete correttrice $R(s)$, può presentare il polo prima dello zero, in questo caso si chiama rete attenuatrice, oppure il polo 
+dopo lo zero, rete anticipatrice. Le reti correttrici vengono definite da un parametro $m$, che rappresenta la distanza tra il polo e lo zero nel tempo, e di conseguenza 
+l'intensità del cambiamento che provoca la rete, più i poli sono vicini, più l'effetto della rete viene diminuito poiché più sono vicini, meno tempo ha l'altra dinamica 
+per bilanciare la prima. Queste reti vengono costruite fisicamente tramite una serie di resistenze ed un condensatore, più la coppia polo-zero è distante più precisione sarà richiesta per le 
+resistenze, per cui si tende a scegliere tra reti a partià di effetto, quella con un parametro $m$ minore per diminuire il costo di produzione del componente fisico. \\
+
+Le reti correttrici sono definite da un altro parametro $\tau$, utilizzato per traslare globalmente la coppia polo-zero, per un aumento o diminuzione dell'effetto 
+causato della rete. Questo effetto viene indicato su un diagramma di Bode rispetto ad una frequenza $\omega$, pari alla frequenza dove si vuole applicare la rete tenendo 
+conto della traslazione della coppia polo-zero $\tau$. Poiché si vuole agire sulla pulsazione di taglio si avrà una frequenza $\omega=\omega_t\cdot\tau$. 
+
+Le reti hanno funzione di trasferimento: 
+
+\begin{gather}
+    R(s)_{antp.}=\displaystyle\frac{1+\tau s}{1+\displaystyle\frac{\tau}{m}s}\\
+    R(s)_{att}=\displaystyle\frac{1+\displaystyle\frac{\tau}{m}s}{1+\tau s}
+\end{gather}
+
+In una rete anticipatrice, presentando uno zero prima del polo, i moduli saliranno per poi rimanere costanti dopo il polo, mentre le fasi saliranno e poi scenderanno. Essendo 
+una attenuatrice l'esatto opposto, i moduli prima scenderanno prima di arrestarsi e le fasi prima scenderanno e poi saliranno. 
+\'{E} possibile che una rete correttrice si trovi al limite di stabilità. \\
+
+Il diagramma usato per calcolare una rete si chiama carta delle reti compensatrici: 
+
+\begin{center}
+    \includegraphics[width=10cm]{CartaReti.jpg}
+\end{center}
+
+Poiché per una rete attenuatricie, l'effetto causato è esattamente l'opposto di una anticipatrice, si usa sempre la stessa carta per entrambe le reti, solo si considera 
+l'effetto negativo quando si tratta di una attenuatrice. \\
+
+In un sistema generico, la rete correttrice viene aggiunta in catene diretta al controllore $C(s)$, che presenta un numero $h$ di integratori ed un guadagno $K_c$, per cui 
+il controllore del sistema diventa: 
+
+\begin{equation}
+    C(s)=\displaystyle\frac{K_c}{s^h}\cdot R(s)
+\end{equation}
+
+Si può dividere l'effetto di una rete, per qualsiasi $m$, in due zone. In una prima zona, il modulo varia di poco, mentre cambia notevolmente la fase, questo può essere 
+usato in sistemi al limite di stabilità per recuperare margine di fase, senza cambiare il modulo del sistema. In una seconda zona si può variare di molto il modulo del 
+sistema senza intaccare di troppo la fase. Per stabilizzare un sistema è necessario un margine di fase abbastanza grande per resistere ad errori, per cui si scelgono sempre 
+reti che a parità di modulo diminuiscano il meno possibile la fase. \\
+
+
+Si possono combinare più reti per sistemi, dove ogni rete agisce in un punto diverso nel tempo, in questo caso si useranno parametri $\tau$ e $m$ diversi per ogni singola 
+rete nel controllore. 
+
+%Reti in circuiti: 
+
+
+
+
+%circuitikz
 
 \subsection{Rumori Aleatori}
 
@@ -1687,7 +1750,13 @@ A ciclo aperto il rumore ha un effetto sull'uscita $y_{z,F}=G_2z$, a ciclo chius
 $1+F$, per determinare l'effetto del rumore sul ciclo chiuso si considera $\displaystyle\frac{y_{z,W}}{y_{z,F}}$. Si considera l'errore massimo causato dal rumore in quell'
 intervallo di frequenze $K$, per poter filtrare il rumore in quell'intervallo di frequenze bisogna che il suo effetto sul ciclo chiuso sia minore di questo errore:
 $\left|\displaystyle\frac{y_{z,W}}{y_{z,F}}\right|=\frac{1}{|1+F|}<\frac{1}{K}\Rightarrow|1+F|>K$. Per poter rigettare l'errore la funzione a ciclo aperto deve avere 
-modulo maggiore di $K$ nell'intervallo di frequenze su cui agisce l'errore.
+modulo maggiore di $K$ nell'intervallo di frequenze su cui agisce l'errore. In caso sia presente un errore di aliasing, allora bisongerà avere un modulo minore di un 
+certo valore, in un intervallo di frequenze. \\
+
+Questi tipi di errori vengon rappresentati nel diagramma di Bode del modulo come una finestra o rettangolo di base l'intervallo di frequenza nel cui sono presenti, e di 
+altezza il modulo che la funzione deve supereare per evitare l'errore. Quando si usano reti correttrici per traslare la pulsazione di taglio bisogna considerare se la 
+funzione intersechi completamente o in parte questa finestra, in caso bisona diminuire le aspettative del sistema e scegliere speciche che permettano la stabilità in quella 
+situazione. 
 
 \subsection{Teoria di Lyapunov}
 
@@ -1784,9 +1853,148 @@ localmente, agendo sul sistema linearizzato $\sum_L$. Per controllare l'intorno 
 
 \clearpage
 
-\section{Controllori Digitali}
+\section{Sistemi a Segnali Campionati}
 
+\subsection{Microcontrollore}
 
+Un microcontrollore è un oggetto fisico input-output capace di dialogare con l'ambiente esterno, all'interno di un chip, anche molto economico. Sono oggetti che presenta 
+all'interno un controllore, quindi sono in grado di risolvere piccoli problemi di automazione. Dei PLC sono invece dei controllori più sofisticati che permettono di 
+avere frequenze di aggiornamento molto elevate e trasmissione di dati costante. \\
+
+Un microcontrollore è composto da un microprocessore $\mu P$, convertitori da digitale ad analogico $DAC$, per poter dialogare con un certo processo $P$ da controllare, 
+convertendo i dati del processo in livelli di tensione. La tension in uscita dal $DAC$ è di bassa potenza, per cui è presenta a cascata un amplificatore alimentato da un 
+generatore di tensione esterno, per avere in uscita livelli di tensione adeguati. Per ricevere dati dal processo, si usa in catena di misura un filtro-antialiasing, 
+per pulire il segnale che poi viene passato ad un convertitore $A/D$ che trasforma il segnale continuo in un segnale discreto. Il microprocessore informa il convertitore 
+$A/D$ con un segnale $SoC$ per iniziare la conversione, il quale invia un segnale $EoC$ al microprocessore per segnalare la fine della conversione del dato. A quel punto 
+il microprocessore leggerà sul bus il dato convertito. Si può inserire un circuito di adattamento tra il filtro antialiasing ed il convertitore $A/D$, per adattare 
+l'uscita in tensone del processo all'ingresso in tensione dei convertitori, poiché i convertitori hanno un certo intervallo di ingresso accettabile in Volt, il dato 
+ottenuto operando su quello grezzo del sensore viene chiamato dato ingegnerizzato. \\
+
+Il valore di riferimento del microcontrollore può essere computato o inserito da un segnale esterno. Il microcontrollore $\mu C$ comprendo il microprocessore, ed i convertitori 
+$DAC$ e $A/D$, anche su un singolo chip. 
+
+\begin{center}
+    \begin{tikzpicture}
+        \node[lblock](mp)at(0,0){$\mu P$};
+    \end{tikzpicture}
+\end{center}
+
+\subsubsection{Conversione Dati}
+
+Un dato digitale viene rappresentato da un certo numero $n$ di bit, per cui può rappresentare valori nell'intervallo $[0,2^n-1]$. Viene suddiviso l'intervallo di tensione 
+in entrata in $2^n$ intervalli uguali e ogni valore che un bit può rappresentare corriponsderà quindi ad un intervallo di tensione. Non è possibile determinare in questo 
+modo la tensione esatta, questo effetto viene chiamato quantizzazione, ed è quantificabile dal passo di quantizzazione, ovvero la grandezza di un singolo intervallo di 
+tensione:
+
+\begin{equation}
+    q=\displaystyle\frac{\Delta V}{2^n}
+\end{equation}
+
+Per cui è impossibile determinare a meno del passo di quantizzazione una certa uscita, e quindi la precisione del controllore non potrà mai essere minore del passo di 
+quantizzazione, poiché non può agire su ciò che non può misurare. \'{E} necessario decidere a priori il passo di quantizzazione necessario per l'applicazione del controllore. 
+Poiché la quantizzazione è un processo non lineare, si considerererà sempre nelle successive analisi come se si fosse scelto il numero di bit sufficiente per le applicazioni 
+considerate. Verrà considerato alla fine un rumore di quantizzazione dovuto alla differenza tra la suddivisione in gradini e l'andamento lineare. \\
+
+Per scegliere il numro di bit adatto, si analizza l'oscillazione del segnale e si misura la varianza rispetto al valor medio e si calcola il valore di rumore in percentuale 
+$e[\%]$, e si sceglie un numero di bit abbastanza piccolo da non campionare il rumore $n\mbox{ t.c. }\displaystyle\frac{1}{n}>\frac{e}{100}$, poiché essendo casuale il 
+controllore non potrà agire su di esso. \\
+
+Se si scelgono troppi pochi bit, il segnale potrebbe variare senza una variazione nella sua rappresentazione. 
+
+\subsubsection{Equazione alle Differenze}
+
+Il microcontrollore misura l'ingresso come una serie di valori $\{y_i\}$, legati ognugno ad un tempo $t_i$, in base all'entrata il microcontrollore genera una sequenza di 
+uscita $\{c_i\}$, che non può calcolare in base al controllore $C(s)$, poiché dovrebbe risolvere un'equazione differenziale, per cui lavora su un'equazione alle differenze: 
+
+\begin{equation}
+    c_i=c_{i-1}+f(e_i)
+\end{equation}
+
+Dove l'errore $e_i$ è calcolato come la differenza tra l'entrata ed il riferimento in quell'intervallo di tempo $t_i$: $e_i=r_i-y_i$. \\
+
+In generale in un'equazione alle differenze, l'uscita dipende dallo stato e dai valori in entrata che gli si applicano: 
+
+\begin{equation}
+    y_i=g(y_{i-1},y_{i-2},...;u_{i},u_{i-1},..)
+\end{equation}
+
+Per cui anche l'equazione alle differenze come le equazioni differenziali possono essere usate per descrivere sistemi con memoria, mentre le equazioni differenziali agiscono 
+su sistemi continui, le equazioni alle differenze operano in un ambiente discreto. 
+
+\begin{center}\begin{tikzpicture}[scale=2]
+    \node[rectangle, draw, very thick, minimum width=2cm, minimum height=1cm](r)at(0,0){$g(y_{i-1},y_{i-2},...;u_{i},u_{i-1},..)$};
+
+    \draw[->,ultra thick](-2.5,0)--(r.west);
+    \node[below]at(-2,0){$\{u_i\}$};
+
+    \draw[<-,ultra thick](2.5,0)--(r.east);
+    \node[below]at(2,0){$\{y_i\}$};
+
+\end{tikzpicture}\end{center}
+
+Un microprocessore può simulare un'equazione alle differenze in base ai dati in entrata e così calcolarsi il controllore per ogni $t_i$, questo calcolo verrà inviato al 
+convertitore $DAC$. Dopo aver inviato i dati in uscita, il microcontrollore aspetterà la fine del tempo di campionamento $T_c$ prima di eseguire nuovamente il calcolo 
+del controllore. Se il processo da controllare è molto sensibile a ritardi temporali, allora non si può usare un software che potrebbe inpedire a questa ruotine di 
+avviarsi nel tempo desiderato. 
+
+\subsubsection{Tempo di Campionamento}
+
+Il microcontrollore leggerà i dati dal bus nell'intervallo tra il segnale $SoC$ ed il segnale $EoC$, dopo aver letto il segnale $EoC$ il controllore elaborerà i dati 
+in un certo intervallo di tempo. Dopo aver elaborato i dati li iniverà al convertitore $DAC$ per trasformarli in dati analogici in un altro intervallo di tempo. A questo 
+punto il microprocessore si fermerà fino al prossimo tempo di campionamento. La lunghezza di questo intervallo di tempo complessivo è un ritardo che può influire in diversa 
+maniere sul sistema in base al tempo di campionamento. Se questo ritardo è relativamente lungo allora il controllore calcolato $c_i$ non corrisponderà esattamente allo stato 
+del sistema all'istante $t_i$, dato che è passato un intrevallo di tempo equivalente al ritardo. Per cui il controllore calcolato è approssimato. Mentre se il ritardo è 
+trascurabile poiché è relativamente corto, non si tiene conto del ritardo. 
+
+\begin{center}
+    \begin{tikzpicture}
+        
+    \end{tikzpicture}
+\end{center}
+
+In caso di ritardo basso si può usare un'equazione alle differenze del controllore $c_i=f(c_{i-1},e_i)$ mentre se il ritardo è elevato, si considera un'equazione alle differenze 
+$c_i=f(c_{i-1},e_{i-1})$. Poiché quest'ultima calcola il controllore succesivo, può inviare il dato alla fine del tempo di campionamento, per avere più tempo per calcolare il 
+controllore. 
+
+\subsection{Rappresentazione Segnali Campionati}
+
+Dato lo stato nel tempo di un sistema $x(t)$, se si implementa un controllore digitale, si avrà accesso solo ad una sequenza di stati $\{x_k\}$ dove ogni stato è dato dallo 
+stato del sistema in un tempo multiplo del tempo di campionamento $x_k=x(kT_c)$. Per rappresentare questa sequenza di punti può essere usato l'impulso di ampiezza 
+uguale al valore in quell'istante, per cui il segnale campionato può essere descritto da:
+
+\begin{equation}
+    x_c(t)=\sum_{k=0}^{\infty}x_k\delta_0(t-kT_c)
+\end{equation}
+
+La sequenza di impulsi ha esattamente il contenuto informativo della sequenza di valori misurati $\{x_k\}$. Per cui è possibile usarlo per lavorare sul tempo discreto. 
+Da questo segnale campionato è possibile ottenere la sua trasformata di Laplace:
+
+\begin{equation}
+    x_c(s)=\sum_{k=0}^{\infty}\displaystyle{x_k}e^{-skT_c}
+\end{equation}
+
+Per cui ha una sua risposta in frequenza, e probabilmente un suo diagramma di Bode. Considerando $s=\sigma +j\omega$, si può riscrivere come: 
+
+\begin{equation}
+    x_c(s)=\sum_{k=0}^{\infty}x_ke^{-\sigma kT_c}e^{-j\omega kT_c}
+\end{equation}
+
+Data una pulsazione di campionamento $\omega_c=2\pi\nu_c=\displaystyle\frac{2\pi}{T_c}$, per cui si potrà riscrivere la parte complessa dell'esponenziale come:
+
+\begin{equation}
+    e^{-j\omega kT_c}=e^{-j\omega k\frac{2\pi}{\omega_c}}
+\end{equation}
+
+Questo oggetto avrà come esponente un multiplo di $2\pi$ per ogni valore di $k$ intero, poiché è sempre intero rappresentando un numero di tempi di campionamento, questo 
+esponenziale si ripeterà ogni $\omega_c$. Per cui il piano di Guass sarà diviso in delle strisce di ampiezza $\omega_c$ uguali tra loro, allora si consdera solamente 
+una singola striscia per analizzare il comportamento in frequenza del segnale campionato. Questo segnale presenta una ripetezione in frequenza generale anche 
+per ogni valore reale. 
+
+\begin{center}
+    \begin{tikzpicture}
+        
+    \end{tikzpicture}
+\end{center}
 
 
 
