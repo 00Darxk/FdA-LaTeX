@@ -19,7 +19,8 @@
          block/.style = {draw, fill=white, very thick, rectangle, minimum height=1cm, minimum width=2cm},
          sum/.style= {draw, fill=white, very thick, circle, node distance=1cm},
          triangle/.style= {draw, fill=white, very thick, isosceles triangle, minimum height=2cm, minimum width=1cm},
-         lblock/.style={draw,fill=white,very thick, rectangle, minimum height=3cm, minimum width=1cm}}  
+         lblock/.style={draw,fill=white,very thick, rectangle, minimum height=3cm, minimum width=1cm},
+         nblock/.style = {draw, very thick, rectangle, minimum height=1cm, minimum width=2cm}}
 \numberwithin{equation}{subsection}
 \graphicspath{ {./Immagini/} }
 
@@ -42,10 +43,14 @@
 %   Rumori Aleatori;
 %   Figura Operazionale in Frequenza;
 %   Reti Correttrici Grafico Circuito;
+% V Schema \muC;
 %   Grafico Quantizzazione;
 %   Grafico Temporale Tc elaborazione controllore;
 %   Grafico Impulso Discreto x(t);
 %   Grafico Piano di Gauss x_c(s);
+%   Grafico Shannon \omega_c;
+%   Grafico Filtro Passa-Basso s->t;
+
 
 \title{Fondamenti di Automatica}
 \author{}
@@ -1867,15 +1872,43 @@ generatore di tensione esterno, per avere in uscita livelli di tensione adeguati
 per pulire il segnale che poi viene passato ad un convertitore $A/D$ che trasforma il segnale continuo in un segnale discreto. Il microprocessore informa il convertitore 
 $A/D$ con un segnale $SoC$ per iniziare la conversione, il quale invia un segnale $EoC$ al microprocessore per segnalare la fine della conversione del dato. A quel punto 
 il microprocessore leggerà sul bus il dato convertito. Si può inserire un circuito di adattamento tra il filtro antialiasing ed il convertitore $A/D$, per adattare 
-l'uscita in tensone del processo all'ingresso in tensione dei convertitori, poiché i convertitori hanno un certo intervallo di ingresso accettabile in Volt, il dato 
+l'uscita in tensione del processo all'ingresso in tensione dei convertitori. Poiché i convertitori hanno un certo intervallo di ingresso accettabile in Volt, il dato 
 ottenuto operando su quello grezzo del sensore viene chiamato dato ingegnerizzato. \\
 
-Il valore di riferimento del microcontrollore può essere computato o inserito da un segnale esterno. Il microcontrollore $\mu C$ comprendo il microprocessore, ed i convertitori 
+Il valore di riferimento del microcontrollore può essere computato o inserito da un segnale esterno. Il microcontrollore $\mu C$ comprende il microprocessore, ed i convertitori 
 $DAC$ e $A/D$, anche su un singolo chip. 
 
 \begin{center}
-    \begin{tikzpicture}
-        \node[lblock](mp)at(0,0){$\mu P$};
+    \begin{tikzpicture}[scale=2]
+        \node[lblock](mp)at(-0.5,0){$\mu P$};
+        \node[block](dac)at(1,0.5){$DAC$};
+        \node[block](ad)at(1,-0.5){$A/D$};
+
+        \draw[->,ultra thick, densely dotted](-0.25,0.5)node[above right]{$n$}--(dac.180);
+        \draw[<-,ultra thick, densely dotted](-0.25,-0.5)--(ad.180)node[below left]{$n$};
+        \draw[->,thick, red](-0.25,-0.3)node[above right]{$SoC$}--(0.5,-0.3);        
+        \draw[<-,thick, red](-0.25,-0.7)--(0.5,-0.7)node[below left]{$EoC$};
+
+        \node[block](p)at(2.5,0.5){$P$};
+        \draw[->,ultra thick](dac.0)--(p.180);
+        \draw[->,ultra thick](p.0)--(3.5,0.5);
+        \filldraw[black](3.25,0.5)circle(1pt);
+
+        \node[nblock](aa)at(2.5,-0.5){};
+        \draw[->, thick](2.2,-0.6)--(2.8,-0.6);
+        \draw[->, thick](2.5,-0.7)--(2.5,-0.3);
+        \draw[-,thick](2.3,-0.4)--(2.7,-0.4);
+        \draw[-,thick](2.3,-0.4)--(2.3,-0.6);
+        \draw[-,thick](2.7,-0.4)--(2.7,-0.6);
+
+        \draw[-,ultra thick](3.25,-0.5)--(3.25,0.5);
+        \draw[->,ultra thick](3.25,-0.5)--(aa.0);
+        \draw[->,ultra thick](aa.180)--(ad.0);
+        \node[sum](ca)at(1.75,-0.5){};
+
+        \draw[->,ultra thick](-1.5,0)node[above right]{$r$}--(mp.180);
+
+        \draw[-,thick](1.7,1)--(1.7,-1)node[below left]{$\mu C$}--(-1,-1)--(-1,1)--(1.7,1);
     \end{tikzpicture}
 \end{center}
 
@@ -1986,7 +2019,7 @@ Data una pulsazione di campionamento $\omega_c=2\pi\nu_c=\displaystyle\frac{2\pi
 \end{equation}
 
 Questo oggetto avrà come esponente un multiplo di $2\pi$ per ogni valore di $k$ intero, poiché è sempre intero rappresentando un numero di tempi di campionamento, questo 
-esponenziale si ripeterà ogni $\omega_c$. Per cui il piano di Guass sarà diviso in delle strisce di ampiezza $\omega_c$ uguali tra loro, allora si consdera solamente 
+esponenziale si ripeterà ogni $\omega_c$. Per cui il piano di Guass sarà diviso in delle fascie di ampiezza $\omega_c$ uguali tra loro, allora si consdera solamente 
 una singola striscia per analizzare il comportamento in frequenza del segnale campionato. Questo segnale presenta una ripetezione in frequenza generale anche 
 per ogni valore reale. 
 
@@ -1995,6 +2028,98 @@ per ogni valore reale.
         
     \end{tikzpicture}
 \end{center}
+
+Si definisce un nuovo segnale $\delta_T(t)$, formato da una rastregliera di impulsi unitari ogni $T_c$:
+\begin{equation}
+    \delta_t(t)=\sum_{k=0}^{\infty}\delta_0(t-kT_c)
+\end{equation} 
+Moltiplicando la rastregliera con il segnale da campionare $x(t)$, si ottiene il segnale campionato. Da tenere conto del fatto che una rastregliera non è una funzione, 
+essendo discreta, mentre il segnale da campionare essendo nel continuo è una funzione. 
+\begin{equation}
+    x_c(t)=x(t)\cdot\delta_T(t)
+\end{equation}
+La funzione rastregliera è periodica, dall'analisi di Fuorier, ogni funzione periodica può essere scritta come una sommatoria di funzioni sinusoidali e consenusoidali:
+\begin{gather}
+    \delta_T(t)=c_0+\sum_{k=0}^{\infty}\left(a_ksin(k\omega_ct)+b_kcos(k\omega_ct)\right)\\
+    \sum_{k=-\infty}^{\infty}c_ke^{-jk\omega_ct}
+\end{gather}
+
+Per ottenere le compomnenti della serie di Fuorier rispetto ad un sistema di coordinate ortogonali, si usano due versori $(\hat{i}_1,\hat{i}_2)$. Per ottenere la 
+proiezione di un versore rispetto ad una coordinata si definisce un prodotto interno, dato dal prodotto scalare: $v_k=\langle v,\hat{i}_k\rangle=\vec{v}\cdot\hat{i}$. 
+Per scomporre una funzione in una somma di funzioni bisogna avere funzioni indipendenti tra di loro, se sono ortogonali è più facilmente computabile, viene 
+definito un prodotto interno che restituisce la componente $c_k$ dell'espansione di Fuorier:
+\begin{equation}
+    c_k=\langle f(t), \varphi^*(t)\rangle=\displaystyle\frac{1}{T_c}\int_{-\frac{T_c}{2}}^{\frac{T_c}{2}}f(t)\cdot\varphi^*(t)dt
+\end{equation}
+
+L'integrale soddisfa i requisiti per essere un prodotto interno. Questo applicazione funziona fino a quando le funzioni sono indipendenti tra di loro, per determinare 
+se sono ortogonali tra di loro, si controlla che il prodotto interno tra due funzioni di base $f(t)=e^{jk\omega_ct}$ e $\varphi(t)=e^{jl\omega_ct}$ per $l\neq k$ sia zero:
+\begin{gather}
+    \displaystyle\frac{1}{T_c}\int_{-\frac{T_c}{2}}^{\frac{T_c}{2}}e^{jl\omega_ct}e^{-jk\omega_ct}dt=
+    \frac{1}{T_c}\left[\frac{e^{j(l-k)\omega_ct}}{j(l-k)\omega_c}\right]^{\frac{T_c}{2}=\frac{\pi}{\omega_c}}_{-\frac{T_c}{2}=-\frac{\pi}{\omega_c}}\\
+    \displaystyle\frac{1}{T_c}\frac{e^{j(l-k)\pi t}-e^{-j(l-k)\pi t}}{j(l-k)\omega_c}=\frac{2}{T_c(l-k)\omega_c}sin((l-k)\pi t)=0
+\end{gather} 
+
+Si è verificato che il prodotto interno definito precedentemente tra due funzioni di base è zero per $l\neq k$.\\
+Per determinare i coefficienti dell'espansione di Fuorier $c_k$ rispetto alla rastregliera $\delta_T(t)$, si considera:
+
+\begin{equation}
+    c_k=\displaystyle\frac{1}{T_c}\int_{-frac{T_c}{2}}^{\frac{T_c}{2}}\delta_T(t)e^{-jk\omega t}dt
+\end{equation}
+
+L'unico impulso della rastregliera che cade in quell'intervallo è nell'istante $t=0$. L'integrale di un prodotto tra una funzione e l'impulso, equivale a calocolare il valore 
+della funzione in quel punto, per cui si ha:
+\begin{equation}
+    c_k=\displaystyle\frac{1}{T_c}e^{-jk\omega_c \cdot0}=\frac{1}{T_c}
+\end{equation}
+
+Per cui si può scrivere la rastregliera come:
+\begin{equation}
+    \delta_T(t)=\displaystyle\frac{1}{T_c}\sum_{k=-\infty}^{\infty}e^{jk\omega_ct}
+\end{equation}
+Il segnale campionato sarà allora:
+\begin{gather}
+    x_c(t)=x(t)\delta_T(t)=\displaystyle\frac{1}{T_c}\sum_{-\infty}^{\infty}x(t)e^{-jk\omega_ct}\\
+    x_c(s)=\mathscr{L}_-\{x_c(t)\}=\displaystyle\frac{1}{T_c}\sum_{-\infty}^{\infty}\mathscr{L}_-\left\{\sum_{-\infty}^{\infty}x(t)e^{-jk\omega_ct}\right\}=\frac{1}{T_c}\sum_{-\infty}^{\infty}x(s-k\omega_cj)
+\end{gather}
+
+\subsubsection{Teorema di Shannon}
+
+La sua trasformata in Laplace si chiama teormea di Shannon, espressa rispetto alla risposta armonica:
+\begin{equation}
+    x_c(j\omega)=\displaystyle\frac{1}{T_c}\sum_{-\infty}^{\infty}x(j(\omega-k\omega_c))
+\end{equation}
+
+Per cui l'oggetto che si ripete in frequenza, quando è stato analizzato prima il segnale nel dominio della frequenza, si è scoperto essere la trasformata di Laplace del 
+segnale originario. Consdierando la risposta armonica, si potrà disegnare il diagramma di Bode, il lobo centrale del modulo di $x_c(j\omega)$ sarà uguale al modulo del 
+segnale originario $x(j\omega)$, ripetuto ogni $\omega_c$. In caso la metà della pulsazione di campionamento è maggiore della frequenza massima del segnale, allora i lobi 
+saranno separati. Allora il segnale sarà multiplato in sequenza, uguale al segnale non campionato. Per cui si può usare un filtro passa basso fino a $\displaystyle\frac{\omega_c}{2}$, 
+per isolare solamente il lobo centrale, per ottenere il segnale originario, amplificato di $T_c$. Questo segnale viene chiamato segnale ricostruito. \\
+
+Sorge un problema poiché il segnale che si vuole passare attraverso un filtro passa basso è una serie di numeri, e successivamente quela oggetto viene usato per essere 
+questo filtro. L'antitrasformata di questo filtro, un oggetto che ha modulo $T_c$ nell'intervallo $[-\displaystyle\frac{\omega_c}{2},\frac{\omega_c}{2}]$ e modulo 
+nullo per tutte le altre frequenze, risulta essere: 
+
+\begin{equation}
+    h(t)=\displaystyle\frac{sin\left(\displaystyle\frac{\omega_c}{2}t\right)}{\displaystyle\frac{\omega_c}{2}t}=sinc\left(\frac{\omega_c}{2}t\right)
+\end{equation}
+
+Ma questa risposta impulsiva è diversa da zero anche per tempi negativi, per cui comincia ad oscillare prima di un entrata, di conseguenza è anticausale. Ma se sono già 
+noti tutti i campioni è possibile ricostruire il segnale, poiché si conoscone tutte le entrate future. L'uscita sarà una sommatoria di risposte impulsive, moltiplicate per 
+la rispsosta impulsiva del filtro passa-basso, sommando punto per punto si ottiene in uscita il segnale continuo di partenza. Per eseguire questa operazione su un 
+processore, si considera una frequenza di campionamento maggiore, quindi si inseiscono altri impulsi tra i camiponi noti, ricavati dalle $sinc$. Alternativamente, poiché 
+l'effetto della $sinc$ diminuisce nella distanza dal campione, per cui il processore calcola un certo numero di $sinc$ in avanti e le somma a quelle passate per ottenere 
+il valore in quel punto. Il numero di $sinc$ che precalcola il processore dipende interamente dalla sua velocità nel calcolarle. Più $sinc$ in avanti si calcola il 
+processore, più aumenta la qualità dell'audio corregendo il valore del campione in quel punto. \\
+
+Il teorema di Shannon prevede un ricostruttore ideale, se questa condizione non è rispettata, i lobi si intersecano tra di loro, per cui si campiona una parte minore del 
+lobo centrale, e la parte rimanente crea delle distorsioni nel campione di partenza, ovvero delle frequenze che non esistevano. Questo fenomeno viene detto aliasing. Per 
+evitare l'aliasing si aumenta la frequenza di campionamento, oppure si ignorano queste frequenze elevate, riducendo la banda del segnale prima del campionamento attraverso 
+un filtro passa-basso, che verrà chiamato filtro anti-aliasing. \\
+
+Se si usa un ricostruttore semplificato, diverso da quello di Shannon, diminuirà la precisione del segnale in uscita. Il più semplice ricostruttore possibile è composto 
+da una gradinata che assume tensione costante per ogni intervallo di campionamento, definito ricostruttore di ordine zero o tenuta di orgine zero. 
+
 
 
 
