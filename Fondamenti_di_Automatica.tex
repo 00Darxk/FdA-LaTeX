@@ -14,7 +14,7 @@
 \usepackage{steinmetz}
 
 
-\usetikzlibrary{quotes,angles,decorations.pathmorphing,shapes.geometric}
+\usetikzlibrary{quotes,angles,decorations.pathmorphing,shapes.geometric,patterns}
 \tikzset{snake it/.style={decorate, decoration=snake},
          block/.style = {draw, fill=white, very thick, rectangle, minimum height=1cm, minimum width=2cm},
          sum/.style= {draw, fill=white, very thick, circle, node distance=1cm},
@@ -44,11 +44,11 @@
 %   Figura Operazionale in Frequenza;
 %   Reti Correttrici Grafico Circuito;
 % V Schema \muC;
-%   Grafico Quantizzazione;
-%   Grafico Temporale Tc elaborazione controllore;
-%   Grafico Impulso Discreto x(t);
-%   Grafico Piano di Gauss x_c(s);
-%   Grafico Shannon \omega_c;
+% V Grafico Quantizzazione;
+% V Grafico Temporale Tc elaborazione controllore;
+% V Grafico Impulso Discreto x(t);
+% V Grafico Piano di Gauss x_c(s);
+% V Grafico Shannon \omega_c;
 %   Grafico Filtro Passa-Basso s->t;
 
 
@@ -1860,51 +1860,84 @@ localmente, agendo sul sistema linearizzato $\sum_L$. Per controllare l'intorno 
 
 \section{Sistemi a Segnali Campionati}
 
+All'inizio del $900$ vennero usati sistemi di controllo anaogici, nel tempo questi componenti analogici sono stati sostituiti da componenti digitali. Per cui sistemi elettronici 
+come gli amplificatori sono stati sostituiti da oggetti informatici, ovvero microprocessori insieme ad altri elementi. Usando componenti digitali è possibile programmare 
+controllori schedulati, in grado di avere più di un algoritmo di controllo adatti per diversi stati del processo.    
+
 \subsection{Microcontrollore}
 
-Un microcontrollore è un oggetto fisico input-output capace di dialogare con l'ambiente esterno, all'interno di un chip, anche molto economico. Sono oggetti che presenta 
-all'interno un controllore, quindi sono in grado di risolvere piccoli problemi di automazione. Dei PLC sono invece dei controllori più sofisticati che permettono di 
-avere frequenze di aggiornamento molto elevate e trasmissione di dati costante. \\
-
+Un microcontrollore è un oggetto fisico input-output capace di dialogare con l'ambiente esterno, all'interno di un chip, anche molto economico. Sono oggetti che presentano 
+all'interno un microprocessore, quindi sono in grado di risolvere piccoli problemi di automazione. Dei PLC sono invece dei controllori più sofisticati che permettono di 
+avere frequenze di aggiornamento molto elevate e trasmissione di dati costante. 
+\\
 Un microcontrollore è composto da un microprocessore $\mu P$, convertitori da digitale ad analogico $DAC$, per poter dialogare con un certo processo $P$ da controllare, 
-convertendo i dati del processo in livelli di tensione. La tension in uscita dal $DAC$ è di bassa potenza, per cui è presenta a cascata un amplificatore alimentato da un 
-generatore di tensione esterno, per avere in uscita livelli di tensione adeguati. Per ricevere dati dal processo, si usa in catena di misura un filtro-antialiasing, 
-per pulire il segnale che poi viene passato ad un convertitore $A/D$ che trasforma il segnale continuo in un segnale discreto. Il microprocessore informa il convertitore 
-$A/D$ con un segnale $SoC$ per iniziare la conversione, il quale invia un segnale $EoC$ al microprocessore per segnalare la fine della conversione del dato. A quel punto 
-il microprocessore leggerà sul bus il dato convertito. Si può inserire un circuito di adattamento tra il filtro antialiasing ed il convertitore $A/D$, per adattare 
+convertendo i dati del processo in livelli di tensione. Poiché il microprocessore digatale lavora in bit, mentre il processo analogico da controllare è continuo, sarà 
+necessario convertire questi dati. La tensione in uscita dal $DAC$ è di bassa potenza, per cui è presenta a cascata un amplificatore $A$ alimentato da un 
+generatore di tensione esterno $V_{cc}$, per avere in uscita livelli di tensione adeguati. 
+\\
+Per pulire i segnali misurati si usa in catena di misura un filtro-antialiasing, il segnale viene poi passato ad un convertitore $ADC$ che lo trasforma in discreto. 
+Il microprocessore informa il convertitore 
+$ADC$ con un segnale $SOC$ per iniziare la conversione, il quale invia un segnale $EOC$ al microprocessore per segnalare la fine della conversione del dato. A quel punto 
+il microprocessore leggerà sul bus il dato convertito. Si può inserire un circuito di adattamento $a$ tra il filtro antialiasing ed il convertitore $ADC$, per adattare 
 l'uscita in tensione del processo all'ingresso in tensione dei convertitori. Poiché i convertitori hanno un certo intervallo di ingresso accettabile in Volt, il dato 
-ottenuto operando su quello grezzo del sensore viene chiamato dato ingegnerizzato. \\
-
-Il valore di riferimento del microcontrollore può essere computato o inserito da un segnale esterno. Il microcontrollore $\mu C$ comprende il microprocessore, ed i convertitori 
-$DAC$ e $A/D$, anche su un singolo chip. 
+ottenuto operando su quello grezzo del sensore viene chiamato dato ingegnerizzato. 
+\\
+Il valore di riferimento $r$ del microcontrollore può essere computato o inserito da un segnale esterno. Il microcontrollore $\mu C$ comprende il microprocessore, ed i convertitori 
+$DAC$ e $ADC$, anche su un singolo chip. I collegamenti tra i convertitori ed il microprocessore sono dei $BUS$ a $n$ bit, mentre il resto dei collegamenti sono 
+segnali continui. 
 
 \begin{center}
     \begin{tikzpicture}[scale=2]
         \node[lblock](mp)at(-0.5,0){$\mu P$};
         \node[block](dac)at(1,0.5){$DAC$};
-        \node[block](ad)at(1,-0.5){$A/D$};
+        \node[block](ad)at(1,-0.5){$ADC$};
 
-        \draw[->,ultra thick, densely dotted](-0.25,0.5)node[above right]{$n$}--(dac.180);
-        \draw[<-,ultra thick, densely dotted](-0.25,-0.5)--(ad.180)node[below left]{$n$};
-        \draw[->,thick, red](-0.25,-0.3)node[above right]{$SoC$}--(0.5,-0.3);        
-        \draw[<-,thick, red](-0.25,-0.7)--(0.5,-0.7)node[below left]{$EoC$};
+        \draw[-,ultra thick](-0.25,0.45)--(0.42,0.45);
+        \draw[-,ultra thick](-0.25,0.55)--(0.42,0.55);
+        \draw[<-,ultra thick](0.49,0.5)--(dac.180);
+        \draw[-, ultra thick](0.05,0.625)node[right]{$n$}--(0.3,0.375);
+        %       (0.175,0.5)
+        \draw[-,ultra thick](-0.17,-0.45)--(0.5,-0.45);
+        \draw[-,ultra thick](-0.17,-0.55)--(0.5,-0.55);
+        \draw[->,ultra thick](-0.24,-0.5)--(-0.25,-0.5);
+        \draw[-, ultra thick](0.05,-0.625)node[right]{$n$}--(0.3,-0.375);
 
-        \node[block](p)at(2.5,0.5){$P$};
-        \draw[->,ultra thick](dac.0)--(p.180);
-        \draw[->,ultra thick](p.0)--(3.5,0.5);
-        \filldraw[black](3.25,0.5)circle(1pt);
+        \draw[<-,thick, blue](-0.25,0.7)--(0.5,0.7)node[above left]{$EOC$};
+        \draw[->,thick, blue](-0.25,0.3)node[below right]{$SOC$}--(0.5,0.3);        
+        \draw[->,thick, red](-0.25,-0.3)node[above right]{$SOC$}--(0.5,-0.3);        
+        \draw[<-,thick, red](-0.25,-0.7)--(0.5,-0.7)node[below left]{$EOC$};
 
-        \node[nblock](aa)at(2.5,-0.5){};
-        \draw[->, thick](2.2,-0.6)--(2.8,-0.6);
-        \draw[->, thick](2.5,-0.7)--(2.5,-0.3);
-        \draw[-,thick](2.3,-0.4)--(2.7,-0.4);
-        \draw[-,thick](2.3,-0.4)--(2.3,-0.6);
-        \draw[-,thick](2.7,-0.4)--(2.7,-0.6);
 
-        \draw[-,ultra thick](3.25,-0.5)--(3.25,0.5);
-        \draw[->,ultra thick](3.25,-0.5)--(aa.0);
+        \node[triangle](t)at(2.5,0.5){$A$};
+        \draw[->,ultra thick](dac.0)--(t.180);
+        \draw[-, ultra thick](2.5,1.2)--(t.90);
+        \draw[-, ultra thick](2.3,1.2)node[above right]{$V_{cc}$}--(2.7,1.2);
+        \draw[-, ultra thick](t.270)--(2.5,-0.2);
+        \draw[-, ultra thick](2.3,-0.2)--(2.7,-0.2);
+        \fill[pattern = north east lines]($ (2.3,-0.4) $)rectangle($ (2.7,-0.2)$);
+
+        \node[block](p)at(4,0.5){$P$};
+        \draw[->,ultra thick](t.0)--(p.180);
+        \node[sum](z)at(5,0.5){};
+        \draw[->,ultra thick](p.0)--(z.180);
+        \draw[->, ultra thick](z.0)--(5.5,0.5);
+        \draw[->, ultra thick](5,1)node[below right]{$z$}--(z.90);
+        \filldraw[black](5.25,0.5)circle(1pt);
+
+
+        \node[nblock](aa)at(3.5,-0.5){};
+        \draw[->, thick](3.2,-0.6)--(3.8,-0.6);
+        \draw[->, thick](3.5,-0.7)--(3.5,-0.3);
+        \draw[-,thick](3.3,-0.4)--(3.7,-0.4);
+        \draw[-,thick](3.3,-0.4)--(3.3,-0.6);
+        \draw[-,thick](3.7,-0.4)--(3.7,-0.6);
+
+        \draw[-,ultra thick](5.25,-0.5)--(5.25,0.5);
+        \draw[->,ultra thick](5.25,-0.5)--(aa.0);
         \draw[->,ultra thick](aa.180)--(ad.0);
-        \node[sum](ca)at(1.75,-0.5){};
+        \node[sum](ca1)at(2.25,-0.5){$a$};
+        \node[sum](ca2)at(1.9,0.5){$a$};
+
 
         \draw[->,ultra thick](-1.5,0)node[above right]{$r$}--(mp.180);
 
@@ -1912,29 +1945,342 @@ $DAC$ e $A/D$, anche su un singolo chip.
     \end{tikzpicture}
 \end{center}
 
-\subsubsection{Conversione Dati}
+\subsubsection{Quantizzazione}
 
-Un dato digitale viene rappresentato da un certo numero $n$ di bit, per cui può rappresentare valori nell'intervallo $[0,2^n-1]$. Viene suddiviso l'intervallo di tensione 
-in entrata in $2^n$ intervalli uguali e ogni valore che un bit può rappresentare corriponsderà quindi ad un intervallo di tensione. Non è possibile determinare in questo 
-modo la tensione esatta, questo effetto viene chiamato quantizzazione, ed è quantificabile dal passo di quantizzazione, ovvero la grandezza di un singolo intervallo di 
-tensione:
+Un dato digitale viene rappresentato da un certo numero $n$ di bit, per cui può rappresentare valori nell'intervallo $[0,2^n-1]$. Un convertitore $DAC$ suddivide l'intervallo 
+di tensione in entrata in $2^n$ intervalli uguali e ogni valore che un bit può rappresentare corriponsderà quindi ad un intervallo di tensione. Non è possibile determinare 
+in questo modo la tensione esatta, questo effetto viene chiamato quantizzazione, ed è quantificabile dal passo di quantizzazione, ovvero la grandezza di un singolo intervallo 
+di tensione, o gradino:
 
 \begin{equation}
     q=\displaystyle\frac{\Delta V}{2^n}
 \end{equation}
 
-Per cui è impossibile determinare a meno del passo di quantizzazione una certa uscita, e quindi la precisione del controllore non potrà mai essere minore del passo di 
-quantizzazione, poiché non può agire su ciò che non può misurare. \'{E} necessario decidere a priori il passo di quantizzazione necessario per l'applicazione del controllore. 
-Poiché la quantizzazione è un processo non lineare, si considerererà sempre nelle successive analisi come se si fosse scelto il numero di bit sufficiente per le applicazioni 
-considerate. Verrà considerato alla fine un rumore di quantizzazione dovuto alla differenza tra la suddivisione in gradini e l'andamento lineare. \\
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->, thick](-0.5,0)--(1.2,0)node[above]{$V_{in}$};
+        \draw[->, thick](0,-0.5)--(0,1.2)node[right]{$V_{out}$};
 
-Per scegliere il numro di bit adatto, si analizza l'oscillazione del segnale e si misura la varianza rispetto al valor medio e si calcola il valore di rumore in percentuale 
-$e[\%]$, e si sceglie un numero di bit abbastanza piccolo da non campionare il rumore $n\mbox{ t.c. }\displaystyle\frac{1}{n}>\frac{e}{100}$, poiché essendo casuale il 
-controllore non potrà agire su di esso. \\
+        \draw[thick](0.1,0)--(0.9,0.8);
+
+        \draw[-, ultra thick](0,0)--(0.2,0)--(0.2,0.2)--(0.4,0.2)--(0.4,0.4)--(0.6,0.4)--(0.6,0.6)--(0.8,0.6)--(0.8,0.8)--(1,0.8);
+        \draw[dashed](0.2,0.2)--(0.2,0)node[below]{$1$};
+        \draw[dashed](0.4,0.4)--(0.4,0)node[below]{$2$};
+        \draw[dashed](0.2,0.2)--(0,0.2)node[left]{$1$};
+        \draw[dashed](0.4,0.4)--(0,0.4)node[left]{$2$};
+        \draw[dashed](0.6,0.6)--(0,0.6)node[left]{$3$};
+        \draw[dashed](0.6,0.6)--(0.6,0)node[below]{$3$};
+        \draw[dashed](0.8,0.8)--(0,0.8)node[left]{$4$};
+        \draw[dashed](0.8,0.8)--(0.8,0)node[below]{$4$};
+    \end{tikzpicture}
+\end{center}
+Per cui è impossibile determinare a meno del passo di quantizzazione una certa uscita, e quindi il controllore avrà un errore minimo uguale al passo di quantizzazione, 
+poiché non può agire su ciò che non può misurare. \`{E} necessario decidere a priori il passo di quantizzazione necessario per l'applicazione del controllore. 
+Poiché la quantizzazione è un processo non lineare, si considerererà sempre nelle successive analisi come se si fosse scelto il numero di bit sufficiente per le applicazioni 
+considerate. Verrà considerato alla fine un rumore di quantizzazione dovuto alla differenza tra la suddivisione in gradini e l'andamento lineare. 
+
+Per scegliere il numero di bit adatto, si analizza l'oscillazione del segnale e si misura la varianza rispetto al valor medio e si calcola il valore di rumore in percentuale 
+$z[\%]$, e si sceglie un numero di bit abbastanza piccolo da non campionare il rumore $n\mbox{ t.c. }\displaystyle\frac{1}{n}>\frac{z}{100}$, poiché essendo casuale il 
+controllore non potrà agire su di esso. 
 
 Se si scelgono troppi pochi bit, il segnale potrebbe variare senza una variazione nella sua rappresentazione. 
 
-\subsubsection{Equazione alle Differenze}
+In genere i convertitori $ADC$ possono convertire valori di tensioni di queste tipologie: $[0,5]$, $[0,10]$, $[-5,+5]$, $[-10,+10]$, $[0,20]$. Alcuni convertitori, convertoto 
+correnti invece di tensioni. Per adeguare le tensioni delle varie componenti del sistema, vengono usati circuiti di adattamento tra i convertitori in entrata ed in uscita del 
+microcontrollore che applicano le opportune traslazioni e amplificazioni del segnale. 
+
+Poiché un processore non può convertire costantemente il segnale, sono necessari dei segnali di controllo per iniziare e terminare la conversione. Questi segnali sono $SOC$ e 
+$EOC$, $Start\:Of\:Conversion$ e $End\:Of\:Conversion$, sia per $ADC$ che per il $DAC$. Quindi solo grazie a questi segnali è possibile portare il dato dentro e fuori il 
+microcontrollore in sicurezza, realizzati tramite degli $interrupt$.  
+
+\subsubsection{Tempo di Campionamento}
+
+Il microprocessore invia il segnale $SOC$ al convertitore $ADC$. Il convertitore effettua un $hold$ del segnale in entrata e comincia a campionarlo, alla fine del campionamento  
+invia i dati nel $BUS$ ed invia il segnale $EOC$ al microprocessore. A questo punto il processore legge i dati dal $BUS$ e li elabora, $signal\:\:processing$ in un tempo 
+relativamente più o meno lungo, al termine il calcolato su un registro interno del processore viene inviato al convertitore $DAC$ con un segnale $SOC$. Il $DAC$ converte il 
+segnale in continuo ed al termine della conversione invia un segnale $EOC$ al microprocessore. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=3]
+        \draw[->, thick](-0.5,0)--(3,0)node[above]{$t$};
+        \draw[->, thick](0,-0.5)--(0,1);
+
+        \draw[-,ultra thick, red](0.1,0)--(0.1,0.8)node[above right]{$ADC$}--(0.3,0.8)--(0.3,0)--(0.1,0);
+        \draw[-,ultra thick, gray](0.32,0)--(0.32,0.8)--(1,0.8)--(1,0)--(0.32,0);
+        \node[gray, above]at(0.7,0.8){$\mu P$};
+        \draw[-,ultra thick, blue](1.02,0)--(1.02,0.8)node[above right]{$DAC$}--(1.22,0.8)--(1.22,0)--(1.02,0);
+
+        \filldraw[black](0.1,0)circle(0.5pt);
+        \draw[-,ultra thick, red](2.5,0)--(2.5,0.8)node[above right]{$ADC$}--(2.7,0.8)--(2.7,0)--(2.5,0);
+        \draw[-,ultra thick, gray](2.72,0)--(2.72,0.8);
+        \draw[densely dashdotted,ultra thick, gray](2.72,0)--(2.9,0);
+        \draw[densely dashdotted,ultra thick, gray](2.72,0.8)--(2.9,0.8);       
+        \filldraw[black](2.5,0)circle(0.5pt);
+
+        \draw[|-|,very thick](0.1,-0.1)--(2.5,-0.1)node[below left]{$T_c$};
+    \end{tikzpicture}
+\end{center}
+
+Il microprocessore dopo questo tempo potrebbe fare housekeeping, operazioni interne non relative alla conversione, e ricomincia a convertire i dati dopo un intervallo di tempo. 
+Questo intervallo di tempo viene chiamato tempo di campionamento $T_c$, comprende il tempo necessario per il microcontrollore di convertire ed elaborare i dati, ed il tempo 
+delle operazioni di housekeeping. Questo tempo di campionamento è intrinseco al microcontrollore e non è variabile, per cui alcuni microcontrollori sono poco utili per 
+un tempo di campionamento troppo grande. Può essere presente jitter che cambia l'andmaento del processo collegato al controllore. La scelta di un microcontrollore dipenderà 
+quindi dal tempo di campionamento necessario per controllare un dato processo. 
+
+Per comunicare al microprocessore l'inizio e la fine della conversione vengono usati degli $interrupt$, segnali che avvertono il processore che è successo qualcosa. Ogni 
+volta che è necessario compiere delle azioni periodiche, bisogna associare dei segnali di $interrupt$ a segnali esterni, dei $clock$, oppure da un programma interno. Il 
+programma di controllo definito viene gestito dal sistema operativo. Esistono vari tipi di interrupt mascherabili e non, alcuni si possono disabilitare. In caso un programma 
+sia in idle da molto tempo viene spostato dalla $RAM$ per liberare spazio agli interrupt che arrivano al microprocessore in quel tempo. Il sistema operativo standard ha un 
+tempo di campionamento di $1\:s$ ed un jitter di circa $1:ms$, per cui è difficile avere un tempo di campionamento minore di un $ms$ suu un SO genral purpose. Per questo 
+delle task time critical necessitano di sistemi operativi dedicati ai controllori, dato che alcuni sistemi operativi pre-emptive hanno delle ruotine programmate per essere 
+interrote da alcune operazini del kernel. Di conseguenza alcune operazioni che sembrano real-time avvengono in intervalli precisi per farle sembrare real-time. 
+Si definisce allora una ruotine soft real time, per processi che si aggiornano solo ogni $n\:\:ms$ con un margine di errore elevato, mentre si definisce una ruotine hard real 
+time se il mancato rispetto di una task diviene risulta in danni gravi per l'infrastruttura su cui opera. 
+
+Per analizzare questo processo bisogna definire un sistema per descrivere oggetti continui nel discreto, tempi multipli del tempo di campionamento, tramite il teorema del 
+campionamento. Viene inoltre definita la trasformata $z$ per studiare elementi totalmente discreti, trasformata omologa a quella di Laplace. 
+
+\subsection{Rappresentazione Segnali Campionati}
+
+Dato lo stato nel tempo di un sistema $x(t)$, se si implementa un controllore digitale, si avrà accesso solo ad una sequenza di stati $\{x_k\}$ dove ogni stato è dato dallo 
+stato del sistema in un tempo multiplo del tempo di campionamento $x_k=x(kT_c)$. In questo modo si ha una sequenza di valori, campionati dal convertitore $ADC$ ogni $T_c$. Se 
+consideriamo una serie di impulsi ogni tempo di campionamento di ampiezza il valore campionato in quel'istante, si può approssimare la funzione continua sulla base dei 
+valori discreti. Per ottenere la funzione originaria servirebbe un tempo di campionamento tendende a zero. Il segnale campionato sarà dato 
+dalla sommatoria di impulsi traslati di un multiplo del tempo di campionamento:
+
+\begin{equation}
+    x_c(t)=\sum_{k=0}^{\infty}x_k\delta_0(t-kT_c)
+\end{equation}
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->](0,-0.25)--(0,2)node[right]{$x$};
+        \draw[->](-0.5,0)--(3,0)node[above]{$t$};
+
+        \draw[]plot[smooth, domain=-0.5:2.8](\x,{1+0.2*sin(2*\x r)});
+        \draw[->,ultra thick](0,0)node[below left]{$0$}--(0,1);
+        \draw[->,ultra thick](0.4,0)node[below]{$T_c$}--(0.4,1.141);
+        \draw[->,ultra thick](0.8,0)node[below]{$2T_c...$}--(0.8,1.199);
+        \draw[->,ultra thick](1.2,0)--(1.2,1.135);
+        \draw[->,ultra thick](1.6,0)--(1.6,0.988);
+        \draw[->,ultra thick](2,0)--(2,0.848);
+        \draw[->,ultra thick](2.4,0)--(2.4,0.8);
+        \draw[->,ultra thick](2.8,0)node[below]{$kT_c$}--(2.8,0.873)node[above right]{$x(t)$};
+    \end{tikzpicture}
+\end{center}
+
+La sequenza di impulsi ha esattamente il contenuto informativo della sequenza di valori misurati $\{x_k\}$, poiché l'impulso ha un'area infinitesima. Per cui è possibile 
+usarlo per lavorare sul tempo discreto. Da un qualsiasi segnale campionato è quidni possibile ottenere la sua trasformata di Laplace:
+
+\begin{equation}
+    x_c(s)=\sum_{k=0}^{\infty}\displaystyle{x_k}e^{-skT_c}
+\end{equation}
+
+Per cui ha una sua risposta in frequenza, e probabilmente un suo diagramma di Bode. Considerando $s=\sigma +j\omega$, si può riscrivere come: 
+
+\begin{equation}
+    x_c(s)=\sum_{k=0}^{\infty}x_ke^{-\sigma kT_c}e^{-j\omega kT_c}
+\end{equation}
+
+Data una pulsazione di campionamento $\omega_c=2\pi\nu_c=\displaystyle\frac{2\pi}{T_c}$, si potrà riscrivere la parte complessa dell'esponenziale come:
+
+\begin{equation}
+    e^{-j\omega kT_c}=e^{-2j\pi k\frac{\omega}{\omega_c}}
+\end{equation}
+
+Questo oggetto sarà periodico nell'intervallo $\left[\displaystyle-j\frac{\omega_c}{2},j\frac{\omega_c}{2}\right]$, poiché per $\omega'=\omega_c+\omega$ si ha 
+$-2j\pi k\displaystyle\frac{\omega'}{\omega_c}=-2j\pi k\left(1+\frac{\omega}{\omega_c}\right)=-2j\pi k-2j\pi k\frac{\omega}{\omega_c}$, quindi l'esponenziale sarà: 
+$e^{-2j\pi k\frac{\omega'}{\omega_c}}=\cancelto{1}{e^{-2j\pi k}}\cdot e^{-2j\pi k\frac{\omega}{\omega_c}}$. Dipendendo dalla sola componente immaginaria, sarà 
+periodico per ogni valore complesso avente parte immaginaria compresa in quell'intervallo. Il piano di Gauss sarà quindi diviso in strisce uguali di ampiezza $\omega_c$. 
+Per cui la trasformata di Laplace di un segnale reale periodico sarà anch'essa periodica, si studierà quindi un'unica di queste strisce. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[fill=cyan](-0.9,0.5)--(1.9,0.5)--(1.9,-0.5)--(-0.9,-0.5)--(-0.9,0.5);
+        \draw[-, blue,ultra thick](-0.9,0.5)--(1.9,0.5);       
+        \draw[-, blue,ultra thick](-0.9,-0.5)--(1.9,-0.5);
+
+        \draw[->](-1,0)--(2,0)node[above]{$\Re$};
+        \draw[->](0,-0.75)--(0,1.25)node[right]{$\Im$};
+
+        \node[above right]at(0,0.5){$\displaystyle j\frac{\omega_c}{2}$};
+        \node[below right]at(0,-0.5){$\displaystyle -j\frac{\omega_c}{2}$};
+
+        \filldraw[black](0.6,0.1)node[right]{$\omega$}circle(0.5pt);
+        \filldraw[black](0.6,1.1)node[right]{$\omega'=\omega_c+\omega$}circle(0.5pt);
+        \draw[dashed](0.6,0.1)--(0.6,1.1);
+    \end{tikzpicture}
+\end{center}
+
+\subsubsection{Teorema del Campionamento}
+
+Si definisce un nuovo segnale $\delta_R(t)$, formato da una rastregliera di impulsi unitari ogni $T_c$:
+\begin{equation}
+    \delta_R(t)=\sum_{k=0}^{\infty}\delta_0(t-kT_c)
+\end{equation} 
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->](-0.25,0)--(1.3,0)node[above]{$t$};
+        \draw[->](0,-0.25)--(0,1)node[right]{$x$};
+        \draw[->,ultra thick](0,0)--(0,0.8);
+        \draw[->,ultra thick](0.4,0)--(0.4,0.8);
+        \draw[->,ultra thick](0.8,0)--(0.8,0.8);
+        \draw[->,ultra thick](1.2,0)--(1.2,0.8);
+        
+        \node[below]at(0.5,0){$\delta_R(t)$};
+    \end{tikzpicture}
+\end{center}
+Moltiplicando la rastregliera con il segnale da campionare $x(t)$, si ottiene il segnale campionato. Da tenere conto del fatto che una rastregliera non è una funzione, 
+essendo discreta, mentre il segnale da campionare essendo nel continuo è una funzione. 
+\begin{equation}
+    x_c(t)=x(t)\cdot\delta_R(t)
+\end{equation}
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->](0,-0.25)--(0,2)node[right]{$x$};
+        \draw[->](-0.5,0)--(3,0)node[above]{$t$};
+
+        \draw[]plot[smooth, domain=-0.5:2.8](\x,{0.7+0.2*sin(2*\x r)});
+
+        \draw[->,ultra thick](0,0)--(0,1);
+        \draw[->,ultra thick](0.4,0)--(0.4,1);
+        \draw[->,ultra thick](0.8,0)--(0.8,1);
+        \draw[->,ultra thick](1.2,0)--(1.2,1);
+        \draw[->,ultra thick](1.6,0)--(1.6,1);
+        \draw[->,ultra thick](1.8,0)--(1.8,1);
+        \draw[->,ultra thick](2.2,0)--(2.2,1);
+        \draw[->,ultra thick](2.6,0)--(2.6,1);
+
+        \node[below]at(1.3,0){$\delta_R(t)$};
+
+    \end{tikzpicture}
+\end{center}
+Nei punti di intersezione tra gli impulsi della rastregliera ed il segnale $x(t)$ verrà campionata l'ampiezza. 
+
+La funzione rastregliera è periodica, dall'analisi di Fuorier, ogni funzione periodica può essere scritta come una sommatoria di funzioni sinusoidali e consenusoidali, per 
+cui si considera la funzione rastregliera come:
+\begin{equation}
+    \delta_R(t)=c_0+\sum_{k=0}^{\infty}\left(a_ksin(k\omega_ct)+b_kcos(k\omega_ct)\right)
+\end{equation}
+Può essere espressa tramite la rappresetnazione di Eulero in forma esponenziale:
+\begin{equation}
+    \delta_R(t)=\sum_{k=-\infty}^{\infty}c_ke^{jk\omega_ct}
+\end{equation}
+Dati un seno ed un coseno aventi coefficienti $a_k$ e $b_k$, la loro somma sarà data da un seno ed un coseno moltiplicati da uno stesso coefficiente ed un certo sfasamento. 
+Bisogna ottenere le compomnenti della serie di Fuorier rispetto ad un sistema di coordinate ortogonali. La trasformata di Fuorier è un elemento basilare per analizzare 
+i segnali, trasportandoli dal dominio del tempo nel dominio dellla frequenza. Per ottenere la 
+proiezione di un versore rispetto ad una coordinata si definisce un prodotto interno, dato dal prodotto scalare: $v_k=\langle v,\hat{i}_k\rangle=\vec{v}\cdot\hat{i}$. 
+
+Analogamente ad uno spazio vettoriale, l'integrale di Fuorier di una certa funzione agisce come un'operazione di proiezione. Per cui per trovare i coefficienti $c_k$, corrispondenti 
+alle componenti della rastrelliera $\delta_R(t)$, si proietta la funzione tramite l'integrale di Fuorier:
+\begin{equation}
+    c_k=\displaystyle\frac{1}{T_c}\int_{-\frac{T_c}{2}}^{\frac{T_c}{2}}\delta_R(t)e^{-jk\omega_ct}dt
+\end{equation}
+
+%L'integrale soddisfa i requisiti per essere un prodotto interno. Questo applicazione funziona fino a quando le funzioni sono indipendenti tra di loro, per determinare 
+%se sono ortogonali tra di loro, si controlla che il prodotto interno tra due funzioni di base $f(t)=e^{jk\omega_ct}$ e $\varphi(t)=e^{jl\omega_ct}$ per $l\neq k$ sia zero:
+%\begin{gather}
+%    \displaystyle\frac{1}{T_c}\int_{-\frac{T_c}{2}}^{\frac{T_c}{2}}e^{jl\omega_ct}e^{-jk\omega_ct}dt=
+%    \frac{1}{T_c}\left[\frac{e^{j(l-k)\omega_ct}}{j(l-k)\omega_c}\right]^{\frac{T_c}{2}=\frac{\pi}{\omega_c}}_{-\frac{T_c}{2}=-\frac{\pi}{\omega_c}}\\
+%    \displaystyle\frac{1}{T_c}\frac{e^{j(l-k)\pi t}-e^{-j(l-k)\pi t}}{j(l-k)\omega_c}=\frac{2}{T_c(l-k)\omega_c}sin((l-k)\pi t)=0
+%\end{gather} 
+%Si è verificato che il prodotto interno definito precedentemente tra due funzioni di base è zero per $l\neq k$.
+
+L'unico impulso della rastregliera che cade in quell'intervallo è nell'istante $t=0$. L'integrale di un prodotto tra una funzione e l'impulso, equivale a calocolare il valore 
+della funzione in quel punto, per cui si ha:
+\begin{equation}
+    c_k=\displaystyle\frac{1}{T_c}e^{-jk\omega_c \cdot0}=\frac{1}{T_c}
+\end{equation}
+
+Per cui si può scrivere la rastregliera come:
+\begin{equation}
+    \delta_R(t)=\displaystyle\frac{1}{T_c}\sum_{k=-\infty}^{\infty}e^{jk\omega_ct}
+\end{equation}
+Il segnale campionato sarà allora:
+\begin{gather}
+    x_c(t)=x(t)\delta_R(t)=\displaystyle\frac{1}{T_c}\sum_{k=-\infty}^{\infty}x(t)e^{jk\omega_ct}\\
+    X_c(s)=\mathscr{L}_-\{x_c(t)\}=\displaystyle\frac{1}{T_c}\sum_{k=-\infty}^{\infty}\mathscr{L}_-\left\{x(t)e^{jk\omega_ct}\right\}=\frac{1}{T_c}\sum_{k=-\infty}^{\infty}X(s-jk\omega_c)
+\end{gather}
+Per cui il segnale campionato in frequenza non è altro che una sommatoria del segnale originario traslato di una certa quantità, ovvero il teorema di Shannon scritto in 
+Laplace. 
+
+\subsubsection{Ricostruzione}
+
+Per ritornare al teorema di Shannon, si considera solamente la sua rispsosta armonica, $s=j\omega$:
+\begin{equation}
+    X_c(j\omega)=\displaystyle\frac{1}{T_c}\sum_{k=-\infty}^{\infty}X(j(\omega-k\omega_c))
+\end{equation}
+
+Per cui l'oggetto che si ripete in frequenza si è scoperto essere la trasformata di Laplace del 
+segnale originario. Rappresentando le frequenze su un asse delle ascisse e il modulo della risposta armonica sulle ordinate, si può rappresentare la trasformata di Fuorier 
+come un diagramma di Bode. Rappresentando il diagramma di Bode del segnale originario in frequenza, ci sarà una singola curva, chiamata lobo, simmetrica rispetto all'asse 
+delle ordinate, strettamente decrescente, se si considerando solo frequenze positive o negative. 
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->](-2,0)--(2,0)node[above]{$\omega$};
+        \draw[->](0,-0.25)--(0,1.5)node[right]{$|X(j\omega)|$};
+
+        \draw[ultra thick]plot[smooth, domain=0:1.513](\x,{1-0.25*e^(2.7*(\x-1))});
+        \draw[ultra thick]plot[smooth, domain=-1.513:0](\x,{1-0.25*e^(-2.7*(\x+1))});
+
+    \end{tikzpicture}
+\end{center}
+
+Poiché il segnale campionato in frequenza è una sommatoria delle trasformate di Laplace del segnale originale, traslate di $k\omega_c$, e ridotte di un fattore 
+$\displaystyle\frac{1}{T_c}$, il suo diagramma di Bode sarà formato da una serie di lobi uguali ripetuti. 
+\begin{center}
+    \begin{tikzpicture}[scale=1.2]
+        \draw[->](-6,0)--(6,0)node[above]{$\omega$};
+        \draw[->](0,-0.25)--(0,1.5)node[right]{$|X_c(j\omega)|$};
+
+        \draw[ultra thick]plot[smooth, domain=0:1.513](\x,{1-0.25*e^(2.7*(\x-1))});
+        \draw[ultra thick]plot[smooth, domain=-1.513:0](\x,{1-0.25*e^(-2.7*(\x+1))});
+
+        \draw[ultra thick]plot[smooth, domain=-3.5:-1.987](\x,{1-0.25*e^(2.7*(\x+2.5))});
+        \draw[ultra thick]plot[smooth, domain=-5.013:-3.5](\x,{1-0.25*e^(-2.7*(\x+4.5))});
+
+        \draw[ultra thick]plot[smooth, domain=3.5:5.013](\x,{1-0.25*e^(2.7*(\x-4.5))});
+        \draw[ultra thick]plot[smooth, domain=1.987:3.5](\x,{1-0.25*e^(-2.7*(\x-2.5))});
+
+        \filldraw[black](1.75,0)node[below]{$\displaystyle\frac{\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](-1.75,0)node[below]{$\displaystyle-\frac{\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](3.5,0)node[below]{$\omega_c$}circle(0.5pt);
+        \filldraw[black](-3.5,0)node[below]{$-\omega_c$}circle(0.5pt);
+        \filldraw[black](5.25,0)node[below]{$\displaystyle\frac{3\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](-5.25,0)node[below]{$\displaystyle-\frac{3\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](0,0)node[below right]{$0$}circle(0.5pt);
+  
+    \end{tikzpicture}
+\end{center}
+In caso la metà della pulsazione di campionamento è maggiore della frequenza massima del segnale, allora i lobi 
+saranno separati. Allora il segnale sarà multiplato in sequenza, uguale al segnale non campionato. Per cui si può usare un filtro passa basso fino a $\displaystyle\frac{\omega_c}{2}$, 
+per isolare solamente il lobo centrale, per ottenere il segnale originario, amplificato di $T_c$. Questo segnale viene chiamato segnale ricostruito. \\
+
+Sorge un problema poiché il segnale che si vuole passare attraverso un filtro passa basso è una serie di numeri, e successivamente quela oggetto viene usato per essere 
+questo filtro. L'antitrasformata di questo filtro, un oggetto che ha modulo $T_c$ nell'intervallo $[-\displaystyle\frac{\omega_c}{2},\frac{\omega_c}{2}]$ e modulo 
+nullo per tutte le altre frequenze, risulta essere: 
+
+\begin{equation}
+    h(t)=\displaystyle\frac{sin\left(\displaystyle\frac{\omega_c}{2}t\right)}{\displaystyle\frac{\omega_c}{2}t}=sinc\left(\frac{\omega_c}{2}t\right)
+\end{equation}
+
+Ma questa risposta impulsiva è diversa da zero anche per tempi negativi, per cui comincia ad oscillare prima di un entrata, di conseguenza è anticausale. Ma se sono già 
+noti tutti i campioni è possibile ricostruire il segnale, poiché si conoscone tutte le entrate future. L'uscita sarà una sommatoria di risposte impulsive, moltiplicate per 
+la rispsosta impulsiva del filtro passa-basso, sommando punto per punto si ottiene in uscita il segnale continuo di partenza. Per eseguire questa operazione su un 
+processore, si considera una frequenza di campionamento maggiore, quindi si inseiscono altri impulsi tra i camiponi noti, ricavati dalle $sinc$. Alternativamente, poiché 
+l'effetto della $sinc$ diminuisce nella distanza dal campione, per cui il processore calcola un certo numero di $sinc$ in avanti e le somma a quelle passate per ottenere 
+il valore in quel punto. Il numero di $sinc$ che precalcola il processore dipende interamente dalla sua velocità nel calcolarle. Più $sinc$ in avanti si calcola il 
+processore, più aumenta la qualità dell'audio corregendo il valore del campione in quel punto. \\
+
+Il teorema di Shannon prevede un ricostruttore ideale, se questa condizione non è rispettata, i lobi si intersecano tra di loro, per cui si campiona una parte minore del 
+lobo centrale, e la parte rimanente crea delle distorsioni nel campione di partenza, ovvero delle frequenze che non esistevano. Questo fenomeno viene detto aliasing. Per 
+evitare l'aliasing si aumenta la frequenza di campionamento, oppure si ignorano queste frequenze elevate, riducendo la banda del segnale prima del campionamento attraverso 
+un filtro passa-basso, che verrà chiamato filtro anti-aliasing. \\
+
+Se si usa un ricostruttore semplificato, diverso da quello di Shannon, diminuirà la precisione del segnale in uscita. Il più semplice ricostruttore possibile è composto 
+da una gradinata che assume tensione costante per ogni intervallo di campionamento, definito ricostruttore di ordine zero o tenuta di orgine zero. 
+
+\subsection{Equazione alle Differenze}
 
 Il microcontrollore misura l'ingresso come una serie di valori $\{y_i\}$, legati ognugno ad un tempo $t_i$, in base all'entrata il microcontrollore genera una sequenza di 
 uscita $\{c_i\}$, che non può calcolare in base al controllore $C(s)$, poiché dovrebbe risolvere un'equazione differenziale, per cui lavora su un'equazione alle differenze: 
@@ -1970,155 +2316,8 @@ convertitore $DAC$. Dopo aver inviato i dati in uscita, il microcontrollore aspe
 del controllore. Se il processo da controllare è molto sensibile a ritardi temporali, allora non si può usare un software che potrebbe inpedire a questa ruotine di 
 avviarsi nel tempo desiderato. 
 
-\subsubsection{Tempo di Campionamento}
 
-Il microcontrollore leggerà i dati dal bus nell'intervallo tra il segnale $SoC$ ed il segnale $EoC$, dopo aver letto il segnale $EoC$ il controllore elaborerà i dati 
-in un certo intervallo di tempo. Dopo aver elaborato i dati li iniverà al convertitore $DAC$ per trasformarli in dati analogici in un altro intervallo di tempo. A questo 
-punto il microprocessore si fermerà fino al prossimo tempo di campionamento. La lunghezza di questo intervallo di tempo complessivo è un ritardo che può influire in diversa 
-maniere sul sistema in base al tempo di campionamento. Se questo ritardo è relativamente lungo allora il controllore calcolato $c_i$ non corrisponderà esattamente allo stato 
-del sistema all'istante $t_i$, dato che è passato un intrevallo di tempo equivalente al ritardo. Per cui il controllore calcolato è approssimato. Mentre se il ritardo è 
-trascurabile poiché è relativamente corto, non si tiene conto del ritardo. 
 
-\begin{center}
-    \begin{tikzpicture}
-        
-    \end{tikzpicture}
-\end{center}
-
-In caso di ritardo basso si può usare un'equazione alle differenze del controllore $c_i=f(c_{i-1},e_i)$ mentre se il ritardo è elevato, si considera un'equazione alle differenze 
-$c_i=f(c_{i-1},e_{i-1})$. Poiché quest'ultima calcola il controllore succesivo, può inviare il dato alla fine del tempo di campionamento, per avere più tempo per calcolare il 
-controllore. 
-
-\subsection{Rappresentazione Segnali Campionati}
-
-Dato lo stato nel tempo di un sistema $x(t)$, se si implementa un controllore digitale, si avrà accesso solo ad una sequenza di stati $\{x_k\}$ dove ogni stato è dato dallo 
-stato del sistema in un tempo multiplo del tempo di campionamento $x_k=x(kT_c)$. Per rappresentare questa sequenza di punti può essere usato l'impulso di ampiezza 
-uguale al valore in quell'istante, per cui il segnale campionato può essere descritto da:
-
-\begin{equation}
-    x_c(t)=\sum_{k=0}^{\infty}x_k\delta_0(t-kT_c)
-\end{equation}
-
-La sequenza di impulsi ha esattamente il contenuto informativo della sequenza di valori misurati $\{x_k\}$. Per cui è possibile usarlo per lavorare sul tempo discreto. 
-Da questo segnale campionato è possibile ottenere la sua trasformata di Laplace:
-
-\begin{equation}
-    x_c(s)=\sum_{k=0}^{\infty}\displaystyle{x_k}e^{-skT_c}
-\end{equation}
-
-Per cui ha una sua risposta in frequenza, e probabilmente un suo diagramma di Bode. Considerando $s=\sigma +j\omega$, si può riscrivere come: 
-
-\begin{equation}
-    x_c(s)=\sum_{k=0}^{\infty}x_ke^{-\sigma kT_c}e^{-j\omega kT_c}
-\end{equation}
-
-Data una pulsazione di campionamento $\omega_c=2\pi\nu_c=\displaystyle\frac{2\pi}{T_c}$, per cui si potrà riscrivere la parte complessa dell'esponenziale come:
-
-\begin{equation}
-    e^{-j\omega kT_c}=e^{-j\omega k\frac{2\pi}{\omega_c}}
-\end{equation}
-
-Questo oggetto avrà come esponente un multiplo di $2\pi$ per ogni valore di $k$ intero, poiché è sempre intero rappresentando un numero di tempi di campionamento, questo 
-esponenziale si ripeterà ogni $\omega_c$. Per cui il piano di Guass sarà diviso in delle fascie di ampiezza $\omega_c$ uguali tra loro, allora si consdera solamente 
-una singola striscia per analizzare il comportamento in frequenza del segnale campionato. Questo segnale presenta una ripetezione in frequenza generale anche 
-per ogni valore reale. 
-
-\begin{center}
-    \begin{tikzpicture}
-        
-    \end{tikzpicture}
-\end{center}
-
-Si definisce un nuovo segnale $\delta_T(t)$, formato da una rastregliera di impulsi unitari ogni $T_c$:
-\begin{equation}
-    \delta_t(t)=\sum_{k=0}^{\infty}\delta_0(t-kT_c)
-\end{equation} 
-Moltiplicando la rastregliera con il segnale da campionare $x(t)$, si ottiene il segnale campionato. Da tenere conto del fatto che una rastregliera non è una funzione, 
-essendo discreta, mentre il segnale da campionare essendo nel continuo è una funzione. 
-\begin{equation}
-    x_c(t)=x(t)\cdot\delta_T(t)
-\end{equation}
-La funzione rastregliera è periodica, dall'analisi di Fuorier, ogni funzione periodica può essere scritta come una sommatoria di funzioni sinusoidali e consenusoidali:
-\begin{gather}
-    \delta_T(t)=c_0+\sum_{k=0}^{\infty}\left(a_ksin(k\omega_ct)+b_kcos(k\omega_ct)\right)\\
-    \sum_{k=-\infty}^{\infty}c_ke^{-jk\omega_ct}
-\end{gather}
-
-Per ottenere le compomnenti della serie di Fuorier rispetto ad un sistema di coordinate ortogonali, si usano due versori $(\hat{i}_1,\hat{i}_2)$. Per ottenere la 
-proiezione di un versore rispetto ad una coordinata si definisce un prodotto interno, dato dal prodotto scalare: $v_k=\langle v,\hat{i}_k\rangle=\vec{v}\cdot\hat{i}$. 
-Per scomporre una funzione in una somma di funzioni bisogna avere funzioni indipendenti tra di loro, se sono ortogonali è più facilmente computabile, viene 
-definito un prodotto interno che restituisce la componente $c_k$ dell'espansione di Fuorier:
-\begin{equation}
-    c_k=\langle f(t), \varphi^*(t)\rangle=\displaystyle\frac{1}{T_c}\int_{-\frac{T_c}{2}}^{\frac{T_c}{2}}f(t)\cdot\varphi^*(t)dt
-\end{equation}
-
-L'integrale soddisfa i requisiti per essere un prodotto interno. Questo applicazione funziona fino a quando le funzioni sono indipendenti tra di loro, per determinare 
-se sono ortogonali tra di loro, si controlla che il prodotto interno tra due funzioni di base $f(t)=e^{jk\omega_ct}$ e $\varphi(t)=e^{jl\omega_ct}$ per $l\neq k$ sia zero:
-\begin{gather}
-    \displaystyle\frac{1}{T_c}\int_{-\frac{T_c}{2}}^{\frac{T_c}{2}}e^{jl\omega_ct}e^{-jk\omega_ct}dt=
-    \frac{1}{T_c}\left[\frac{e^{j(l-k)\omega_ct}}{j(l-k)\omega_c}\right]^{\frac{T_c}{2}=\frac{\pi}{\omega_c}}_{-\frac{T_c}{2}=-\frac{\pi}{\omega_c}}\\
-    \displaystyle\frac{1}{T_c}\frac{e^{j(l-k)\pi t}-e^{-j(l-k)\pi t}}{j(l-k)\omega_c}=\frac{2}{T_c(l-k)\omega_c}sin((l-k)\pi t)=0
-\end{gather} 
-
-Si è verificato che il prodotto interno definito precedentemente tra due funzioni di base è zero per $l\neq k$.\\
-Per determinare i coefficienti dell'espansione di Fuorier $c_k$ rispetto alla rastregliera $\delta_T(t)$, si considera:
-
-\begin{equation}
-    c_k=\displaystyle\frac{1}{T_c}\int_{-frac{T_c}{2}}^{\frac{T_c}{2}}\delta_T(t)e^{-jk\omega t}dt
-\end{equation}
-
-L'unico impulso della rastregliera che cade in quell'intervallo è nell'istante $t=0$. L'integrale di un prodotto tra una funzione e l'impulso, equivale a calocolare il valore 
-della funzione in quel punto, per cui si ha:
-\begin{equation}
-    c_k=\displaystyle\frac{1}{T_c}e^{-jk\omega_c \cdot0}=\frac{1}{T_c}
-\end{equation}
-
-Per cui si può scrivere la rastregliera come:
-\begin{equation}
-    \delta_T(t)=\displaystyle\frac{1}{T_c}\sum_{k=-\infty}^{\infty}e^{jk\omega_ct}
-\end{equation}
-Il segnale campionato sarà allora:
-\begin{gather}
-    x_c(t)=x(t)\delta_T(t)=\displaystyle\frac{1}{T_c}\sum_{-\infty}^{\infty}x(t)e^{-jk\omega_ct}\\
-    x_c(s)=\mathscr{L}_-\{x_c(t)\}=\displaystyle\frac{1}{T_c}\sum_{-\infty}^{\infty}\mathscr{L}_-\left\{\sum_{-\infty}^{\infty}x(t)e^{-jk\omega_ct}\right\}=\frac{1}{T_c}\sum_{-\infty}^{\infty}x(s-k\omega_cj)
-\end{gather}
-
-\subsubsection{Teorema di Shannon}
-
-La sua trasformata in Laplace si chiama teormea di Shannon, espressa rispetto alla risposta armonica:
-\begin{equation}
-    x_c(j\omega)=\displaystyle\frac{1}{T_c}\sum_{-\infty}^{\infty}x(j(\omega-k\omega_c))
-\end{equation}
-
-Per cui l'oggetto che si ripete in frequenza, quando è stato analizzato prima il segnale nel dominio della frequenza, si è scoperto essere la trasformata di Laplace del 
-segnale originario. Consdierando la risposta armonica, si potrà disegnare il diagramma di Bode, il lobo centrale del modulo di $x_c(j\omega)$ sarà uguale al modulo del 
-segnale originario $x(j\omega)$, ripetuto ogni $\omega_c$. In caso la metà della pulsazione di campionamento è maggiore della frequenza massima del segnale, allora i lobi 
-saranno separati. Allora il segnale sarà multiplato in sequenza, uguale al segnale non campionato. Per cui si può usare un filtro passa basso fino a $\displaystyle\frac{\omega_c}{2}$, 
-per isolare solamente il lobo centrale, per ottenere il segnale originario, amplificato di $T_c$. Questo segnale viene chiamato segnale ricostruito. \\
-
-Sorge un problema poiché il segnale che si vuole passare attraverso un filtro passa basso è una serie di numeri, e successivamente quela oggetto viene usato per essere 
-questo filtro. L'antitrasformata di questo filtro, un oggetto che ha modulo $T_c$ nell'intervallo $[-\displaystyle\frac{\omega_c}{2},\frac{\omega_c}{2}]$ e modulo 
-nullo per tutte le altre frequenze, risulta essere: 
-
-\begin{equation}
-    h(t)=\displaystyle\frac{sin\left(\displaystyle\frac{\omega_c}{2}t\right)}{\displaystyle\frac{\omega_c}{2}t}=sinc\left(\frac{\omega_c}{2}t\right)
-\end{equation}
-
-Ma questa risposta impulsiva è diversa da zero anche per tempi negativi, per cui comincia ad oscillare prima di un entrata, di conseguenza è anticausale. Ma se sono già 
-noti tutti i campioni è possibile ricostruire il segnale, poiché si conoscone tutte le entrate future. L'uscita sarà una sommatoria di risposte impulsive, moltiplicate per 
-la rispsosta impulsiva del filtro passa-basso, sommando punto per punto si ottiene in uscita il segnale continuo di partenza. Per eseguire questa operazione su un 
-processore, si considera una frequenza di campionamento maggiore, quindi si inseiscono altri impulsi tra i camiponi noti, ricavati dalle $sinc$. Alternativamente, poiché 
-l'effetto della $sinc$ diminuisce nella distanza dal campione, per cui il processore calcola un certo numero di $sinc$ in avanti e le somma a quelle passate per ottenere 
-il valore in quel punto. Il numero di $sinc$ che precalcola il processore dipende interamente dalla sua velocità nel calcolarle. Più $sinc$ in avanti si calcola il 
-processore, più aumenta la qualità dell'audio corregendo il valore del campione in quel punto. \\
-
-Il teorema di Shannon prevede un ricostruttore ideale, se questa condizione non è rispettata, i lobi si intersecano tra di loro, per cui si campiona una parte minore del 
-lobo centrale, e la parte rimanente crea delle distorsioni nel campione di partenza, ovvero delle frequenze che non esistevano. Questo fenomeno viene detto aliasing. Per 
-evitare l'aliasing si aumenta la frequenza di campionamento, oppure si ignorano queste frequenze elevate, riducendo la banda del segnale prima del campionamento attraverso 
-un filtro passa-basso, che verrà chiamato filtro anti-aliasing. \\
-
-Se si usa un ricostruttore semplificato, diverso da quello di Shannon, diminuirà la precisione del segnale in uscita. Il più semplice ricostruttore possibile è composto 
-da una gradinata che assume tensione costante per ogni intervallo di campionamento, definito ricostruttore di ordine zero o tenuta di orgine zero. 
 
 
 
