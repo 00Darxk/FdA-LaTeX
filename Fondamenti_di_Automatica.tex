@@ -12,8 +12,8 @@
 \usepackage{braket}
 \usepackage{circuitikz}
 \usepackage{steinmetz}
+\usepackage{pgfplots}
 %\usepackage{movie15}
-
 
 \usetikzlibrary{quotes,angles,decorations.pathmorphing,shapes.geometric,patterns}
 \tikzset{snake it/.style={decorate, decoration=snake},
@@ -24,6 +24,8 @@
          nblock/.style = {draw, very thick, rectangle, minimum height=1cm, minimum width=2cm}}
 \numberwithin{equation}{subsection}
 \graphicspath{ {./Immagini/} }
+\pgfplotsset{compat=newest}
+
 
 \renewcommand{\contentsname}{Indice}
 
@@ -2468,7 +2470,7 @@ Questa funzione sembra avere un integratore, ma non è un rapportro tra polinomi
 $s$ a basse frequenze: 
 \begin{gather}
     e^{-T_cs}=\displaystyle\frac{1}{e^{T_cs}}\approx\frac{1}{1+T_cs}\\
-    T(s)\approx\displaystyle\frac{1-\displaystyle\frac{1}{1+T_cs}}{s}=\frac{1}{s}\frac{1+T_cs-1}{1+T_cs}=\frac{T_c}{1+T_c}s
+    T(s)\approx\displaystyle\frac{1-\displaystyle\frac{1}{1+T_cs}}{s}=\frac{1}{s}\frac{1+T_cs-1}{1+T_cs}=\frac{T_c}{1+T_cs}
 \end{gather}
 Per cui ha un guadagno $T_c$, ed è una funzione di trasferimento del primo ordine ad avrà il seguente andamento:
 \begin{center}
@@ -2556,7 +2558,7 @@ del controllore.
 
 Supponiamo di avere una successione di valori $y[k]$, si definisce la trasformata $Z$ per questa sequenza di valori:
 \begin{gather}
-    Z\{y[k]\}=y[0]+y[1]z^{-1}+y[2]z^{-2}+\cdots+y[k]z^{-k},\mbox{ per }k\to+\infty\\
+    Z\{y[k]\}=y[0]+y[1]z^{-1}+y[2]z^{-2}+\cdots+y[k]z^{-k}\\
     Y(z)=\sum_{k=0}^{+\infty}y[k]z^{-k}
 \end{gather}
 Per determinarne la convergenze si manipola per farla assomigliare ad una serie geometrica. 
@@ -2701,7 +2703,7 @@ criterio di convergenza assoluta:
 \end{quotation}
 Per cui se il modulo degli elementi della serie diminuiscono strettamente allora la serie non può che convergere. 
 
-Data $X(z)=\sum_{k=0}^{+\infty}x_kz^{-k}$, è convergente in assoluto se:
+Data $X(z)=\displaystyle\sum_{k=0}^{+\infty}x_kz^{-k}$, è convergente in assoluto se:
 \begin{gather}
     \left|\displaystyle\frac{x_{k+1}}{x_k}\right|<1\\
     x_{k+1}=\alpha x_k+u_k\\
@@ -2760,7 +2762,7 @@ di campionamento scelto, per cui non la trasformazione esatta non è usata.
 Per avere la stessa risposta al gradino si potrebbe 
 moltiplicare la trasformata $Z$ di ogni residuo per un fattore $\displaystyle\frac{e^{p_iT_c}}{p_i}$, in modo da avere la stessa risposta al gradino. Questa trasformazione 
 viene chiamata trasformazione al guadagno. Ma in questo modo 
-avranno una risposta uguale solo ad un'entrata a gradino, per cui questo metodo non viene mai utilizzato. Non esiste una trasformazioine "giusta" esistono sono delle 
+avranno una risposta uguale solo ad un'entrata a gradino, per cui questo metodo non viene mai utilizzato. Non esiste una trasformazione "giusta" esistono sono delle 
 approssimazioni, ed alcune sono più soddisfacienti delle altre in determinate situazioni.  
 
 \subsubsection{Trasformazione ZOH}
@@ -2878,10 +2880,11 @@ Considerando l'approssimazione più semplice, ovvero la $ii)$, si controlla in c
         \draw[-,ultra thick](0,0)arc(37.3:-37.3:0.412);
     \end{tikzpicture}
 \end{center}
-Per cui rispetto ad una trasformata esatta, il piano viene deformato, la zona meno compressa corrisponde all'intorno del punto $1$. Al diminuire del tempo di campionamento 
-si deformerà di meno, poiché aumentando la risoluzione del campionamento e una trasformazione più rapida poterbbe essere semplice da implementare. Per cui se si ha una 
-funzione di trasferimento con dei poli nell'intorno di $1$ in $z$ allora potrà essere usata, me per altri poli quest'approssimazione non sarà precisa. L'intorno di $1$ è 
-una zona fissa della trasformazione che non viene deformata. 
+Per cui rispetto ad una trasformata esatta, il piano viene compresso, la zona meno compressa corrisponde all'intorno del punto $1$. Per cui se si ha una 
+funzione di trasferimento con dei poli nell'intorno di $1$ in $z$ allora potrà essere usata, me per altri poli quest'approssimazione non sarà precisa. 
+L'intorno di $1$ è una zona fissa della trasformazione che non viene deformata. Al diminuire del tempo di campionamento i poli tenderanno a spostarsi verso l'intorno di $1$, 
+per cui questa trasformazione sarà più utile per tempi di campionamento molto piccoli, ma la sua precisione diminuisce molto rapidamente all'aumentare del tempo ci campionamento. 
+In caso di tempi di campionamento piccoli, una trasformazione più semplice può risultare migliore poiché più veloce rispetto ad una più precisa. 
 
 Invece per l'approsimmazione di Tustin si ha una mappatura molto più accurata rispetto alla mappatura esatta:
 \begin{center}
@@ -2889,15 +2892,202 @@ Invece per l'approsimmazione di Tustin si ha una mappatura molto più accurata r
         \draw[->,thick](-0.75,0)--(0.75,0)node[above]{$\Re(z)$};
         \draw[->,thick](0,-0.75)--(0,0.75)node[right]{$\Im(z)$};
 
-        \draw[-,ultra thick](-0.433,0.25)arc(150:-150:0.5);
-        %\draw[-ultra thick](-0.433,0.25)arc();
+        \draw[-,ultra thick](-0.3535,0.3535)arc(135:-135:0.5);
+        \draw[-,ultra thick](-0.3535,0.3535)arc(0:-45:0.5);
+        \draw[-,ultra thick](-0.5,0)arc(45:0:0.5);
         %(x+0.68285)^2+(y-0.183)^2=0.066989
-        \draw[-, thick]plot[smooth,domain=-0.5:-0.433](\x,{(0.25-(\x)^2)^0.5});        
-        \draw[-, thick]plot[smooth,domain=-0.5:-0.433](\x,{-(0.25-(\x)^2)^0.5});
+        \draw[-, thick]plot[smooth,domain=-0.5:-0.3535](\x,{(0.25-(\x)^2)^0.5});        
+        \draw[-, thick]plot[smooth,domain=-0.5:-0.3535](\x,{-(0.25-(\x)^2)^0.5});
+    \end{tikzpicture}
+\end{center}
+Risulta essere una delle migliori approssimazioni, mantenendo per gran parte le proprietà del continuo. Questa trasformazione è molto utile quando non si può ridurre il 
+tempo di campionamento. Conserva le proprietà dei poli nella zona sinistra del piano, a differenza delle altre approssimazioni. Inoltre è possibile espandere una zona 
+intorno ad uno o più poli tramite un'altra trasaformazione bilineare prima della trasformazione di Tustin per renderla più simile alla trasformazione esatta. Ma questa 
+espansione funziona solo nell'intorno dei poli scelti, poiché il piano non è compresso dello stesso fattore. Questo tipo di espansione si applica nei casi dove si 
+vuole mantenere la pulsazione di alcuni poli. 
+
+Per controllare in che modo una data approssimazione cambia il comportamento di un controllore si possono confrontare i diagrammi di Bode di $C(s)$ e $C(z)$. 
+
+\subsection{Sintesi di un Controllore Discreto}
+
+Si è visto come dato un processo continuo si può sintetizzare un controllore nel continuo e 
+trasportarlo nel discreto tramite una delle trasformazioni, in questo modo 
+si può realizzare un sistema ibrido con un controllore discreto ed un processo continuo. Bisogna introdurre in catena di controreazione un quantizzatore per trasformare i 
+dati continui in discreti affinché il controllore digitale possa elaborarli, di conseguenza non è necessario un organo di tenuta. Servirà un altro convertitore tra il 
+controllore discreto ed il processo continuo. A valle del quantizzatore in controreazione si può inserisce un filtro anti-aliasing, se necessario.
+
+\begin{center}\begin{tikzpicture}[scale=2]
+    \node[sum](sum)at(-1,0){};
+    \draw[->,ultra thick](-1.5,0)node[above right]{}--(sum.180)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+    \node[block, right of=sum, node distance=2cm](c){$C(z)$};
+
+    \draw[->,ultra thick](sum.0)--(c.180);
+    \filldraw[black](4.5,0)circle(1pt);
+
+    \draw[->,ultra thick](4.5,0)--(5,0);
+    \draw[-,ultra thick](4.5,-0.75)--(4.5,0);
+
+    \node[nblock]at(1.75,0)(p){};
+    \draw[->](1.3,0)--(2.2,0);
+    \draw[->](1.75,-0.2)--(1.75,0.2);
+    \draw[decorate, decoration=zigzag](1.55,-0.2)--(1.95,0.2);
+
+    \node[block]at(3.5,0)(j){$P(s)$};
+    \draw[->,ultra thick](p.0)--(j.180);
+    \draw[-,ultra thick](j.0)--(4.5,0);
+    \draw[->,ultra thick](c.0)--(p.180);
+
+
+    \node[nblock]at(0.5,-0.75)(h){};
+    \draw[->](0.1,-0.75)--(0.9,-0.75);
+    \draw[->](0.5,-0.95)--(0.5,-0.55);
+    \draw[decorate, decoration=zigzag](0.3,-0.95)--(0.7,-0.55);
+
+    \node[nblock]at(2.75,-0.75)(z){};
+    \draw[->](2.35,-0.85)--(3.15,-0.85);
+    \draw[->](2.75,-0.95)--(2.75,-0.52);
+    \draw[-]plot[smooth, domain=2.5:3](\x,{-0.85+(0.0625-(\x-2.75)^2)^0.5});
+    \draw[->,ultra thick](4.5,-0.75)--(z.0);
+    \draw[->,ultra thick](z.180)--(h.0);
+    \draw[-,ultra thick](h.180)--(-1,-0.75);
+
+    \draw[->,ultra thick](-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
+\end{tikzpicture}\end{center}
+
+Per un entrata a gradino questo sistema avrà una risposta nel tempo:
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,very thick](-0.25,0.14)--(1.5,0.14)node[above]{$t$};
+        \draw[->,very thick](0.12,-0.25)--(0.12,2)node[right]{$y(t)$};
+        \begin{axis}[hide axis,scale=0.25]
+            \addplot[-, thick, smooth, domain=0.3927:1.8]{1-4*e^(-3*x)*sin(deg(e^(2*x)))};
+        \end{axis}
     \end{tikzpicture}
 \end{center}
 
+Se si descrive il processo in tempo discreto, allora si potrà avere un sistema completamente nel discreto e non serviranno convertitori:
+\begin{center}\begin{tikzpicture}[scale=2]
+    \node[sum](sum)at(-1,0){};
+    \draw[->,ultra thick](-1.5,0)node[above right]{}--(sum.180)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+    \node[block, right of=sum, node distance=2cm](c){$C(z)$};
 
+    \draw[->,ultra thick](sum.0)--(c.180);
+  
+    \node[block]at(1.75,0)(p){P(z)};
+    \draw[->,ultra thick](c.0)--(p.180);
+
+    \filldraw[black](2.5,0)circle(1pt);
+    \draw[-,ultra thick](p.0)--(2.5,0);
+    \draw[->,ultra thick](2.5,0)--(3,0);
+    \draw[->,ultra thick](2.5,0)--(2.5,-0.75)--(-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
+
+\end{tikzpicture}\end{center}
+
+In questo caso si avrà una funzione di trasferimento a ciclo chiuso discreta e si potrà provare a ottenere un controllore tramite sintesi diretta:
+\begin{gather}
+    W(z)=\displaystyle\frac{C(z)P(z)}{1+C(z)P(z)}
+\end{gather}
+Per un entrata a gradino unitario si vuole ottenere potenzialmente una successione di valori costanti, ma richiedendo prestazioni troppo eleavte al sistema, 
+produrrà un oggetto non causale. 
+Per cui si considera una funzione di trasferimento che invece di essere una costante, come un riferimento ideale $K_d$, è un ritardo di $n$ 
+campioni:
+\begin{equation}
+    W(z)=z^{-n}
+\end{equation}
+Per un entrata a gradino, uscirà dal sistema un gradino dopo $n$ campioni, con errore nullo. Per cui si avrà una risposta precisa dopo un certo periodo di tempo. 
+\begin{center}
+    \begin{tikzpicture}[scale=2.5]
+        \draw[->,very thick](-0.25,0)--(1.5,0)node[above]{$t$};
+        \draw[->,very thick](0,-0.25)--(0,1.5)node[right]{$u[t]$};
+
+        \filldraw[black](0,1)node[left]{$1$}circle(0.5pt);
+        \filldraw[black](0.2,1)circle(0.5pt);
+        \filldraw[black](0.4,1)circle(0.5pt);
+        \filldraw[black](0.6,1)circle(0.5pt);
+        \filldraw[black](0.8,1)circle(0.5pt);
+        \filldraw[black](1,1)circle(0.5pt);
+        \filldraw[black](1.2,1)circle(0.5pt);
+        \filldraw[black](1.4,1)circle(0.5pt);
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=2.5]
+        \draw[->,very thick](-0.25,0)--(1.5,0)node[above]{$t$};
+        \draw[->,very thick](0,-0.25)--(0,1.5)node[right]{$y[t]$};
+        \node[left]at(0,1){$1$};
+        \filldraw[black](0,0)circle(0.5pt);
+        \filldraw[black](0.2,0)circle(0.5pt);
+        \filldraw[black](0.4,0)circle(0.5pt);
+        \filldraw[black](0.6,1)circle(0.5pt);
+        \filldraw[black](0.8,1)circle(0.5pt);
+        \filldraw[black](1,1)circle(0.5pt);
+        \filldraw[black](1.2,1)circle(0.5pt);
+        \filldraw[black](1.4,1)circle(0.5pt);
+    \end{tikzpicture}
+\end{center}
+
+Come per la sintesi diretta in $s$ è necessario che tutte le dinamiche del sistema siano asintoticamente stabili. Il controllore ricavato sarà:
+\begin{gather}
+    C(z)P(z)=z^{-n}(1+C(z)P(z))\\
+    C(z)=\displaystyle\frac{1}{P(z)}\frac{z^{-n}}{1-z^{-n}}=\frac{1}{P(z)}\frac{1}{z^n-1}
+\end{gather}
+Può cancellare il processo $\displaystyle\frac{1}{P}$ solo se le dinamiche sono asintoticamente stabili, quindi il processo dorvà avere tutti i suoi poli e zeri entro il cerchio 
+unitario in $z$. 
+$n$ rappresenta l'eccesso poli-zeri del processo, e rappresenta il minimo numero di poli da aggiungere nel controllore per rendere $\displaystyle\frac{1}{P(z)}$ stabile. 
+Indicati nel discreto come il minimo numero di passi di ritardo prima che il sistema possa avere un'uscita del genere. Questo processo potrebbe non essere la 
+discretizzazione di nessun processo continuo, alcuni processi sono definiti solo nel discreto. 
+
+In caso sia derivato da una discretizzazione di un processo continuo, un controllore nel mondo discreto realizzerà una risposta piatta dopo 
+un certo numero di campioni, mentre nel continuo arriverà asintoticamente ad una risposta piatta oscillando o meno, come una curva esponenziale. Per cui una risposta 
+piatta nel discreto potrebbe corrispondere a valori costanti di un'oscillazione nel continuo, il segnale continuo potrebbe oscillare tra i valori discreti. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=2.5]
+        \draw[->,very thick](-0.25,0)--(2,0)node[above]{$t$};
+        \draw[->,very thick](0,-0.25)--(0,1.5)node[right]{$y(t)$};
+
+
+        \draw[-,thick]plot[smooth, domain=0:0.6](\x,{3.174^(\x)-1});
+        \draw[-,thick]plot[smooth, domain=0.6:1.8](\x,{1+0.2*sin(15.7*((\x)-0.6) r)});
+
+
+        \filldraw[black](0,0)circle(0.5pt);
+        \filldraw[black](0.2,0)circle(0.5pt);
+        \filldraw[black](0.4,0)circle(0.5pt);
+        \filldraw[black](0.6,1)circle(0.5pt);
+        \filldraw[black](0.8,1)circle(0.5pt);
+        \filldraw[black](1,1)circle(0.5pt);
+        \filldraw[black](1.2,1)circle(0.5pt);
+        \filldraw[black](1.4,1)circle(0.5pt);
+        \filldraw[black](1.6,1)circle(0.5pt);
+        \filldraw[black](1.8,1)circle(0.5pt);
+    \end{tikzpicture}
+\end{center}
+
+Lavorando sulla funzione a ciclo chiuso, e soddisfacendo certe condizioni, è possibile sintetizzare un controllore $C(z)$ che recupera delle caratteristiche del continuo, 
+per cui si avrà un errore minimo anche nella risposta nel continuo: 
+
+\begin{center}
+    \begin{tikzpicture}[scale=2.5]
+        \draw[->,very thick](-0.25,0)--(2,0)node[above]{$t$};
+        \draw[->,very thick](0,-0.25)--(0,1.5)node[right]{$y(t)$};
+
+        %\begin{axis}[hide axis,scale=0.1]
+        %    \addplot[thick, smooth,domain=0:1]{0.5+rad(atan(50*(x-0.6)))/pi};
+        %\end{axis}
+        \draw[-,very thick]plot[smooth, domain=0:1.8](\x,{0.5+rad(atan(50*(\x-0.56)))/pi});
+        %0.5+rad(atan(50(x-0.6)))/pi
+        \filldraw[black](0,0)circle(0.5pt);
+        \filldraw[black](0.2,0)circle(0.5pt);
+        \filldraw[black](0.4,0)circle(0.5pt);
+        \filldraw[black](0.6,1)circle(0.5pt);
+        \filldraw[black](0.8,1)circle(0.5pt);
+        \filldraw[black](1,1)circle(0.5pt);
+        \filldraw[black](1.2,1)circle(0.5pt);
+        \filldraw[black](1.4,1)circle(0.5pt);
+        \filldraw[black](1.6,1)circle(0.5pt);
+        \filldraw[black](1.8,1)circle(0.5pt);
+    \end{tikzpicture}
+\end{center}
+In alcuni casi un controllore digitale è più potente di uno continuo, è un controllore in grado di essere programmato. 
 
 
 \end{document}
