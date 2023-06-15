@@ -12,6 +12,7 @@
 \usepackage{braket}
 \usepackage{circuitikz}
 \usepackage{steinmetz}
+%\usepackage{movie15}
 
 
 \usetikzlibrary{quotes,angles,decorations.pathmorphing,shapes.geometric,patterns}
@@ -31,7 +32,7 @@
 %
 % V Introduzione;
 % V Modellistica;
-%   Ingressi di Tipo Sinusoidale;
+% V Ingressi di Tipo Sinusoidale;
 %   Controllori Digitali;
 % V Esonero, potenzialmente;
 %   Finire Con Equazioni Differenziali e Laplace;
@@ -41,7 +42,7 @@
 % X Figures Description;
 %   Linearization;
 %   Rumori Aleatori;
-%   Figura Operazionale in Frequenza;
+% V Figura Operazionale in Frequenza;
 %   Reti Correttrici Grafico Circuito;
 % V Schema \muC;
 % V Grafico Quantizzazione;
@@ -49,8 +50,10 @@
 % V Grafico Impulso Discreto x(t);
 % V Grafico Piano di Gauss x_c(s);
 % V Grafico Shannon \omega_c;
-%   Grafico Filtro Passa-Basso s->t;
-
+% V Grafico Filtro Passa-Basso s->t;
+%   Vera Forma Bode Segnale Campionato (trapezoide);
+%   Parentesi Quadre funzioni Tempo Discreto;
+%   \ref{eq://} anche su fisica;
 
 \title{Fondamenti di Automatica}
 \author{}
@@ -2147,9 +2150,9 @@ essendo discreta, mentre il segnale da campionare essendo nel continuo è una fu
         \draw[->,ultra thick](0.8,0)--(0.8,1);
         \draw[->,ultra thick](1.2,0)--(1.2,1);
         \draw[->,ultra thick](1.6,0)--(1.6,1);
-        \draw[->,ultra thick](1.8,0)--(1.8,1);
-        \draw[->,ultra thick](2.2,0)--(2.2,1);
-        \draw[->,ultra thick](2.6,0)--(2.6,1);
+        \draw[->,ultra thick](2,0)--(2,1);
+        \draw[->,ultra thick](2.4,0)--(2.4,1);
+        \draw[->,ultra thick](2.8,0)--(2.8,1);
 
         \node[below]at(1.3,0){$\delta_R(t)$};
 
@@ -2167,12 +2170,13 @@ Può essere espressa tramite la rappresetnazione di Eulero in forma esponenziale
     \delta_R(t)=\sum_{k=-\infty}^{\infty}c_ke^{jk\omega_ct}
 \end{equation}
 Dati un seno ed un coseno aventi coefficienti $a_k$ e $b_k$, la loro somma sarà data da un seno ed un coseno moltiplicati da uno stesso coefficiente ed un certo sfasamento. 
-Bisogna ottenere le compomnenti della serie di Fuorier rispetto ad un sistema di coordinate ortogonali. La trasformata di Fuorier è un elemento basilare per analizzare 
+Per ottenere questo coefficiente bisogna ottenere le compomnenti della serie di Fuorier rispetto ad un sistema di coordinate ortogonali. La trasformata di Fuorier è un elemento basilare per analizzare 
 i segnali, trasportandoli dal dominio del tempo nel dominio dellla frequenza. Per ottenere la 
-proiezione di un versore rispetto ad una coordinata si definisce un prodotto interno, dato dal prodotto scalare: $v_k=\langle v,\hat{i}_k\rangle=\vec{v}\cdot\hat{i}$. 
+proiezione di un vettore $\vec{v}=v_k\hat{k}+v_j\hat{j}$ rispetto ad una coordinata $k$, si considera il prodotto scalare tra il vettore ed il versore della coordinata, 
+per cui si avrà $v_k=\vec{v}\cdot\hat{k}$. 
 
-Analogamente ad uno spazio vettoriale, l'integrale di Fuorier di una certa funzione agisce come un'operazione di proiezione. Per cui per trovare i coefficienti $c_k$, corrispondenti 
-alle componenti della rastrelliera $\delta_R(t)$, si proietta la funzione tramite l'integrale di Fuorier:
+Analogamente ad un prodotto scalare in uno spazio vettoriale, l'integrale di Fuorier agisce come un'operazione di proiezione. Per cui per trovare le componenti della rastregliera 
+rispetto alla funzione $e^{jk\omega_ct}$ si considera l'integrale di Fuorier, a meno di un fattore di amplificazione: 
 \begin{equation}
     c_k=\displaystyle\frac{1}{T_c}\int_{-\frac{T_c}{2}}^{\frac{T_c}{2}}\delta_R(t)e^{-jk\omega_ct}dt
 \end{equation}
@@ -2253,71 +2257,645 @@ $\displaystyle\frac{1}{T_c}$, il suo diagramma di Bode sarà formato da una seri
     \end{tikzpicture}
 \end{center}
 In caso la metà della pulsazione di campionamento è maggiore della frequenza massima del segnale, allora i lobi 
-saranno separati. Allora il segnale sarà multiplato in sequenza, uguale al segnale non campionato. Per cui si può usare un filtro passa basso fino a $\displaystyle\frac{\omega_c}{2}$, 
-per isolare solamente il lobo centrale, per ottenere il segnale originario, amplificato di $T_c$. Questo segnale viene chiamato segnale ricostruito. \\
+saranno separati. Il segnale sarà multiplato in frequenza, uguale al segnale non campionato. Per cui si può usare un filtro passa basso fino a 
+$\displaystyle\frac{\omega_c}{2}$, per isolare solamente il lobo centrale e amplificarlo di $T_c$ ottenendo il segnale originario. 
+Questo segnale viene chiamato segnale ricostruito, è possibile in alcuni casi quindi ricostruire esattamente il segnale originario dati dei punti campionati. 
 
-Sorge un problema poiché il segnale che si vuole passare attraverso un filtro passa basso è una serie di numeri, e successivamente quela oggetto viene usato per essere 
-questo filtro. L'antitrasformata di questo filtro, un oggetto che ha modulo $T_c$ nell'intervallo $[-\displaystyle\frac{\omega_c}{2},\frac{\omega_c}{2}]$ e modulo 
-nullo per tutte le altre frequenze, risulta essere: 
+\begin{center}
+    \begin{tikzpicture}[scale=1.2]
+        \draw[->](-6,0)--(6,0)node[above]{$\omega$};
+        \draw[->](0,-0.25)--(0,1.5)node[right]{$|X_c(j\omega)|$};
 
+        \draw[ultra thick]plot[smooth, domain=0:1.513](\x,{1-0.25*e^(2.7*(\x-1))});
+        \draw[ultra thick]plot[smooth, domain=-1.513:0](\x,{1-0.25*e^(-2.7*(\x+1))});
+
+        \draw[ultra thick]plot[smooth, domain=-3.5:-1.987](\x,{1-0.25*e^(2.7*(\x+2.5))});
+        \draw[ultra thick]plot[smooth, domain=-5.013:-3.5](\x,{1-0.25*e^(-2.7*(\x+4.5))});
+
+        \draw[ultra thick]plot[smooth, domain=3.5:5.013](\x,{1-0.25*e^(2.7*(\x-4.5))});
+        \draw[ultra thick]plot[smooth, domain=1.987:3.5](\x,{1-0.25*e^(-2.7*(\x-2.5))});
+
+        \draw[-,ultra thick, blue](1.75,0)--(1.75,1)--(-1.75,1)--(-1.75,0);
+
+        \filldraw[black](1.75,0)node[below]{$\displaystyle\frac{\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](-1.75,0)node[below]{$\displaystyle-\frac{\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](3.5,0)node[below]{$\omega_c$}circle(0.5pt);
+        \filldraw[black](-3.5,0)node[below]{$-\omega_c$}circle(0.5pt);
+        \filldraw[black](5.25,0)node[below]{$\displaystyle\frac{3\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](-5.25,0)node[below]{$\displaystyle-\frac{3\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](0,0)node[below right]{$0$}circle(0.5pt);
+  
+
+    \end{tikzpicture}
+\end{center}
+
+Shannon affermò che facendo passare un segnale per il filtro passa-basso mostrato in precedenza si può ricostruire esattamente il segnale originario dal suo omologo campionato. 
+Nel dominio del tempo il passaggio di un segnale per un filtro viene rappresentato da una convoluzione. Per cui il segnale ricostruito $x^*(t)$ è dato dalla convoluzione: 
 \begin{equation}
-    h(t)=\displaystyle\frac{sin\left(\displaystyle\frac{\omega_c}{2}t\right)}{\displaystyle\frac{\omega_c}{2}t}=sinc\left(\frac{\omega_c}{2}t\right)
+    x^*(t)=\displaystyle\int_0^{+\infty}h(t-\tau)x_c(\tau)\:d\tau
 \end{equation}
+\begin{center}
+    \begin{tikzpicture}[scale=2]
 
-Ma questa risposta impulsiva è diversa da zero anche per tempi negativi, per cui comincia ad oscillare prima di un entrata, di conseguenza è anticausale. Ma se sono già 
+        \node[nblock](aa)at(3.5,-0.5){};
+        \draw[->, thick](3.2,-0.6)--(3.8,-0.6);
+        \draw[->, thick](3.5,-0.7)--(3.5,-0.3);
+        \draw[-,thick](3.3,-0.4)--(3.7,-0.4);
+        \draw[-,thick](3.3,-0.4)--(3.3,-0.6);
+        \draw[-,thick](3.7,-0.4)--(3.7,-0.6);
+        \draw[->,ultra thick](2.5,-0.5)node[above right]{$x(t)$}--(aa.180);
+        \draw[->,ultra thick](aa.0)--(4.5,-0.5)node[above left]{$x^*(t)$};
+
+    \end{tikzpicture}
+\end{center}
+
+Si può osservare che il filtro in frequenza è $rect\left(\displaystyle\frac{2\omega}{\omega_c}\right)$, per cui riportandolo nel dominio del tempo con un'anti-trasformata di Fuorier si ottiene una $sinc$ nel tempo: 
+\begin{equation}
+    h(t)=\displaystyle\frac{sin\left(\displaystyle\frac{\omega_c}{2}t\right)}{\displaystyle\frac{\omega_c}{2}t}
+\end{equation}
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->](-2.5,0)--(2.5,0)node[above]{$t$};
+        \draw[->](0,-0.5)--(0,1.3);
+        \draw[-,ultra thick]plot[smooth,domain=-2.4:-0.01](\x,{sin(6*\x r)/(6*\x)});
+        \draw[-,ultra thick]plot[smooth,domain=0.01:2.4](\x,{sin(6*\x r)/(6*\x)});
+
+    \end{tikzpicture}
+\end{center}
+
+Ma questa risposta impulsiva è diversa da zero anche per tempi negativi, per cui comincia ad oscillare prima di un entrata, di conseguenza è anticausale. Inoltre 
+se viene computata una convoluzione si osserveranno segnali futuri. Per cui non si può lavorare con questo filtro ideale, usato da Shannon nella sua teoria. 
+
+Ma se sono già 
 noti tutti i campioni è possibile ricostruire il segnale, poiché si conoscone tutte le entrate future. L'uscita sarà una sommatoria di risposte impulsive, moltiplicate per 
 la rispsosta impulsiva del filtro passa-basso, sommando punto per punto si ottiene in uscita il segnale continuo di partenza. Per eseguire questa operazione su un 
-processore, si considera una frequenza di campionamento maggiore, quindi si inseiscono altri impulsi tra i camiponi noti, ricavati dalle $sinc$. Alternativamente, poiché 
+processore, si considera una frequenza di campionamento maggiore, quindi si inseiscono altri impulsi tra i campioni noti, ricavati dalle $sinc$. Alternativamente, poiché 
 l'effetto della $sinc$ diminuisce nella distanza dal campione, per cui il processore calcola un certo numero di $sinc$ in avanti e le somma a quelle passate per ottenere 
-il valore in quel punto. Il numero di $sinc$ che precalcola il processore dipende interamente dalla sua velocità nel calcolarle. Più $sinc$ in avanti si calcola il 
-processore, più aumenta la qualità dell'audio corregendo il valore del campione in quel punto. \\
+il valore in quel punto. Il numero di $sinc$ che precalcola il processore dipende interamente dalla sua velocità nel calcolarle, poiché deve elaborare il segnale in uscita 
+in un tempo minore del tempo di campionamento, altrimenti non sarà possibile riprodurre il segnale. Più $sinc$ in avanti si calcola il 
+processore, più aumenta la qualità dell'audio corregendo il valore del campione in quel punto. 
 
-Il teorema di Shannon prevede un ricostruttore ideale, se questa condizione non è rispettata, i lobi si intersecano tra di loro, per cui si campiona una parte minore del 
-lobo centrale, e la parte rimanente crea delle distorsioni nel campione di partenza, ovvero delle frequenze che non esistevano. Questo fenomeno viene detto aliasing. Per 
-evitare l'aliasing si aumenta la frequenza di campionamento, oppure si ignorano queste frequenze elevate, riducendo la banda del segnale prima del campionamento attraverso 
-un filtro passa-basso, che verrà chiamato filtro anti-aliasing. \\
+Nel caso di controllori automatici, invece non sono noti campioni futuri, per cui anche un piccolo ritardo può generare un'elevata perdita di fase per il controllore, 
+non permettendo il controllo adeguato del sistema. 
 
-Se si usa un ricostruttore semplificato, diverso da quello di Shannon, diminuirà la precisione del segnale in uscita. Il più semplice ricostruttore possibile è composto 
-da una gradinata che assume tensione costante per ogni intervallo di campionamento, definito ricostruttore di ordine zero o tenuta di orgine zero. 
+Il teorema di Shannon prevede un ricostruttore ideale ovvero è applicabile se e solo se i lobi non si intersecano, in caso contrario si campiona una parte minore del 
+lobo centrale e la parte rimanente crea delle distorsioni nel campione di partenza. Questi disturbi sono delle frequenze che non esistevano, sono degli alias creati a causa 
+della frequenza di campionamento troppo piccola, per cui questo fenomeno viene chiamato aliasing. Ad alte frequenze vengono misurati valori corrispondenti a basse 
+frequenze del polo successivo, ed a basse frequenze vengono misurati contributi del polo precedente ad alte frequenze. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=1.2]
+        \draw[->](-5,0)--(5,0)node[above]{$\omega$};
+        \draw[->](0,-0.25)--(0,1.5)node[right]{$|X_c(j\omega)|$};
+
+        \draw[ultra thick]plot[smooth, domain=0:1.513](\x,{1-0.25*e^(2.7*(\x-1))});
+        \draw[ultra thick]plot[smooth, domain=-1.513:0](\x,{1-0.25*e^(-2.7*(\x+1))});
+
+        \draw[ultra thick]plot[smooth, domain=-2.5:-0.987](\x,{1-0.25*e^(2.7*(\x+1.5))});
+        \draw[ultra thick]plot[smooth, domain=-4.013:-2.5](\x,{1-0.25*e^(-2.7*(\x+3.5))});
+
+        \draw[ultra thick]plot[smooth, domain=2.5:4.013](\x,{1-0.25*e^(2.7*(\x-3.5))});
+        \draw[ultra thick]plot[smooth, domain=0.987:2.5](\x,{1-0.25*e^(-2.7*(\x-1.5))});
+
+        \draw[-,ultra thick, blue](1.25,0)--(1.25,1)--(-1.25,1)--(-1.25,0);
+
+        \filldraw[black](1.25,0)node[below]{$\displaystyle\frac{\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](-1.25,0)node[below]{$\displaystyle-\frac{\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](2.5,0)node[below]{$\omega_c$}circle(0.5pt);
+        \filldraw[black](-2.5,0)node[below]{$-\omega_c$}circle(0.5pt);
+        \filldraw[black](3.75,0)node[below]{$\displaystyle\frac{3\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](-3.75,0)node[below]{$\displaystyle-\frac{3\omega_c}{2}$}circle(0.5pt);
+        \filldraw[black](0,0)node[below right]{$0$}circle(0.5pt);
+  
+    \end{tikzpicture}
+\end{center}
+
+Il fenomeno dell'aliasing può verificarsi anche per la riproduzione delle immagini, è quindi un problema informatico e dipende dal fatto che le informazioni digitali sono 
+discrete, ed ogni volta che dovranno rappresentare qualcosa di continuo sarà presente un fenomeno di aliasing. 
+
+Per evitare l'aliasing si ignorano queste frequenze usando un filtro anti-aliasing a monte del campionatore. Questo filtro, proprio perché l'aliasing è un fenomeno comune 
+ad ogni fenomeno digitale, è sempre presente. Alle volte viene realizzato digitalmente, può essere implementato un sistema che campiona ad una frequenza maggiore per pulire 
+il segnale e poi lo passa al campionatore. 
+
+Un algoritmo di controllo per aumentare la frequenza costa molto, mentre è più economico aumentare la frequenza del campionatore. Altrimenti si può inseire un circuito formato 
+da condensatori e resistenze, per realizzare un filtro anti-aliasing elettronico. 
+
+\subsection{Organo di Tenuta}
+
+Data una sequenza di campioni da ricostruire nella $DAC$ non si possono sommare tutte le $sinc$, poiché comprendono una parte anti-causale, e richiederebbe troppo tempo. 
+Poiché non è possibile usare il ricostruttore ideale di Shannon in questa situazione, si considerano ricostruttori semplificati, più veloci e meno precisi. 
+
+Se si usa un ricostruttore semplificato, diverso da quello di Shannon, diminuirà il tempo necessario per elaborare 
+i dati, ma diminuirà la precisione del segnale in uscita. Il più semplice ricostruttore possibile è composto 
+da una gradinata che assume tensione costante per ogni intervallo di campionamento, definito ricostruttore di ordine zero o tenuta di ordine zero. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=3]
+        \draw[->](-0.25,0)--(1.5,0)node[above]{$t$};
+        \draw[->](0,-0.25)--(0,1)node[right]{$x(t)$};
+
+        \filldraw[black](0,0.6)circle(0.5pt);
+        \filldraw[black](0.2,0.7)circle(0.5pt);
+        \filldraw[black](0.4,0.8)circle(0.5pt);
+        \filldraw[black](0.6,0.7)circle(0.5pt);
+        \filldraw[black](0.8,0.6)circle(0.5pt);
+        \filldraw[black](1,0.5)circle(0.5pt);
+        \filldraw[black](1.2,0.6)circle(0.5pt);
+
+        \draw[-,very thick](0,0.6)--(0.2,0.6);
+        \draw[-,very thick](0.2,0.7)--(0.4,0.7);
+        \draw[-,very thick](0.4,0.8)--(0.6,0.8);
+        \draw[-,very thick](0.6,0.7)--(0.8,0.7);
+        \draw[-,very thick](0.8,0.6)--(1,0.6);
+        \draw[-,very thick](1,0.5)--(1.2,0.5);
+        \draw[-,very thick](1.2,0.6)--(1.4,0.6);
+
+        \draw[dashed](0.2,0.7)--(0.2,0)node[below]{$T_c$};
+    \end{tikzpicture}
+\end{center}
+
+Una tenuta di orine uno invece è composta da rampe ogni tempo di campionamento che congiungono due campioni diversi. In queste analisi non si considereranno tenute di 
+ordine superiore, per cui si utilizzza un $ZOH$, $Zero\:\:Order\:\:Holder$.
+
+Per calcolare l'errore dovuto ad una tenuta di ordine $0$ si analizza la sua funzione di trasferimento. Il segnale ricostruito con questo ricostruttore sarà:
+\begin{equation}
+    x^*(t)=\sum_{k=0}^{+\infty}x_k(\delta_{-1}(t-kT_c)-\delta_{-1}(t-(k+1)T_c))
+\end{equation}
+\begin{center}
+    \begin{tikzpicture}[scale=3]
+        \draw[->](-0.25,0)--(1.5,0)node[above]{$t$};
+        \draw[->](0,-0.25)--(0,1)node[right]{$x(t)$};
+
+        \filldraw[black](0,0.6)circle(0.5pt);
+        \filldraw[black](0.2,0.7)circle(0.5pt);
+        \filldraw[black](0.4,0.8)circle(0.5pt);
+        \filldraw[black](0.6,0.7)circle(0.5pt);
+        \filldraw[black](0.8,0.6)circle(0.5pt);
+        \filldraw[black](1,0.5)circle(0.5pt);
+        \filldraw[black](1.2,0.6)circle(0.5pt);
+
+        \draw[-,very thick](0,0.6)--(0.2,0.6);
+        \draw[-,very thick](0.2,0.7)--(0.4,0.7);
+        \draw[-,very thick](0.4,0.8)--(0.6,0.8);
+        \draw[-,very thick](0.6,0.7)--(0.8,0.7);
+        \draw[-,very thick](0.8,0.6)--(1,0.6);
+        \draw[-,very thick](1,0.5)--(1.2,0.5);
+        \draw[-,very thick](1.2,0.6)--(1.4,0.6);
+
+        \draw[-, thick](0.4,0.8)--(0.4,0)node[below left]{$kT_c$};        
+        \draw[-, thick](0.6,0.8)--(0.6,0)node[below]{$(k+1)T_c$};
+        \draw[dashed](0.4,0.8)--(0,0.8)node[left]{$x_k$};
+
+    \end{tikzpicture}
+\end{center}
+
+Avrà una funzione di trasferimento: 
+\begin{equation}
+    X^*(s)=\sum_{k=0}^{+\infty}x_k\left(\displaystyle\frac{1}{s}e^{-kT_cs}-\frac{1}{s}e^{-(k+1)T_cs}\right)=\sum_{k=0}^{+\infty}x_ke^{-kT_cs}\left(\frac{1-e^{-T_cs}}{s}\right)
+\end{equation}
+
+Il primo termine corrisponde alla funzione di trasferimento del segnale campionato:
+\begin{gather}
+    X_c(s)=\sum_{k=0}^{+\infty}x_ke^{-kT_cs}\\
+    X^*(s)=X_c(s)\left(\displaystyle\frac{1-e^{-T_cs}}{s}\right)
+\end{gather}
+L'organo di tenuta di ordine zero avrà funzione di trasferimento: 
+\begin{equation}
+    T(s)=\displaystyle\frac{1-e^{-T_cs}}{s}
+\end{equation}
+Questo organo di tenuta può essere rappresentato come un blocco funzionale in cui entra il segnale campionato come sequenza di impulsi ed esce il segnale ricostruito a gradino. 
+Questa funzione sembra avere un integratore, ma non è un rapportro tra polinomi. Per controllore quale dinamica prevale si considera un'approssimazione dell'esponenziale, per 
+$s$ a basse frequenze: 
+\begin{gather}
+    e^{-T_cs}=\displaystyle\frac{1}{e^{T_cs}}\approx\frac{1}{1+T_cs}\\
+    T(s)\approx\displaystyle\frac{1-\displaystyle\frac{1}{1+T_cs}}{s}=\frac{1}{s}\frac{1+T_cs-1}{1+T_cs}=\frac{T_c}{1+T_c}s
+\end{gather}
+Per cui ha un guadagno $T_c$, ed è una funzione di trasferimento del primo ordine ad avrà il seguente andamento:
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->](-0.25,0)--(2,0)node[above]{$\omega$};
+        \draw[->](0,-0.25)--(0,1.5)node[right]{$|T(j\omega)|$};
+
+        \node[left]at(0,1){$T_c$};
+        \draw[-,very thick,blue](0,1)--(1.3,1)--(1.9,-0.3)node[right]{$ZOH$};
+        \draw[dashed,blue](1.3,1)--(1.3,0)node[below]{$\displaystyle\frac{1}{T_c}$};
+        \draw[-,very thick, green](0,1.02)--(1.6,1.02)--(1.6,0)node[below]{$\displaystyle\frac{\pi}{T_c}$};
+
+        \filldraw[black](0.8,0)node[below]{$\omega_m$}circle(0.5pt);
+    \end{tikzpicture}
+\end{center}
+La banda passante di questo sistema con un unico polo a $\displaystyle\frac{1}{T_c}$ coincide con questo polo. Per il ricostruttore di Shannon, la banda passante è esattamente 
+$\displaystyle\frac{\omega_c}{2}=\frac{\pi}{T_c}$. Nel caso reale il modulo scende di $20\:dB$ ogni decade, per quello ideale di Shannon il modulo scende in maniera secca. 
+Per cui la frequenza massima da campionare $\omega_m$ deve essere necessariamente minore di $\displaystyle\frac{1}{T_c}$. Per un ricostruttore ideale ipotizzato da Shannon 
+è sufficiente che la pulsazione di campionamento sia il doppio della pulsazione massima da campionare. Con un ricostruttore ideale la pulsazione di campionamento deve essere 
+minimo $10$ o $20$ volte la pulsazione massima da campionare, ancora meglio se la pulsazione di campionamento è $100$ volta della pulsazione massima, anche se può essere 
+troppo. Per cui una pulsazione di campionamento doppia rispetto a $\omega_m$ ricade solo nel domino ideale. 
+
+Per cui il tempo di campionameto va scelto in base alle tipologie di frequenza che si vogliono campionare. Per alcuni sistemi il tempo di campionamento deve essere variabile, 
+mentre per altri deve rimanere costante. 
+
+
+Il sistema potrebbe essere misurato da sensori analogi o digitali, in questo caso si avrà una misura discretizzata. Questi encoder possono essere realizzati da un disco 
+forato in rotazione, dei fototransistor possono percepire la luce che passa attravaraso i fori del disco in un intervallo di tempo generando un'onda quadra in uscita con 
+frequenza proporzionale alla velocità di rotazione del disco. La luce fornisce una piccola differenza di potenziale per attivare il transistor, composto da una coppia 
+foto diodo, generando l'onda. Con il fronte di salita si può incrementare un clock oppure si può creare un segnale periodico per controllare il processo. 
+Può presentare un'altra corona più interna con un'altra coppia fotodiodo e fototransistor per ottenere il doppio degli impulsi da usare, possono essere usati in un semplice 
+circuito per determinare il verso di rotazione del disco, agendo come uno XOR. 
+Ponendo i fototransistor uno prima dell'altro, se il circuito ruota un senso il fronte di salita di uno dei due verrà prima del secondo e viceversa, in questo modo 
+sapendo la posizione dei fototransistor è possibile determinare il verso di rotazione. 
+Questi encoder sono utilizzati quando si accende un sistema, senza sapere la posizione in cui si trova. Può anche essere presente un foro centrale in grado di 
+resettare la misura. 
+%\begin{center}
+%    \includemovie{Fototransistor.gif}
+%\end{center}
 
 \subsection{Equazione alle Differenze}
 
-Il microcontrollore misura l'ingresso come una serie di valori $\{y_i\}$, legati ognugno ad un tempo $t_i$, in base all'entrata il microcontrollore genera una sequenza di 
-uscita $\{c_i\}$, che non può calcolare in base al controllore $C(s)$, poiché dovrebbe risolvere un'equazione differenziale, per cui lavora su un'equazione alle differenze: 
-
+Un'equazion differenziale che implementa un controllore $C(s)$ non può essere rappresentata in un dominio discreto, poiché il controllore lavora con una sequenza di valori 
+$\{u_k\}$ in entrata, legati ognugno ad un tempo $kT_c$. Esiste un altro modello di equazione che descrivono come le equazioni differenziali sistemi con memoria, sono chiamate 
+equazioni alle differenze. In un equazione alle differenze un uscita $y_{k+1}$ dipende da tutti i valori precedenti di entrata e uscita, per cui rappresenta un sistema con 
+memoria: 
 \begin{equation}
-    c_i=c_{i-1}+f(e_i)
+    y_{k+1}=g\left(\{y_k\},\{u_k\}\right)
 \end{equation}
+Per cui è possibile rappresentare un sistema dinamico con un'equazione alle differenze. Il grado $n$ di un'equazione alle differenze è determinato dalla distanza dall'elemento 
+calcolato dalla sequenza fornita, ovvero è determinato dal massimo numero sommato al pedice $y_{k+n}$. 
 
-Dove l'errore $e_i$ è calcolato come la differenza tra l'entrata ed il riferimento in quell'intervallo di tempo $t_i$: $e_i=r_i-y_i$. \\
+I valori iniziali di un'equazione alle differenze sono corrispondenti alle condizioni iniziali di un'equazione differenziale. In questo caso si considera un'equazione di grado 
+$1$ poiché si sintetizza lo stato del sistema da $k=0$, data la sequenza di campioni $\{u_K\}$ è necessario inizializzare il sistema fornendo il valore $y_0$. 
+Si ha:
+\begin{gather}
+    y_1=g(y_0,\{u_k\})\\
+    y_2=g(y_1,y_0,\{u_K\})\\
+    \vdots\\
+    y_{k+1}=g(\{y_k\},\{u_k\})
+\end{gather}
 
-In generale in un'equazione alle differenze, l'uscita dipende dallo stato e dai valori in entrata che gli si applicano: 
-
-\begin{equation}
-    y_i=g(y_{i-1},y_{i-2},...;u_{i},u_{i-1},..)
-\end{equation}
-
-Per cui anche l'equazione alle differenze come le equazioni differenziali possono essere usate per descrivere sistemi con memoria, mentre le equazioni differenziali agiscono 
-su sistemi continui, le equazioni alle differenze operano in un ambiente discreto. 
+Tramite 
+quesra equazione si ossevano valori in entata ed in uscita solo in istanti discreti. Per cui questo oggetto genera una sequenza $\{y_k\}$, da un entrata $\{u_k\}$, prodotta 
+da un'equazione con menoria, ovvero dipende dalla storia del sistema, descriverà un sistema dinamico. 
 
 \begin{center}\begin{tikzpicture}[scale=2]
-    \node[rectangle, draw, very thick, minimum width=2cm, minimum height=1cm](r)at(0,0){$g(y_{i-1},y_{i-2},...;u_{i},u_{i-1},..)$};
+    \node[rectangle, draw, very thick, minimum width=2cm, minimum height=1cm](r)at(0,0){$g(\{y_k\},\{u_k\})$};
 
-    \draw[->,ultra thick](-2.5,0)--(r.west);
-    \node[below]at(-2,0){$\{u_i\}$};
+    \draw[->,ultra thick](-1,0)--(r.west);
+    \node[below]at(-0.8,0){$\{u_k\}$};
 
-    \draw[<-,ultra thick](2.5,0)--(r.east);
-    \node[below]at(2,0){$\{y_i\}$};
+    \draw[<-,ultra thick](1,0)--(r.east);
+    \node[below]at(0.8,0){$\{y_k\}$};
 
 \end{tikzpicture}\end{center}
 
-Un microprocessore può simulare un'equazione alle differenze in base ai dati in entrata e così calcolarsi il controllore per ogni $t_i$, questo calcolo verrà inviato al 
-convertitore $DAC$. Dopo aver inviato i dati in uscita, il microcontrollore aspetterà la fine del tempo di campionamento $T_c$ prima di eseguire nuovamente il calcolo 
-del controllore. Se il processo da controllare è molto sensibile a ritardi temporali, allora non si può usare un software che potrebbe inpedire a questa ruotine di 
-avviarsi nel tempo desiderato. 
+Questa equazione può essere implementata facilmente su un computer poiché è un'operazione ricorsiva.Un microprocessore può simulare un'equazione alle differenze in base ai 
+dati in entrata e così calcolarsi il controllore per ogni tempo di campionamento, questo calcolo 
+verrà inviato al 
+convertitore $DAC$. Dopo aver inviato i dati in uscita, il microcontrollore aspetterà la fine del tempo di campionamento prima di eseguire nuovamente il calcolo 
+del controllore. 
+
+\subsection{Trasformata $Z$}
+
+Supponiamo di avere una successione di valori $y[k]$, si definisce la trasformata $Z$ per questa sequenza di valori:
+\begin{gather}
+    Z\{y[k]\}=y[0]+y[1]z^{-1}+y[2]z^{-2}+\cdots+y[k]z^{-k},\mbox{ per }k\to+\infty\\
+    Y(z)=\sum_{k=0}^{+\infty}y[k]z^{-k}
+\end{gather}
+Per determinarne la convergenze si manipola per farla assomigliare ad una serie geometrica. 
+
+Si considera un segnale in entrata $e^{pt}$ con $p<0$, campionandolo si ottiene una sequenza di valori $\{e^{pkT_c}\}$, si applica quindi la trasformaza $Z$ ai campioni 
+ottenuti dall'esponenziale:
+\begin{equation}
+    Z\{e^{pkT_c}\}=\sum_{k=0}^{+\infty}e^{pkT_c}z^{-k}=\sum_{k=0}^{+\infty}\left(e^{pT_c}z^{-1}\right)^k
+\end{equation}
+Una serie geometrica del tipo $\sum x^k$ converge a $\displaystyle\frac{1}{1-x}$ se $|x|<1$ ovvero considerando $x\in\mathbb{C}$ il valore $x$ deve rimanre all'interno 
+di una circonferenza unitaria avente centro nell'origine del piano di Gauss. Per cui la trasformata $Z$ sarà: 
+\begin{equation}
+    |e^{pT_c}z^{-1}|<1\Rightarrow Z\{e^{pkT_c}\}=\displaystyle\frac{1}{1-e^{pT_c}z^{-1}}=\frac{z}{z-e^{pT_c}}
+\end{equation}
+Il componente $e^{pT_c}z^{-1}$ corrisponde all'integrale discreto di $e^{pT_c}$, equivalente ad una sommatoria. Considerando una circonferenza di centrata nell'origine 
+del piano gi Gauss ri raggio $|e^{pT_c}|$, quando $|z|>|e^{pT_c}|$ si avrà $|e^{pT_c}z^{-1}|<1$, per cui convergerà per ogni all'esterno di questa frontiera. 
+Analogamente alla trasformata di Laplace, che converge a destra di un'ascissa di Laplace $s=s_0$, coincidente il polo. 
+
+Lo stesso elemento $e^{pt}$ in Laplace diventa $\displaystyle\frac{1}{s+p}$, mentre in $Z$ diventa $\displaystyle\frac{z}{z-e^{pT_c}}$, con $p<0$. Il polo in Laplace 
+viene rappresentato come $p$, mentre in $Z$ come $e^{pT_c}$. Per $p=0$, si ha un gradino e la sua trasformata $Z$ sarà:
+\begin{equation}
+    Z\{\delta_{-1}[t]\}=\displaystyle\frac{z}{z-1}
+\end{equation}
 
 
+Dato un segnale $\{y_k\}$, la sua trasformata $Z$ sarà data da una somma di segnali ritardati. Moltiplicando per un fattore $z^{-1}$ l'intera sequenza è come se si analizzasse 
+un segnale il cui primo elemento campionato sia nullo, per cui si ritarda il segnale. 
+\begin{gather}
+    Z\{y_k\}=y_0+y_1z^{-1}+y_2z^{-2}+\cdots\\
+    0+y_0z^{-1}+y_1z^{-2}+y_2z^{-3}+\cdots=Z\{y_k\}\cdot z^{-1}=Z\{y'_k\}
+\end{gather}
+Questo tipo di ritardo viene chiamato ritardo elementare, non è un ritardo nel dominio del tempo, ma un ritardo nella sequenza di campioni. 
 
+
+Data una trasformata $Z$ $Y(z)=\displaystyle\sum_{k=0}^{+\infty}(e^{pT_c}z^{-1})^k$, per ottenere il valore finale si considera:
+\begin{equation}
+    Y(\infty)=\lim_{z\to1}\displaystyle\frac{z-1}{z}Y(z)
+\end{equation}
+Per ottenere $1$ per $z^{-1}$ bisogna porre $p=0$, per cui si calcola il valore finale nel piano $Z$ per $z\to1$. Nel continuo il polo è in $0$, mentre nel discreto è in 
+$e^{0\cdot T_c}=1$.  
+
+
+Data un'equazione alle differenze: 
+\begin{equation}
+    y_{k+1}=ay_k+bu_k
+\end{equation}
+Si considerano le sequenze $\{y_k\}$ e $\{u_k\}$ come se fossero ritardate di un campione per cui $\{y_{k+1}\}=\{y_k\}$, tenendo conto del ritardo che si ha si riscrive come:
+\begin{gather}
+    \{y_k\}=a\{y_k\}'+b\{u_k\}'\\
+    Y(z)=aY(z)z^{-1}+bU(z)z^{-1}\\
+    Y(z)z=aY(z)+bU(z)\Rightarrow \displaystyle\frac{Y(z)}{U(z)}=W(z)=\displaystyle\frac{b}{z-a}
+\end{gather}
+Per cui questa funzione descriverà il sistema dinamico descritto da quella equazione alle differenze. 
+
+Si potrebbe quindi implementare un controllore per un'equazione alle differenze se si riuscisse a traspostarlo dal dominio di Laplace al dominio $Z$. 
+
+\subsection{Mapping dal Piano $s$ a $z$}
+
+Dato un segnale $x(t)$ campionato $x_c(t)=\displaystyle\sum_{k=0}^{+\infty}x_k\delta_0(t-kT_c)$, può essere applicata sia una trasformata di Laplace che una trasformata $Z$, per 
+cui si ha:
+\begin{gather}
+    X_c(s)=\sum_{k=0}^{+\infty}x_ke^{-skT_c}\\
+    X_c(z)=\sum_{k=0}^{+\infty}x_kz^{-k}
+\end{gather}
+Si può sostituire $z\to e^{sT_c}$ per ottenere la trasformata di Laplace partendo dalla trasformata $Z$, ma non rappresenta una relazione di eguaglianza tra le due. 
+Ma dovranno comunque essere collegati in qualche modo. Per cui si analizza al variare della pulsazione naturale di $s$, il l'effetto percepito nel piano $Z$. 
+
+Si considera un'unica striscia nell'intervallo $\left[\displaystyle-j\frac{\omega_c}{2},j\frac{\omega_c}{2}\right]$, poiché la trasformata è periodica, nel solo semipiano 
+negativo, poiché si vuole analizzare il comportamento di sistemi stabili. 
+
+Considerando la risposta armonica in Laplace, si avrà $s=j\omega$, per cui si avrà una relazione: $z=e^{j\omega T_c}=e^{2\pi j\frac{\omega}{\omega_c}}$. 
+
+Per la risposta armonica all'aumentare della pulsazione naturale, in positivo o in negativo, 
+allora si compierà una rotazione nel dominio $z$ fino ad un valore $2\pi j\displaystyle\frac{\left(\frac{\pm\omega_c}{2}\right)}{\omega_c}=\pm j\pi$, per cui si avrà una rotazione di 
+$180^{\circ}$ in senso orario per pulsazioni naturali negative, e in senso antiorario per pulsazioni naturali positive. Queste rotazioni formeranno una circonferenza 
+unitaria. 
+
+L'origine del piano di Laplace coincide con il punto $z=e^{j0T_c}=1$, per $s$ puramente reale, sarà puramente reale anche il corrispettivo in $z$, per cui il semiasse 
+negativo dell'asse dei reali coincide con il segmento dal punto $1$ all'origine degli assi in $z$. 
+
+Per $s=\sigma+j\omega$, dovrà avere necessariamente parte reale negativa per rappresentare un sistema stabile, per cui si avrà $\sigma\in(-\infty,0]$, quindi 
+$z=e^{2\pi\frac{(\sigma+j\omega)}{\omega_c}}=e^{2\pi\sigma}e^{2\pi j\frac{\omega}{\omega_c}}$, poiché $\sigma$ è necessariamente negativo questo risulterà in 
+delle rotazioni intorno all'origine dell'asse $z$, con raggio $e^{2\pi\sigma}<1$. Per cui corrisponderà a delle circonferenze concentriche di raggio decrescente al 
+diminuire di $\sigma$. 
+
+Si può definre una nuova condizione di stabilità per il dominio $z$ poiché tutti i poli avente parte reale negativa sono contenuti nella circonferenza 
+unitaria centrata nell'origine degli assi. Tutti i poli contenuti in questa circonferenza daranno origine a delle dinamiche stabili, mentre i poli sulla circonferenza unitaria 
+saranno al limite di stabilità, invece tutti i poli esterni saranno instabili. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,very thick](-2,0)--(0.5,0)node[above]{$\Re(s)$};
+        \draw[->,very thick](0,-1)--(0,1)node[right]{$\Im(s)$};
+
+        \draw[->,very thick, red](0,0)--(0,0.5)node[right,black]{$\displaystyle j\frac{\omega_c}{2}$};       
+        \draw[->,very thick, red](0,0)--(0,-0.5)node[right,black]{$\displaystyle-j\frac{\omega_c}{2}$};
+        
+        \draw[->,very thick,cyan](0,0.5)--(-1.9,0.5)node[above right,black]{$a$};
+        \draw[->,very thick,cyan](0,-0.5)--(-1.9,-0.5)node[below right,black]{$b$};
+
+        \draw[->,very thick, blue](0,0)--(-1.9,0);
+
+        \filldraw[black](0,0)circle(1pt);
+
+        \draw[->,ultra thick](0.7,0)node[above right]{$z=e^{sT_c}$}--(2,0);
+
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,very thick](-1,0)--(1,0)node[above]{$\Re(z)$};
+        \draw[->,very thick](0,-1)--(0,1)node[right]{$\Im(z)$};
+
+        \draw[<-,very thick, red]plot[smooth, domain=-0.5:0.5](\x,{(0.25-(\x)^2)^0.5});
+        \draw[<-,very thick, red]plot[smooth, domain=-0.5:0.5](\x,{-(0.25-(\x)^2)^0.5});
+
+        \draw[->,very thick, blue](0.5,0)--(0,0);
+
+        \draw[<-,very thick, cyan](0,0)node[above left,black]{$a$}node[below left,black]{$b$}--(-0.5,0);
+
+        \filldraw[black](0.5,0)node[above right]{$1$}circle(1pt);
+    \end{tikzpicture}
+\end{center}
+
+Più il raggio della circonferenza dove si trovano i poli è piccolo, maggiore è lo smorzamento dei poli. Due poli complessi e coniugati vengono rappresentati simmetricamente 
+anche nel piano $z$. Dato un polo su una circonferenza se la percorre in senso antiorario nel semipiano immaginario positivo, oppure in senso orario nel semipiano immaginario 
+negativo, allora il suo smorzamento diminuisce ed aumenta la sua pulsazione naturale. Se un polo su una circonferenza si sposta radialemente su un'altra di raggio maggiore 
+allora il suo smorzamento aumenta e la sua pulsazione naturale rimane invariata.  
+
+Data una funzione di trasferimendo in $z$ avente un polo $p$ nel segmento $a/b$ su $z$:
+\begin{equation}
+    W(z)=\displaystyle\frac{1}{z+p}
+\end{equation}
+Questa funzione non può esistere nel dominio di Laplace poiché quel punto corrisponde a due punti complessi e coniugati in $s$, per cui nel mondo del discreto si possono 
+descrivere oggetti che non possono esistere nel continuo. Si può rappresentare come un'equazione alle differenze $y_{k+1}=-|p|y_k+u_k$, per un'entrata $u_0=0$ e $y_0=1$, 
+allora si avrà una conversione alternante che converge a zero alternando. Questa successione non deriva da nessun campionamento di un sistema lineare, quindi è un oggetto 
+esclusivo al discreto. 
+
+Poiché la trasformata $Z$ è una serie, bisogna determinare la sua convergenza. Data una serie $\displaystyle\sum_{k=0}^{+\infty}a_k$ questa converge in assoluto, se rispetta il 
+criterio di convergenza assoluta:
+\begin{quotation}
+    Una serie $\displaystyle\sum_{k=0}^{+\infty}a_k$ converge in assoluto, ovvero converge la serie $\displaystyle\sum_{k=0}^{+\infty}|a_k|$, se il rapporto tra un termine della serie ed il precedente 
+    è definitivamente di modulo strettamente minore di uno dopo un valore $k_0$: $\displaystyle\left|\frac{a_{k+1}}{a_k}\right|<1,\:k\geq k_0$.
+\end{quotation}
+Per cui se il modulo degli elementi della serie diminuiscono strettamente allora la serie non può che convergere. 
+
+Data $X(z)=\sum_{k=0}^{+\infty}x_kz^{-k}$, è convergente in assoluto se:
+\begin{gather}
+    \left|\displaystyle\frac{x_{k+1}}{x_k}\right|<1\\
+    x_{k+1}=\alpha x_k+u_k\\
+    \left|\displaystyle\frac{x_{k+1}}{x_k}\right|=|\alpha|<1,\mbox{ per }u_k=0
+\end{gather}
+Per cui il sistema converge in assoluto se il polo è interno alla circonferenza unitaria, quindi la sua trasformata $Z$ può essere espressa come:
+\begin{equation}
+    W(z)=\displaystyle\frac{1}{z-\alpha}
+\end{equation}
+
+\subsection{Trasformazioni $s\to z$}
+
+Poiché è possibile passare da uno stesso segnale nel tempo al dominio di Laplace ed al dominio $Z$ separatamente. Per cui si vuole trovare un modo per passare direttamente 
+dal dominio di Laplace al dominio $Z$ senza ritornare al segnale originale nel tempo. Discretizzando un sistema bisogna scegliere il tempo di campionamento adeguato. Ritardare 
+un segnale discreto di poco può causare una destabilizzazione del sistema a ciclo chiuso, per cui il tempo di campionamento è necessario che sia molto preciso 
+
+Considerando un sistema a controreazione:
+\begin{center}\begin{tikzpicture}[scale=2]
+    \coordinate(sum)at(-1,0){};
+    \node[block, right of=sum, node distance=2cm](c){$C(s)$};
+
+    %\draw[->,ultra thick](sum.0)--(c.180);
+    \filldraw[black](2.5,0)circle(1pt);
+
+    \draw[->,ultra thick](2.5,0)node[above right]{}--(3,0);
+    \draw[-,ultra thick](2.5,-0.75)--(2.5,0);
+
+    %\node[block]at(0.75,-0.75)(h){$H(s)$};
+    \node[block]at(1.75,0)(p){$P(s)$};
+
+    \draw[-,ultra thick](p.0)--(2.5,0);
+    \draw[->,ultra thick](c.0)node[above right]{}--(p.180);
+
+    %\draw[->,ultra thick](2.5,-0.75)--(h.0);
+    %\draw[-,ultra thick](h.180)--(-1,-0.75);
+    \draw[-,ultra thick](2.5,-0.75)--(0,-0.75);
+    \draw[->,ultra thick](0,-0.75)--(c.270);
+\end{tikzpicture}\end{center} 
+Il processo $P(s)$ può essere espresso nel discreto, ma il controllore $C(s)$ creato nel continuo bisogna trasportarlo nel discreto. 
+Una volta ottenuta la funzione $C(z)$ si può implementare l'equazione alle differenze tramite cicli implementati per mezzo di $interrupt$ in modo che il sistema operativo 
+non blocchi l'esecuzione del controllore senza che questo blocchi l'esecuzione del sistema operativo. 
+
+\subsubsection{Trasformazione Esatta e Guadagno}
+
+Passando per il domino del tempo è sempre possibile trasformare una funzione continua in una discreta. Scomponendo il controllore in poli e 
+residui, trasportando ogni residuo nel discreto separatamente:
+\begin{gather}
+    C(s)=\displaystyle\sum_{i=0}^{n}\frac{R_i}{s+p_i}\\
+    C(z)=\displaystyle\sum_{i=0}^{n}\frac{R_i}{z+e^{p_iT_c}}
+\end{gather}
+Questa trasformazione viene chiamata trasformazione esatta, ed il polo si sposta da $p_i$ a $e^{p_iT_c}$. Il guadagno in Laplace si ottiene ponendo $s=0$, quindi sarà: 
+$\displaystyle\frac{R_i}{p_i}$, per la trasformata $Z$, si pone $z=0$ corrisponde ad un valore di $s=1$, sarà: $\displaystyle\frac{R_i}{e^{p_iT_c}}$. Sorge un problema 
+poiché avranno la stessa risposta impulsiva, ma hanno una risposta al gradino diversa, su cui si calcola il gaudagno. Il guadagno così ottenuto dipenderà anche dal tempo 
+di campionamento scelto, per cui non la trasformazione esatta non è usata. 
+
+Per avere la stessa risposta al gradino si potrebbe 
+moltiplicare la trasformata $Z$ di ogni residuo per un fattore $\displaystyle\frac{e^{p_iT_c}}{p_i}$, in modo da avere la stessa risposta al gradino. Questa trasformazione 
+viene chiamata trasformazione al guadagno. Ma in questo modo 
+avranno una risposta uguale solo ad un'entrata a gradino, per cui questo metodo non viene mai utilizzato. Non esiste una trasformazioine "giusta" esistono sono delle 
+approssimazioni, ed alcune sono più soddisfacienti delle altre in determinate situazioni.  
+
+\subsubsection{Trasformazione ZOH}
+
+Si considera invece di discretizzare la funzione direttamente si moltiplica per l'organo di tenuta e in seguito si applica la trasformata $Z$, allora si avrà:
+\begin{gather}
+    Z\left[C(s)T(s)\right]=Z\left[C(s)\displaystyle\frac{1-e^{sT_c}}{s}\right]\\
+    Z\left[\displaystyle\frac{C(s)}{s}\right]-Z\left[\displaystyle\frac{C(s)}{s}e^{-sT_c}\right]\\
+    Z\left[\displaystyle\frac{C(s)}{s}\right](1-z^{-1})
+\end{gather}
+Per cui il segnale sarà ritardato di un campione poiché $e^{-sT_c}$ rappresenta un ritardo nel discreto di un campione. 
+
+\subsubsection{Trasformazione di Tustin}
+
+Per determinare la discretizzazione migliore per una data situazione bisogna analizzare il diagramma di Bode e controllare quale discretizzazione ha una risposta più simile 
+al controllore continuo, oppure si controllare quale controllore ha una risposta al gradino più simile, oppure si usano metodi diversi in base ai risultati richiesti. 
+La trasformazione di Tustin viene chiamata trasformazione approsimata. 
+
+Data una curva, e noto il valore dell'integrale $y_k$ della curva fino ad un punto $kT_c$, si può approssimare il valore dell'integrale $y_{k+1}$ ad un punto successivo 
+$(k+1)T_c$, come un'equazione alle differenze dato il campione nel punto $kT_c$ oppure nel punto successivo $(k+1)T_c$:
+\begin{gather}
+    i)\:y_{k+1}=y_k+T_cu_k\\
+    ii)\:y_{k+1}=y_k+T_cu_{k+1}
+\end{gather}
+Dove il $u_k$ è il valore del campione nell'intervallo di campionamento $kT_c$, per cui si approssima la curva come una serie di rettangoli, in questo modo in base 
+a quale campione si sceglie per approsismare il rettangolo si avrò un'approssimazione maggiore o minore del valore reale dell'integrale. Un'approssimazione di questo tipo 
+però non è molto precisa, per cui invece di un rettangolo si considera un trapezio di basi $u_k$ e $u_{k+1}$ e altezza $T_c$ di area $(u_k+u_{k+1})\displaystyle\frac{T_c}{2}$. 
+Questa approssimazione viene chiamata approssimazione di Tustin, ed avrà un'equazione alle differenze:
+\begin{equation}
+    iii)\:y_{k+1}=y_k+(u_k+u_{k+1})\displaystyle\frac{T_c}{2}
+\end{equation}
+
+\begin{center}
+    \begin{tikzpicture}[scale=2.9]
+        \draw[fill=cyan](0.4,1.141)--(0.8,1.141)--(0.8,0.6)--(0.4,0.6)--(0.4,1.141);
+
+        \draw[->](0,0.5)--(0,1.5)node[right]{$x(t)$};
+        \draw[->](-0.25,0.6)--(1,0.6)node[above]{$t$};
+
+        \draw[]plot[smooth, domain=-0.2:1](\x,{1+0.2*sin(2*\x r)});
+        %\draw[->,ultra thick](0,0)node[below left]{$0$}--(0,1);
+        \draw[-,ultra thick](0.4,0.6)node[above left]{$kT_c$}--(0.4,1.141);
+        \draw[-,ultra thick](0.8,0.6)node[below]{$(k+1)T_c$}--(0.8,1.141);
+        \draw[-,ultra thick](0.4,1.141)--(0.8,1.141);
+        \draw[-,ultra thick](0.4,0.6)--(0.8,0.6);
+        \draw[dashed](0.8,1.199)--(0.8,1.141);
+
+
+        \draw[dashed](0.4,1.141)--(0,1.141)node[below left]{$u_k$};
+        \draw[dashed](0.8,1.199)--(0,1.199)node[left]{$u_{k+1}$};
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=2.9]
+        \draw[fill=blue](0.4,1.199)--(0.8,1.199)--(0.8,0.6)--(0.4,0.6)--(0.4,1.199);
+
+        \draw[->](0,0.5)--(0,1.5)node[right]{$x(t)$};
+        \draw[->](-0.25,0.6)--(1,0.6)node[above]{$t$};
+
+        \draw[]plot[smooth, domain=-0.2:1](\x,{1+0.2*sin(2*\x r)});
+        %\draw[->,ultra thick](0,0)node[below left]{$0$}--(0,1);
+        \draw[-,ultra thick](0.4,0.6)node[above left]{$kT_c$}--(0.4,1.199);
+        \draw[-,ultra thick](0.8,0.6)node[below]{$(k+1)T_c$}--(0.8,1.199);
+        \draw[-,ultra thick](0.4,1.199)--(0.8,1.199);
+        \draw[-,ultra thick](0.4,0.6)--(0.8,0.6);
+
+        \draw[dashed](0.4,1.141)--(0,1.141)node[below left]{$u_k$};
+        \draw[dashed](0.8,1.199)--(0,1.199)node[left]{$u_{k+1}$};
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=2.9]
+        \draw[fill=red](0.4,1.141)--(0.8,1.199)--(0.8,0.6)--(0.4,0.6)--(0.4,1.141);
+
+        \draw[->](0,0.5)--(0,1.5)node[right]{$x(t)$};
+        \draw[->](-0.25,0.6)--(1,0.6)node[above]{$t$};
+
+        \draw[]plot[smooth, domain=-0.2:1](\x,{1+0.2*sin(2*\x r)});
+        %\draw[->,ultra thick](0,0)node[below left]{$0$}--(0,1);
+        \draw[-,ultra thick](0.4,0.6)node[above left]{$kT_c$}--(0.4,1.141);
+        \draw[-,ultra thick](0.8,0.6)node[below]{$(k+1)T_c$}--(0.8,1.199);
+        \draw[-,ultra thick](0.4,1.141)--(0.8,1.199);
+        \draw[-,ultra thick](0.4,0.6)--(0.8,0.6);
+
+
+        \draw[dashed](0.4,1.141)--(0,1.141)node[below left]{$u_k$};
+        \draw[dashed](0.8,1.199)--(0,1.199)node[left]{$u_{k+1}$};
+    \end{tikzpicture}
+\end{center}
+
+Si può ottenere l'approssimazione di un integratore $\displaystyle\frac{1}{s}$ tramite la funzione di trasferimento discreta delle equazioni alle differenze:
+\begin{gather}
+    i)\:y_{k+1}=y_k+T_cu_k\\
+    Y(z)=Y(z)z^{-1}+T_cU(z)z^{-1}\\
+    W(z)=\displaystyle\frac{T_cz_{-1}}{1-z^{-1}}\approx\frac{1}{s}\\
+    s\approx\displaystyle\frac{1}{T_c}\frac{1-z^{-1}}{z^{-1}}\\
+    ii)\:y_{k+1}=y_k+T_cu_{k+1}\\
+    Y(z)=Y(z)z^{-1}+T_cU(z)\\
+    W(z)=\displaystyle\frac{T_c}{1-z^{-1}}\approx\frac{1}{s}\\
+    s\approx\displaystyle\frac{1-z^{-1}}{T_c}\\
+    iii)\:y_{k+1}=y_k+(u_k+u_{k+1})\displaystyle\frac{T_c}{2}\\
+    Y(z)=Y(z)z^{-1}+\displaystyle\frac{T_c}{2}U(z)(1+z^{-1})\\
+    W(z)=\displaystyle\frac{T_c}{2}\frac{1+z^{-1}}{1-z^{-1}}\approx\frac{1}{s}\\
+    s\approx\displaystyle\frac{2}{T_c}\frac{1-z^{-1}}{1+z^{-1}}
+\end{gather}
+Quest'ulima approssimazione viene anche chiamata approsimazione bilineare. Poiché $s$ corrisponde ad un derivatore, in questo modo si approssima il derivatore in $z$, ma 
+l'accuratezza di questo derivatore cambia radicalmente in base a quale approssimazione si usa. 
+Non si può usare la relazione $z=e^{sT_c}$, poiché l'esponenziale non è una realzione lineare, non si potrà mai usare questa trasformazione esatta. 
+Considerando l'approssimazione più semplice, ovvero la $ii)$, si controlla in che modo mappa il piano $s$ su $z$:
+\begin{center}
+    \begin{tikzpicture}[scale=4]
+        \draw[->,thick](-0.75,0)--(0.75,0)node[above]{$\Re(z)$};
+        \draw[->,thick](0,-0.75)--(0,0.75)node[right]{$\Im(z)$};
+
+        \draw[-,ultra thick](0,0.5)arc(90:-90:0.5);
+        \draw[-, thick]plot[smooth,domain=-0.5:0](\x,{(0.25-(\x)^2)^0.5});        
+        \draw[-, thick]plot[smooth,domain=-0.5:0](\x,{-(0.25-(\x)^2)^0.5});
+        \draw[-,ultra thick](0,0.5)arc(37.3:-37.3:0.412);
+        \draw[-,ultra thick](0,0)arc(37.3:-37.3:0.412);
+    \end{tikzpicture}
+\end{center}
+Per cui rispetto ad una trasformata esatta, il piano viene deformato, la zona meno compressa corrisponde all'intorno del punto $1$. Al diminuire del tempo di campionamento 
+si deformerà di meno, poiché aumentando la risoluzione del campionamento e una trasformazione più rapida poterbbe essere semplice da implementare. Per cui se si ha una 
+funzione di trasferimento con dei poli nell'intorno di $1$ in $z$ allora potrà essere usata, me per altri poli quest'approssimazione non sarà precisa. L'intorno di $1$ è 
+una zona fissa della trasformazione che non viene deformata. 
+
+Invece per l'approsimmazione di Tustin si ha una mappatura molto più accurata rispetto alla mappatura esatta:
+\begin{center}
+    \begin{tikzpicture}[scale=4]
+        \draw[->,thick](-0.75,0)--(0.75,0)node[above]{$\Re(z)$};
+        \draw[->,thick](0,-0.75)--(0,0.75)node[right]{$\Im(z)$};
+
+        \draw[-,ultra thick](-0.433,0.25)arc(150:-150:0.5);
+        %\draw[-ultra thick](-0.433,0.25)arc();
+        %(x+0.68285)^2+(y-0.183)^2=0.066989
+        \draw[-, thick]plot[smooth,domain=-0.5:-0.433](\x,{(0.25-(\x)^2)^0.5});        
+        \draw[-, thick]plot[smooth,domain=-0.5:-0.433](\x,{-(0.25-(\x)^2)^0.5});
+    \end{tikzpicture}
+\end{center}
 
 
 
