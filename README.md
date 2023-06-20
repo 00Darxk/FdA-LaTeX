@@ -3,7 +3,7 @@
 Appunti di Fondamenti di Automatica, AA 2022/2023
  Università di Roma Tre. 
 
-Di seguito le possibile domande dell'orale, divese in base ai macroargomenti riguardanti: 
+Di seguito le possibile domande dell'orale, divise in base ai macroargomenti riguardanti: 
 
 Rappresentazioni Ingresso-Uscita:
 
