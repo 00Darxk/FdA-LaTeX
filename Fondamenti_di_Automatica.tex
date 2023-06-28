@@ -37,12 +37,13 @@
 % V Ingressi di Tipo Sinusoidale;
 % V Controllori Digitali;
 % V Esonero, potenzialmente;
-%   Finire Con Equazioni Differenziali e Laplace;
+% V Laplace;
+%   Eq. Diff;
 % V Sostituire Immagini Screenate da Simulink con Blocchi Fatti in Tikz(https://latexdraw.com/block-diagram-in-latex-step-by-step-tikz-tutorial)e
 %                                                                       (https://tex.stackexchange.com/questions/175969/block-diagrams-using-tikz);
 %   Rotore DC grafico in CiruiTikz;
 % X Figures Description;
-%   Linearization;
+% V Linearization;
 %   Rumori Aleatori;
 % V Figura Operazionale in Frequenza;
 %   Reti Correttrici Grafico Circuito;
@@ -55,7 +56,6 @@
 % V Grafico Filtro Passa-Basso s->t;
 %   Vera Forma Bode Segnale Campionato (trapezoide);
 %   Parentesi Quadre funzioni Tempo Discreto;
-%   \ref{eq://} anche su fisica;
 
 \title{Fondamenti di Automatica}
 \author{}
@@ -166,11 +166,318 @@ $\vec{x}(t>t_0)$.
 
 \section{Trasformata di Laplace}
 
-\subsection{Trasformate Notevoli}
+La trasformata di Laplace è un funzionale che trasposrta una funzione nel dominio del tempo nel dominio di Laplace. Si considerano solo oggetti 
+causali, ovvero definiti e non nulli per tempo $t>$:
+\begin{equation}
+    f(t):=
+    \begin{cases}
+        f(t) &t>\\
+        0 &t\leq0
+    \end{cases}
+\end{equation}    
+La trasformata di Laplace unilatera destra $\mathscr{L}_-\{f(t)\}$ viene definita come l'integrale: 
+\begin{equation}
+    \mathscr{L}_-\{f(t)\}:=\displaystyle\int_{0^-}^{+\infty}f(t)e^{-st}dt
+\end{equation}
+Dove $s$ è la variabile indipendente complessa nel dominio di Laplace, per cui una funzione nel tempo $f(t)$ avrà una trasformata di Laplace $F(s)$. 
+Questa variabile può essere espressa come $s=\sigma+j\omega$, l'integrale di Laplace sarà definito se la funzione interna è sommabile, ovvero se converge per $t\to\infty$. 
+Dato un esponente negativo dovrebbe sempre convergere, ma essendo una variabile complessa per ottenere la convergenza del termine $e^{-st}$ si considera la parte reale $\sigma$
+di $s$, maggiore di un certo valore $\sigma*$, che garantisce la convergenza dell'esponenziale. Questo valore viene chiamato ascissa di convergenza e divide il piano di Guass 
+in due zone, quella in quella a sinistra non è integrabile, in quella a destra è integrabile. Ciò permette sempre l'esistenza di una zona di convergenza assoluta dove l'integrale 
+di Laplace può essere calcolato, prende alternativamente il valore di $0$ o $-\infty$. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,thick](-0.5,0)--(1.5,0)node[above]{$\Re(s)$};
+        \draw[->,thick](0,-0.5)--(0,1.5)node[right]{$\Im(s)$};
+
+        \draw[dashed](1,-0.5)--(1,0)node[below right]{$\sigma*$}--(1,1.5);
+    \end{tikzpicture}
+\end{center}
+
+\subsection{Trasformate Elementari}
+
+Data una trasformata $F(s)$, il valore della trasformata per il coniugato di $s$ è uguale al coniugato della trasformata in $s$:
+\begin{equation}
+    F(s^*)=F^*(s)
+\end{equation}
+La trasformata di una funzione per una costante è uguale al prodotto di quella costante per la trasformata:
+\begin{equation}
+    \mathscr{L}_-\{a\cdot f(t)\}=a\cdot F(s)
+\end{equation} 
+
+Date due funzioni nel tempo $f(t)$ e $g(t)$, supponendo esistano le trasfomate di Laplace delle due funzioni $F(s),\:G(s)$, si considera la trasformata di Laplace 
+della combinazione lineare delle due: 
+\begin{gather}
+    \mathscr{L}_-\{f(t)+g(t)\}=\displaystyle\int_{0^-}^{+\infty}\left(f(t)+g(t)\right)e^{-st}dt=\int_{0^-}^{+\infty}f(t)e^{-st}+g(t)e^{-st}dt\\
+    \displaystyle\int_{0^-}^{+\infty}f(t)e^{-st}dt+\int_{0^-}^{+\infty}g(t)e^{-st}dt=F(s)+G(s)
+\end{gather}
+
+Data una funzione $f(t)$ ed una trasformata $F(s)$, se si trasla la funzione nel tempo di un fattore $a$, la sua trasformata diventerà:
+\begin{gather}
+    \mathscr{L}_-\{f(t-a)\}=\displaystyle\int_{0^-}^{+\infty}f(t-a)e^{-st}dt,\:t-a=\tau\\
+    \displaystyle\int_{-a^-}^{+\infty}f(\tau)e^{-s(\tau+a)}d\tau=e^{-sa}\int_{-a^-}^{+\infty}f(\tau)e^{-s\tau}d\tau=F(s)e^{-sa}
+\end{gather}
+
+
+Si considera una dinamica esponenziale $f(t)=e^{pt}$, la sua trasformata di Laplace sarà data da:
+\begin{gather}
+    \mathscr{L}_-\{e^{pt}\}=\displaystyle\int_{0^-}^{+\infty}e^{pt}e^{-st}dt=\int_{0^-}^{+\infty}e^{(p-s)t}dt=\left[\frac{e^{(p-s)t}}{p-s}\right]^{+\infty}_{0^-}\\
+    \displaystyle\frac{e^{(p-s)\cdot\infty}}{p-s}-\frac{e^{(p-s)\cdot0}}{p-s},\:\sigma*=\Re(p),\Rightarrow \Re(s)>\Re(p),\:\Re(p-s)<0\\
+    \displaystyle\frac{\cancelto{0}{e^{-(s-p)\cdot\infty}}}{-(s-p)}+\frac{\cancelto{1}{e^{-(s-p)\cdot0}}}{s-p}\\
+    \mathscr{L}_-\{e^{pt}\}=\displaystyle\frac{1}{s-p}
+\end{gather}
+
+
+Per traslare una funzione $f(t)$ nel dominio di Laplace di un fattore $a$, si considera $f(t)e^{at}$:
+\begin{gather}
+    \mathscr{L}_-\{f(t)e^{at}\}=\displaystyle\int_{0^-}^{+\infty}f(t)e^{at}e^{-st}dt=\int_{0^-}^{+\infty}f(t)e^{-(s-a)t}dt=F(s-a)
+\end{gather}
+
+Date due funzioni $f(t)$ e $g(t)$, aventi trasformate rispettivamente $F(s)$ e $G(s)$, si considera la trasformata della loro convoluzione $f(t)*g(t)$:
+\begin{gather}
+    \mathscr{L}_-\{f(t)*g(t)\}=\displaystyle\int_{0^-}^{+\infty}f(t)*g(t)^{-st}dt=\int_{0^-}^{+\infty}\left(\int_{0^-}^{t}f(t-\tau)g(\tau)d\tau\right)e^{-st} dt\\
+    \displaystyle\int_{0^-}^{t}\left(\int_{0^-}^{+\infty}f(t-\tau)e^{-st}dt\right)g(\tau)d\tau=\int_{0^-}^{t}F(t)e^{-s\tau}g(\tau)d\tau=F(s)\int_{0^-}^{t}g(\tau)e^{-s\tau}d\tau\\
+    \mathscr{L}_-\{f(t)*g(t)\}=F(s)\cdot G(s)
+\end{gather}
+
+Data una funzione $f(t)$ derivabile $n$ volte, e avente trasformata $F(s)$, si considera la trasformata della sua derivata:
+\begin{gather}
+    \mathscr{L}_-\{\dot f(t)\}=\displaystyle\int_{0^-}^{+\infty}\dot f(t)e^{-st}dt\\
+    \displaystyle\frac{d}{dt}(f(t)e^{-st})=\dot f(t)e^{-st}-sf(t)e^{-st}\Rightarrow\dot f(t)e^{-st}=\frac{d}{dt}(f(t)e^{-st})+sf(t)e^{-st}\\
+    \displaystyle\int_{0^-}^{+\infty}\dot f(t)e^{-st}dt=\int_{0^-}^{+\infty}\frac{d}{dt}(f(t)e^{-st})+sf(t)e^{-st}dt\\
+    \displaystyle\int_{0^-}^{+\infty}\frac{d}{dt}(f(t)e^{-st})dt+s\int_{0^-}^{+\infty}f(t)e^{-st}dt=\left[f(t)e^{-st}\right]^{+\infty}_{0^-}+sF(s)\\
+    \mathscr{L}_-\{\dot f(t)\}=sF(s)-f(0^-)
+\end{gather}
+Per $\displaystyle\frac{d^n}{dt^n}f(t)$:
+\begin{gather}
+    \mathscr{L}_-\left\{\displaystyle\frac{d^n}{dt^n}f(t)\right\}=s^nF(s)-\sum_{i=0}^{n-1}s^{n-(i+1)}\frac{d^i}{dt^i}f(0^-)
+\end{gather}
+
+Data una funzione $f(t)$, integrabile, e data la funzione integrale $\displaystyle\int_{0}^{t}f(\tau)d\tau$ definita, si considera la sua trasformata:
+\begin{gather}
+    \mathscr{L}_-\left\{\displaystyle\int_{0}^{t}f(\tau)d\tau\right\}=\int_{0^-}^{+\infty}\left(\int_{0}^{t}f(\tau)d\tau\right)e^{-st}dt\\
+    f(t)*\delta_{-1}(t)=\displaystyle\int_{0}^{t}f(\tau)d\tau,\:\mathscr{L}_-\left\{\displaystyle\int_{0}^{t}f(\tau)d\tau\right\}=\mathscr{L}_-\{f(t)*g(t)\}\\
+    \mathscr{L}_-\left\{\displaystyle\int_{0}^{t}f(\tau)d\tau\right\}=\frac{F(s)}{s}
+\end{gather}
+
+Si definiscono i teoremi del valore iniziale e del valor finale, rispettivamente:
+\begin{gather}
+    \lim_{t\to0^+}f(t)=\lim_{s\to+\infty}sF(s)\\
+    \lim_{t\to+\infty}f(t)=\lim_{s\to0^-}sF(s)
+\end{gather}
+
+Dato una funzione polinomiale di tipo $k$:
+\begin{equation}
+    \delta_k(t):=
+    \begin{cases}
+        \displaystyle\frac{t^{k-1}}{(k-1)!}&t\geq0\\
+        0&t<0
+    \end{cases}
+\end{equation}
+\'{E} possibile ricavarsi una funzione del tipo $k+1$, integrando $\delta_k(t)$. Per cui data la trasformata di Laplace del gradino:
+\begin{equation}
+    \mathscr{L}_-\{\delta_{-1}(t)\}:=\displaystyle\frac{1}{s}
+\end{equation}
+Sapendo che la trasformata di una funzione integrale è la trasforata del'argomento dell'integrale diviso $s$, per ogni funzione di tipo $k$:
+\begin{equation}
+    \mathscr{L}_-\{\delta_k(t)\}:=\displaystyle\frac{1}{s^k}
+\end{equation}
+Inoltre è possible derivare la funzione del gradino per ottenere la trasformata dell'impulso $\delta_0(t)$:
+\begin{equation}
+    \mathscr{L}_-\left\{\displaystyle\frac{d}{dt}\delta_1(t)\right\}=s\cdot\frac{1}{s}=1=\mathscr{L}_-\{\delta_0(t)\}
+\end{equation}
+
+Data una funzione sinusoidale o cosinusoidale, è possibile esprimerla in forma esponenziale per determinarne la trasformata di Laplace:
+\begin{gather}
+    \mathscr{L}_-\{sin(\omega t)\}=\mathscr{L}_-\left\{\displaystyle\frac{e^{j\omega t}-e^{-j\omega t}}{2j}\right\}=\frac{1}{2j}\left(\frac{1}{s-j\omega}-\frac{1}{s+j\omega}\right)\\
+    \displaystyle\frac{1}{2j}\frac{s+j\omega-s+j\omega}{s^2+\omega^2}=\frac{\omega}{s^2+\omega^2}\\
+    \mathscr{L}_-\{cos(\omega t)\}=\mathscr{L}_-\left\{\displaystyle\frac{e^{j\omega t}+e^{-j\omega t}}{2}\right\}=\frac{1}{2}\left(\frac{1}{s-j\omega}+\frac{1}{s+j\omega}\right)\\
+    \displaystyle\frac{1}{2}\frac{s+j\omega+s-j\omega}{s^2+\omega^2}=\frac{s}{s^2+\omega^2}
+\end{gather}
+
+Alcune delle funzioni più comunemente incontrate nello studio di sistemi dinamici sono funzioni polinomiali di tipo $k$ traslate nel dominio di Laplace:
+\begin{equation}
+    \mathscr{L}_-\left\{\displaystyle\frac{t^{(k-1)}e^{pt}}{(k-1)!}\right\}=\frac{1}{(s-p)^k}
+\end{equation}
 
 \subsection{Trasformata di un'Equazione Differenziale di Ordine Superiore al Primo}
 
-\subsection{Stabilità di un Sistema}
+Dato un sistema definito da un'equazione differenziale $a_ny^{(n)}+\cdots a_0y^{(0)}=b_mu^{(m)}+\cdots+b_0u^{(0)}$, è possibile e più conveniente lavorare nel dominio di 
+Laplac. Il sistema è causale per $m<n$, non è causale per $m>n$, mentre è al limite di stabilità per $m=n$. Per analizzare il sistema si considera la trasformata di Laplace 
+dell'equazione differenziale:
+\begin{gather}
+    \mathscr{L}_-\left\{\displaystyle\sum_{k=0}^{n}a_ky^{(k)}\right\}=\mathscr{L}_-\left\{\sum_{i=0}^{m}b_iu^{(i)}\right\}\\
+    \displaystyle\sum_{k=0}^{n}\left(a_ks^kY(s)+CI_y^{k-1}(s)\right)=\sum_{i=0}^{m}b_is^iU(s)
+\end{gather}
+Poiché un'entrata $u(t)$, viene definita nulla per tempi $t\leq0$, il polinomio delle condizioni iniziali dell'entrata $CI_u^{m-1}$ è nullo. Si considera la sommatoria 
+di tutti i polinomi delle condizioni iniziali dell'uscita:
+\begin{equation}
+    \displaystyle\sum_{k=0}^{n}CI-y^{k-1}(s)=\overline{CI}_y^{n-1}(s)
+\end{equation}
+
+Per cui si avrà:
+\begin{gather}
+    Y(s)\displaystyle\sum_{k=0}^{n}a_ks^k+\overline{CI}_y^{n-1}(s)=U(s)\sum_{i=0}^{m}b_is^i\\
+    Y(s)=\displaystyle\frac{\sum_{i=0}^{m}b_is^i}{\sum_{k=0}^{n}a_ks^k}U(s)-\frac{\overline{CI}_y^{n-1}(s)}{\sum_{k=0}^{n}a_ks^k}\\
+\end{gather}
+
+Si considerano le somiglianze con le soluzioni dell'equazione differenziale ottenute mediante il metodo geometrico:
+\begin{gather}
+    \begin{cases}
+        \dot x=Ax+Bu\\
+        y=Cx
+    \end{cases}\Rightarrow
+    y(t)=Ce^{At}x_0+Ce^{At}B*u(t)
+\end{gather}
+
+La risposta libera rappresenta la rispsota di un sistema considerando solamente le condizioni iniziali trascurando l'ingresso, in Laplace corrisponde a 
+$\displaystyle\frac{\overline{CI}_y^{n-1}(s)}{\sum_{k=0}^{n}a_ks^k}$ mentre nel tempo corrisponde a $Ce^{At}x_0$. 
+
+
+La risposta forzata rappresenta la risposta ottenuta considerando solamente l'entrata del sistema ed ignorando lo stato inziziale e la sua evoluzione in Laplace corrisonde a 
+$\displaystyle\frac{\sum_{i=0}^{m}b_is^i}{\sum_{k=0}^{n}a_ks^k}U(s)$ mentre nel tempo corrisponde a $Ce^{At}B*u(t)$.
+
+
+La risposta complessiva del sistema è data dalla differenza tra la risposta forzata e la risposta libera: 
+\begin{equation}
+    Y(s)=Y_f(s)-Y_l(s)
+\end{equation}
+
+Essendo $Ce^{At}B$ la funzione che descrive il processo $H$ analizzato, calcolando la trasformata della risposta forzata si ottiene:
+\begin{equation}
+    Y_f(s)=\mathscr{L}_-\{h(t)*u(t)\}=H(s)\cdot U(s)
+\end{equation}
+Avendo calcolato precedentemente la risposta forzata in Laplace, si può ricavare la trasformata del processo del sistema:
+\begin{gather}
+    H(s)\cdot U(s)=\displaystyle\frac{\sum_{i=0}^{m}b_is^i}{\sum_{k=0}^{n}a_ks^k}U(s)\\
+    H(s)=\displaystyle\frac{b_ms^m+\cdots+b_0}{a_ns^n+\cdots+a_0}
+\end{gather}
+Per cui la risposta complessiva del sistema è data da:
+\begin{equation}
+    Y(s)=H(s)U(s)-Y_l(s)
+\end{equation}
+Questa trasformata viene definita funzione di trasferimento del processo, poiché lega l'entrata e l'uscita del processo: $\displaystyle\frac{Y(s)}{U(s)}=H(s)$. Può essere 
+rappresentato come un diagramma a blocchi in Laplace:
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \node[block](h)at(0,0){$\displaystyle\frac{b_ms^m+\cdots+b_0}{a_ns^n+\cdots+a_0}$};
+        \draw[->,ultra thick](-1.5,0)--(h.180)node[above left]{$U(s)$};
+        \draw[->,ultra thick](h.0)--(1.5,0)node[above left]{$Y(s)$};
+    \end{tikzpicture}
+\end{center}
+
+Questa funzione di trasferimento può essere scomposta in fratti semplici del tipo $\displaystyle\frac{R_i}{s-p_i}$, dove $p_i$ è un polo della funzione $H(s)$. I residui $R_i$ 
+possono essere calcolati mediante la formula: 
+\begin{equation}
+    R_i=\lim_{s\to p_i}(s-p_i)H(s)
+\end{equation}
+Se i poli hanno molteplicità $m(p_i)$ maggiore di $1$, allora per ogni ripetizione $j$ del polo si ottiene un residuo $R_i^j$:
+\begin{equation}
+    \forall j\in[1,m(p_i)],\:R_i^j=\lim_{s\to p_i}\displaystyle\frac{1}{(m(p_i)-j)!}\frac{d^{(m(p_i)-j)}}{ds^{(m(p_i)-j)}}\left((s-p_i)^{m(p_i)}H(s)\right)
+\end{equation}
+
+Per cui data una qualsiasi funzione di trasferimento $H(s)$ avente $k$ poli, può essere espressa come:
+\begin{equation}
+    H(s)=\displaystyle\sum_{i=1}^{k}\sum_{j=1}^{m(p_i)}\frac{R_i^j}{(s-p_i)^{m(p_i)-j+1}}
+\end{equation}
+
+
+A regime permanente le condizioni iniziali non influiscono sull'andamento della funzione, per il teormea del valore finale:
+\begin{equation}
+    \displaystyle\lim_{t\to+\infty}y(t)=\lim_{s\to0^-}sY(s)=\lim_{s\to0}s\left(H(s)\cdot U(s)-\frac{\cancelto{0}{\overline{CI}_y^{n-1}(s)}}{a_ns^n+\cdots+a_0}\right)
+\end{equation}
+Per cui l'evoluzione permanente dipende intermanete dalla risposta forzata, mentre il transitorio dipende maggiormente dalla risposta libera e quindi dalle condizioni iniziali, e 
+sarà un processo relativamente veloce. Vengono così identificati due casi di studio di un sistema:
+\begin{itemize}
+    \item L'analisi dinamica studia il comportamento nello stato transitorio; 
+    \item L'analisi statica studia il comportamento a regime permanente. 
+\end{itemize} 
+Dato che le condizioni iniziali non influiscono sul regime permanente vengono omoesse nell'analisi statica. 
+
+Per ottenere la funzione nel dominio del tempo si usano diverse anti-trasformate notevoli:
+\begin{gather}
+    \mathscr{L}_-^{-1}\left\{F(s+p)\right\}=f(t)e^{-pt}\\
+    \mathscr{L}_-^{-1}\left\{\displaystyle\frac{R_i^j}{(s+p_i)^k}\right\}=\delta_k(t)R_i^je^{-p_it}\\
+    \mathscr{L}_-^{-1}\left\{\displaystyle\frac{R_i}{s+p_i}\right\}=R_ie^{-p_it}
+\end{gather}
+
+Per cui le dinamiche della funzione di trasferimento saranno funzioni di tipo $k$ moltiplicati per esponenziali o esponenziali puri. 
+
+\subsection{Evoluzione di un Sistema}
+
+Il denominatore della funzione di trasferimento di un processo coincide con il suo polinomio caratteristico, quindi un sistema è stabile se la sua funzione di trasferimento 
+presente solo poli a parte reale negativa. 
+
+Dato un singolo polo a parte reale negativa $\displaystyle\frac{R_i}{s+p_i}$, nel dominio del tempo si ha una dinamica esponenziale $R_ie^{-p_it}$. La retta tangente alla funzione 
+nell'istante $t=0$ interseca l'ascissa del tempo in un punto $\tau$ definito tempo 
+caratteristico o costante di tempo, equivalente all'inverso del polo: $\tau_i:=\displaystyle\frac{1}{p_i}$. Dopo un intervallo di tempo di $3\tau$ si svolge il $95\%$ dell'evoluzione 
+del sistema, per cui l'analisi del transitorio avviene in questo intervallo di tempo. Si può estendere fino a $6\tau$ dove un'altro $95\%$ del rimanente $5\%$ dell'evoluzione 
+si svolge. 
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,thick](-0.5,0)--(1.5,0)node[above]{$t$};
+        \draw[->,thick](0,-0.5)--(0,1.5)node[right]{$f(t)$};
+
+        \draw[-,very thick]plot[smooth, domain=0:1.4](\x,{e^(-1.3*\x)});
+        \draw[-,very thick]plot[smooth, domain=-0.25:0](\x,{-1.3*\x+1});
+        \draw[-,very thick](0,1)node[above right]{$R_ie^{-p_it}$}--(0.769,0)node[below]{$\tau$};
+    \end{tikzpicture}
+\end{center}
+
+In caso il polo sia a parte reale positiaìva, avrà una dinamica esponenziale divergente.
+
+Dati due poli complessi e coniugati si avranno due residui: $\displaystyle\frac{R_1}{s-\sigma-j\omega}+\frac{R_2}{s-\sigma+j\omega}$. Tramite le antitrasformate notevoli si 
+ottiene una dinamica nel tempo $R_1e^{(\sigma+j\omega)t}+R_2e^{(\sigma-j\omega)t}$. Poiché rappresenta un oggetto fisico deve essere reale, è necessario che $R_1=R^*_2$. 
+Considerando $R_1=Me^{j\varphi}$, si avrà:
+\begin{gather}
+    \mathscr{L}_-^{-1}\left\{\displaystyle\frac{R_1}{s-\sigma-j\omega}+\frac{R_2}{s-\sigma+j\omega}\right\}=Me^{(\sigma+j\omega)t+j\varphi}+Me^{(\sigma-j\omega)t-j\varphi}\\
+    Me^{\sigma t}\left(e^{j(\omega t+\varphi)}+e^{-j(\omega t+\varphi)}\right)=2Me^{\sigma t}cos(j\omega t+\varphi)
+\end{gather}
+Per cui due poli complessi e coniugati avranno un andamento pseudoperiodico nel tempo, convergente se $\sigma<0$ e divergente per $\sigma>0$.  
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,thick](-0.5,0)--(2,0)node[above]{$t$};
+        \draw[->,thick](0,-1.5)--(0,1.5)node[right]{$f(t)$};
+
+        \draw[-, thick]plot[smooth, domain=0:1.8](\x,{e^(-1.3*\x)});
+        \draw[-, thick]plot[smooth, domain=0:1.8](\x,{-e^(-1.3*\x)});   
+        \draw[-,very thick]plot[smooth, domain=0:1.8](\x,{e^(-1.3*\x)*cos(8*\x r)}); 
+    \end{tikzpicture}
+\end{center}
+
+In caso i due poli complessi e coniugati siano puramente immaginari, allora l'oscillazione non si smorzerà nel tempo, quindi avranno un andamento puramete periodico, 
+rappresentano delle dinamiche al limite di stabilità.
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,thick](-0.5,0)--(2,0)node[above]{$t$};
+        \draw[->,thick](0,-1.5)--(0,1.5)node[right]{$f(t)$};
+
+        \draw[-, thick](0,1)--(1.8,1);
+        \draw[-, thick](0,-1)--(1.8,-1);
+        \draw[-,very thick]plot[smooth, domain=0:1.8](\x,{cos(8*\x r)}); 
+    \end{tikzpicture}
+\end{center} 
+
+Un polo nell'origine nel piano di Laplace corrisponde ad un gradino nel dominio del tempo. Un polo nell'origine rappresenta una dinamica al limite di stabilità, il 
+sistema è stabile solo se è presente un unico polo nell'origine. 
+
+In base alla posizione dei poli nel piano di Guass il sistema avrà modi propri di evoluzione differenti. L'andamento del sistema è la combinazione degli andamenti dei 
+singoli poli. Basta una singola dinamica divergente per rendere il sistema instabile. Questi modi propri possono essere costanti, in caso del polo nell'origine, esponenziale 
+in caso di poli puramente reali o oscillatori in caso di poli complessi. Questi modi possono essere convergenti se il polo ha parte reale negativa, stazionare se ha parte 
+reale nulla e divergente se ha parte reale positiva. 
+
+Un sistema è asintoticamente stabile se tutti i poli rappresentano dinamiche convergenti. Se presenta almeno una dinamica al limite di stabilità viene definito semplicemente 
+stabile. Più i poli sono piccolo più velocemente il sistema converge. 
+
+Il guadagno di una funzione di trasferimento è definito come il valore che assume a regime permanente, se è stabile. In caso sia presente un polo nell'origine, non si può 
+calcolare il guadagno statico della funzione.
+\begin{equation}
+    K_F=\lim_{t\to+\infty}f(t)=\lim_{s\to0}sF(s)
+\end{equation}
+
+I contributi dei poli asintoticamente stabili rappresentano la risposta libera del sistema, poiché tende a zero nel tempo, mentre i contributi dei poli semplicemente stabili 
+o instabili rappresentano la risposta permanente, poiché non diminuisce nel tempo.
 
 \subsection{Funzioni di Trasferimento}
 Una funzione di trasferimento del tipo ingresso-uscita, per cui perde ogni informazione sullo stato del sistema.
@@ -518,27 +825,43 @@ valori dei coefficienti del polinomio:
 Per cui se esiste almeno una soluzione di $D(s)+K_cN(s)$, allora sarà sempre possibile trovare una sua soluzione per ogni valore di $K_c$ scelto. 
 Per valori di $K_c\approx0$, si potrà approssimare il denominatore a: $D(s)+K_cN(s)\approx D(s)$, quindi il valore dei poli sarà dato dalla sola 
 funzione $D(s)$, al contrario per valori del guadagno del controllore molto elevati  $K_c>>0$, si avrà $D(s)+K_cN(s)\approx N(s)$, quindi il valore 
-dei poli sarà dato dalla sola funzione $N(s)$. 
+dei poli sarà dato dalla sola funzione $N(s)$.
+
+
 Per controllare l'andamento dei poli della funzione a ciclo chiuso rispetto ai valori del guadagno del controllore, si usa il luogo delle radici, un 
 grafico che che mostra lo spostamento dei poli rispetto all'aumento del guadadno, i poli partiranno dai valori dei poli del processo, fino a tendere 
 al valore degli zeri del processo. Se il processo presenta un numero minore di zeri, allora alcuni dei poli tenderanno all'infinito. 
-Il luogo della radici viene rappresentato su un piano di Gauss. Se due poli sono complessi e coinugati, allora il loro comportamento rispetto all'
-aumentare del guadagno sarà simmetrico. Questi poli possono essere espressi come: 
+Il luogo della radici viene rappresentato su un piano di Gauss. 
+
+
+Se due poli sono complessi e coinugati, allora il loro comportamento rispetto all'aumentare del guadagno sarà simmetrico. Si può eprimere questo trinomio rispetto ad 
+un'altra parametrizzazione:
 \begin{equation}
-    (s+p_1)(s+p_1^*)=\displaystyle\frac{s^2}{\omega_0^2}+\frac{2\xi}{\omega_0}s+1
+    a_2s^2+a_1s+a_0=(s+p_1)(s+p_1^*)=s^2+2\sigma s+\omega^2=s^2+2\zeta\omega_ns+\omega_n^2
 \end{equation}
-Dove $\xi$ rappresenta lo smorzamento del polo, quantifica quanto persiste l'oscillazione del sistema in seguito ad un dato ingresso, è dato da 
-$\xi=cos\varphi$, dove $\varphi$ rappresenta l'angolo con l'orizzontale rispetto a $\omega_0$, la distanza tra l'origne $O$ ed il polo, che esprime 
-l'ampiezza dell'oscillazione. 
-Per cui il polo espresso in coordinate polari sarà $(\omega_0,\:\varphi)$. 
-Un polo con uno smorzamento maggiore tenderà a convergere più velocemente, e avrà un tempo caratteristico minore. \\
-In matalab si può ottenere il grafico del luogo delle radici per qualsiasi funzione di trasferimento tramite il comando 
+
+Convenzionalmente si analizza una funzione di trasferimento esprimendo i poli e gli zeri a guadagno unitario, ovvero si esprimono i binomi come $(s\tau_i+1)$ e i trinomi 
+come $\displaystyle\frac{s^2}{\omega_n^2}+2\frac{\zeta}{\omega_n}s+1$. In questo modo viene esplicitato il guadagno statico della funzione:
+
+\begin{equation}
+    P(s)=K_p\displaystyle\frac{(s\tau_m+1)\cdots(s\tau_i+1)}{(s\tau_n+1)\cdots(s\tau_j+1)}
+\end{equation}
+
+
+Dove $\zeta=\displaystyle\frac{a_1}{2\omega_n}$ rappresenta lo smorzamento del polo, quantifica quanto persiste l'oscillazione del sistema in seguito ad un dato ingresso, è dato da 
+$\zeta=cos\varphi$, dove $\varphi$ rappresenta l'angolo con l'orizzontale formato dal segmento distanza tra l'origine ed il polo. 
+$\omega_n=\displaystyle\sqrt{a_0}$ viene definita pulsazione naturale, è la parte immaginaria del polo e quantifica quanto veloce oscilla. 
+Un polo con uno smorzamento maggiore tenderà a convergere più velocemente, e avrà un tempo caratteristico minore. 
+
+
+
 La funzione di trasferimento sarà stabile se il luogo delle radici è intermaente nel semipiano di parte reale negativa, altrimenti sarà stabile solo 
-in un certo intervallo di $K_c$. La funzione "rlocus(F)" analizza solo valori positivi del guadagno, per controllare se l'intervallo si estenda anche per 
-valori negativi bisogna controllare "rlocus(-F)". Le linee radiali uscenti dall'origine rappresentano le linee di smorzamento. 
-I punti segnati con una croce rappresetano i poli, mentre i punti indiviuati da un cerchio rappresentano gli zeri della funzione.\\
-Aumentando il guadagno, aumenta l'ampiezza di un'oscillazione e diminuisce l'errore che ne deriva. La robustezza di un sistema è una misura che 
-quantifica quanto un sistema mantiene nel sue dinamiche nel tempo, rispetto ad errori. 
+in un certo intervallo di $K_c$. Nel luogo delle radici le linee radiali uscenti dall'origine rappresentano le linee di smorzamento. 
+I punti segnati con una croce rappresetano i poli, mentre i punti indiviuati da un cerchio rappresentano gli zeri della funzione.
+
+
+Aumentando il guadagno, aumenta l'ampiezza di un'oscillazione e diminuisce l'errore che ne deriva. La robustezza di un sistema misura quanto un sistema mantiene nel sue 
+dinamiche nel tempo, rispetto ad errori. 
 
 \begin{center}
     \includegraphics[scale=0.55]{rlocus}
@@ -547,9 +870,10 @@ quantifica quanto un sistema mantiene nel sue dinamiche nel tempo, rispetto ad e
     \draw[->](-1,0)coordinate(Re)--(0.5,0)node[above]{$Re$};
     \draw[->](0,-1.5)--(0,1.5)coordinate(Im)node[right]{$Im$};
 
-    \draw[-,very thick](O)--(-0.5,1)coordinate(w)node[right]{$\omega_0$}node[above]{$p_1$};
+    \draw[-,very thick](O)--(-0.5,1)coordinate(w)node[above]{$p_1$};
+    \draw[dashed](w)--(0,1)node[right]{$\omega_n$};
     \draw[-,very thick](O)--(-0.5,-1)node[below]{$p_1^*$};
-    \draw[dashed](-0.4,0.8)node[right]{$1$}--(-0.4,0)node[below]{$\xi$};
+    \draw[dashed](-0.4,0.8)node[below left]{$1$}--(-0.4,0)node[below]{$\zeta$};
     \draw[-,thick](-0.4,0)--(0,0);
     \pic["$\varphi$",draw, angle eccentricity=1.2, angle radius=0.5cm]{angle=w--O--Re};
 
@@ -557,6 +881,7 @@ quantifica quanto un sistema mantiene nel sue dinamiche nel tempo, rispetto ad e
 \end{center}
 
 \subsubsection{Controllore Proporzionale con un integratore}
+
 Per controllare l'effetto di un controllore proporzionale sul guadadno di un sistema, si considera un'entrata a gradino $U(s)=\displaystyle\frac{1}{s}$, e si calcola con 
 il teorma del valore finale il valore dell'uscita a regime permanente:
 \begin{gather}
@@ -1062,20 +1387,20 @@ al limite di stabilità.
     \includegraphics[width=10cm]{Bode1Polo}
 \end{center}
 
-Si considera un trinomio $\displaystyle\frac{s^2}{\omega_n^2}+\frac{2\xi s}{\omega_n}+1\to_{s=j\omega}-\frac{\omega^2}{\omega_n^2}+\frac{2\xi\omega}{\omega_n}j+1$. 
+Si considera un trinomio $\displaystyle\frac{s^2}{\omega_n^2}+\frac{2\zeta s}{\omega_n}+1\to_{s=j\omega}-\frac{\omega^2}{\omega_n^2}+\frac{2\zeta\omega}{\omega_n}j+1$. 
 Per $\omega>>\omega_n$ il modulo sarà: 
 \begin{gather}
-    \left|-\frac{\omega^2}{\omega_n^2}+\frac{2\xi\omega}{\omega_n}j+1\right|=20\log{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\xi^2\omega^2}{\omega_n^2}}\right)\\
-    10\log_{10}=\left(4\xi^2\displaystyle\frac{\omega^2}{\omega_n^2}+\frac{\omega^4}{\omega_n^4}\right)\approx40\log_{10}\left(\displaystyle\frac{\omega}{\omega_n}\right)
+    \left|-\frac{\omega^2}{\omega_n^2}+\frac{2\zeta\omega}{\omega_n}j+1\right|=20\log{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\zeta^2\omega^2}{\omega_n^2}}\right)\\
+    10\log_{10}=\left(4\zeta^2\displaystyle\frac{\omega^2}{\omega_n^2}+\frac{\omega^4}{\omega_n^4}\right)\approx40\log_{10}\left(\displaystyle\frac{\omega}{\omega_n}\right)
 \end{gather}
 Per $\omega<<\omega_n$ il modulo sarà nullo, poiché: 
 \begin{equation}
-    20\log{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\xi^2\omega^2}{\omega_n^2}}\right)\approx201log_{10}(1)=0
+    20\log{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\zeta^2\omega^2}{\omega_n^2}}\right)\approx201log_{10}(1)=0
 \end{equation}
 Per $\omega=\omega_n$, il modulo dipenderà dallo smorzamento dei poli:
 \begin{gather}
-    20\log{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\xi^2\omega^2}{\omega_n^2}}\right)=20\log_{10}(2\xi),\:\xi\in[0,1]\\
-    20\log_{10}(2\xi)\in(-\infty,20\log_{10}(2)]
+    20\log{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\zeta^2\omega^2}{\omega_n^2}}\right)=20\log_{10}(2\zeta),\:\zeta\in[0,1]\\
+    20\log_{10}(2\zeta)\in(-\infty,20\log_{10}(2)]
 \end{gather}
 Per uno smorzamento nullo sarà presenta un asintoto verticale per un valore di $\omega=\omega_n$, se non fosse uguale, allora il diagramma di Bode del modulo presenterebbe 
 un affossamento nell'intorno di $\omega_n$, la cui profondità aumenta all'aumentare dello smorzamento. Questo affossamento è ciò che causa per i poli il fenomeno della 
@@ -1097,11 +1422,11 @@ Viene definito modulo alla risonanza $M_r$ la distanza tra il picco di risonanza
 Per $\omega=0$, a fase del trinomio sarà: $\phase{(1)}=0^{\circ}$, mentre per $\omega\to\infty$, si avrà una fase tendente asintoticamente a: 
 
 \begin{equation}
-    \phase{\left(-\displaystyle\frac{\omega^2}{\omega_n^2}+2\xi\frac{\omega}{\omega_n}j+1\right)}\to\phase{-\displaystyle\frac{\omega^2}{\omega_n^2}}=-180^{\circ}
+    \phase{\left(-\displaystyle\frac{\omega^2}{\omega_n^2}+2\zeta\frac{\omega}{\omega_n}j+1\right)}\to\phase{-\displaystyle\frac{\omega^2}{\omega_n^2}}=-180^{\circ}
 \end{equation}
 Mentre per $\omega=\omega_n$, la fase sarà: 
 \begin{equation}
-    \phase{2\xi j}=90^{\circ}
+    \phase{2\zeta j}=90^{\circ}
 \end{equation}
 Quindi avverrà un cambiamento di fase nell'intorno di $\omega_n$, il cambiamento sarà sempre più rapido per smorzamenti sempre più piccoli, fino a presentare una 
 discontinuità per smorzamenti nulli. Per smorzamenti sempre più piccoli la curva nel diagramma di Bode apparirà sempre più schiacciata. 
