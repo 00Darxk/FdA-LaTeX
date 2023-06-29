@@ -44,7 +44,7 @@
 %   Rotore DC grafico in CiruiTikz;
 % X Figures Description;
 % V Linearization;
-%   Rumori Aleatori;
+% V Rumori Aleatori;
 % V Figura Operazionale in Frequenza;
 %   Reti Correttrici Grafico Circuito;
 % V Schema \muC;
@@ -54,8 +54,7 @@
 % V Grafico Piano di Gauss x_c(s);
 % V Grafico Shannon \omega_c;
 % V Grafico Filtro Passa-Basso s->t;
-%   Vera Forma Bode Segnale Campionato (trapezoide);
-%   Parentesi Quadre funzioni Tempo Discreto;
+
 
 \title{Fondamenti di Automatica}
 \author{}
@@ -78,7 +77,7 @@ L'atumotica è la scienza che si occupa dell'analisi del controllo di sistemi di
     \item Modellazione: Rappresentazione matematica basata sulla fisica del sistema;
     \item Studio delle Soluzioni: Le solusioni possono essere ottenute analiticamente, in forma chiusa, o tramite simulazioni del dato sistema;
     \item Esplorazione: Ricerca di relazioni tra struttura e comportamento del sistema ed approfondimento di quest'ultimo;
-    \item Modifica e Controllo: RIcerca dei metodi per cambiare il comportamento del sistema.
+    \item Modifica e Controllo: Ricerca dei metodi per cambiare il comportamento del sistema.
 \end{itemize}
 Un sistema (dal greco s\'{y}n + hist\'{a}nai) viene definito come un insieme di oggetti connessi, indipendenti, che operano insieme.
 La decomposizione funzionale di un sistema, è un tipo di scomposizione che esprime le relazioni causa-effetto necessarie per comprendere il 
@@ -94,20 +93,20 @@ e ne descrivono le sue uscite rispetto all'entrate date.
 \begin{center}\begin{tikzpicture}[scale=2]
 
     \node[rectangle, draw, very thick, 
-    minimum width = 4cm, 
-    minimum height = 2cm] (r) at (0,0){\huge $\sum$};
+    minimum width = 2cm, 
+    minimum height = 1.5cm] (r) at (0,0){\huge $\sum$};
 
-    \draw[->,ultra thick](-2,0.25)--(-1,0.25);
-    \node[above]at(-1.5,0.25){$u(t)$};
+    \draw[->,ultra thick](-1.5,0.25)--(-0.5,0.25);
+    \node[above]at(-1,0.25){$u(t)$};
 
-    \draw[->,ultra thick](-2,-0.25)--(-1,-0.25);
-    \node[below]at(-1.5,-0.25){$z(t)$};
+    \draw[->,ultra thick](-1.5,-0.25)--(-0.5,-0.25);
+    \node[below]at(-1,-0.25){$z(t)$};
 
-    \draw[->,ultra thick](1,0.25)--(2,0.25);
-    \node[above]at(1.5,0.25){$y(t)$};
+    \draw[->,ultra thick](0.5,0.25)--(1.5,0.25);
+    \node[above]at(1,0.25){$y(t)$};
 
-    \draw[->,ultra thick](1,-0.25)--(2,-0.25);
-    \node[below]at(1.5,-0.25){$y_i(t)$};
+    \draw[->,ultra thick](0.5,-0.25)--(1.5,-0.25);
+    \node[below]at(1,-0.25){$y_i(t)$};
 
 \end{tikzpicture}\end{center}
 
@@ -738,8 +737,8 @@ Un sistema di controllo a controreazione o a feedforward sono in grado di svolge
 delle variazioni parametriche. 
 
 
-In un sistema di regolazione, l'uscita viene confrontata con delle grandezze di riferimento costanti, per cui il controllore tenterà di mantenere l'uscita in un intorno 
-di questo riferimento:
+In un sistema di regolazione, l'uscita viene confrontata con delle grandezze di riferimento costanti, ad esmepio un gradino unitario $\delta_{-1}(t)$ per cui il controllore 
+tenterà di mantenere l'uscita in un intorno di questo riferimento:
 
 \begin{center}
     \begin{tikzpicture}[scale=2]
@@ -751,7 +750,15 @@ di questo riferimento:
     \end{tikzpicture}
 \end{center}
 
-In un sistema di asservimento, l'uscita viene confrontata con dei riferimenti varianti nel tempo, per cui il controllore deve forzare l'uscita ad assumere dei comportamenti 
+Le specifiche di un sistema nel tempo vengono definite sulla base della risposta ad un gradino unitario. Questa risposta viene chiamata risposta indiciale. Il tempo 
+che impiega il sistema per salire dal $10\%$ al $90\%$ del suo valore a regime viene chiamato tempo di salita $t_s$. 
+
+Viene definita sovrelongazione $s$ la differenza percentuale tra il picco raggiunto dalla risposta nel tempo e il valore a regime permanente. Una sovraelongazione troppo 
+elevata può causare danni strutturali al sistema. 
+
+Viene definito tempo di assestamento $t_a$ il tempo necessario al sistema per assestarsi intorno al $3\%$ del valore a regime. 
+\\
+In un sistema di asservimento l'uscita viene confrontata con dei riferimenti varianti nel tempo, per cui il controllore deve forzare l'uscita ad assumere dei comportamenti 
 proporzionali alla grandezza di ingresso, all'interno di certi margini di tolleranza: 
 
 \begin{center}
@@ -763,7 +770,6 @@ proporzionali alla grandezza di ingresso, all'interno di certi margini di toller
         \draw[-, very thick]plot[smooth, domain=0:1.4](\x,{\x*(1-e^(-3*\x)*cos(20*\x r))});
     \end{tikzpicture}
 \end{center}
-
 
 
 \subsection{Motore a Corrente Continua}
@@ -1068,9 +1074,9 @@ Per cui l'errore in uscita e pieno regime dipenderà dal numero di integratori n
 \begin{equation}
     \displaystyle\frac{K_d^2}{K_G}\lim_{s\to0}\frac{1}{s^{k-h}}=
     \begin{cases}
-        +\infty,\:k>h\\
-        \displaystyle\frac{K_d^2}{K_G},\:k=h\\
-        0,\:k<h
+        +\infty &k>h\\
+        \displaystyle\frac{K_d^2}{K_G} &k=h\\
+        0 &k<h
     \end{cases}
 \end{equation}
 Segue che per rigettare un errore di tipo $k$, serviranno $k$ integratori nella catena diretta. Anche se inserire un numero maggiore di integratori annulla l'errore, non è 
@@ -1204,10 +1210,14 @@ altro integratore per rigettare l'errore renderebbe il sistema instabile, per cu
 
 \subsubsection{Controllore Proporzionale, Integrativo e Derivativo (PID)}
 
-Considerando l'errore in uscita nel dominio del tempo $e(t)=u(t)-y(t)$, assumendo un ingresso costante si avrà: $\dot e(t)=-\dot y(t)\Rightarrow sE(s)=-sK_dY(s)$, 
-un derivatore agirà su questa componente dell'errore agendo come un riduttore, ovvero come una forma di attrito, annullandolo. Questo procedimento 
-però non funzionerà per ogni sistema, è possible che un sistema abbia troppo attrito, quindi un riduttore non porterebbe effetti desiderati, agendo su quel sistema. 
-Per cui per alcuni sistema inserire un derivatore può aiutare nel loro controllo. \\
+Inserendo un derivativo è possibile prevedere l'andamento dell'errore, migliorando i margini di stabilità, aumenta il margine di fase di $+90^{\circ}$ e riduce la 
+sovraelongazione ed i transitori. Un derivatore da solo azzererebbe il guadagno della funzione per $\omega\to0$ ed enfatizzerebbe le alte frequenza, dove sono spesso 
+presenti errori. Poiché è un oggetto anticausale deve essere approssimato. Un derivatore ha una funzione di trasferimendo $W(s)=s$, per cui nel tempo agisce come 
+una forma di attrito, poiché dipende dalla velocità dell'entrata. 
+
+Questo procedimento 
+però non funzionerà per ogni sistema, è possible che un sistema abbia troppo attrito, quindi un riduttore non porterebbe effetti desiderati, agendo su quel sistema.  
+\\
 Un controllore che contiene un parametro proporzionale 
 integrativo e derivativo viene chiamato controllore PID. L'oggetto fisico può escludere il cavo di riferimento, poiché può essere computato. 
 
@@ -1250,6 +1260,32 @@ $N$ rappresenta un valore arbitrariamente grande. Un controllore PID può essere
 \begin{equation}
     PID(s)=K_p\left(1+K_i\displaystyle\frac{1}{s}+K_d\frac{N}{1+\displaystyle\frac{N}{s}}\right)
 \end{equation}
+Questa rappresenta una forma ideale, poiché un controllore PID fisico viene costruito usando tre componenti paralleli, per cui avranno guadagni differenti:
+\begin{equation}
+    PID(s)=K_p+K_i\displaystyle\frac{1}{s}+K_d\frac{N}{1+\displaystyle\frac{N}{s}}
+\end{equation}
+
+Per costruire un controllore PID si considerano tre componenti paralleli:
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \node[triangle](p)at(0,1){$K_p$};
+        \node[block](i)at(0,0){$\displaystyle K_i\frac{1}{s}$};
+        \node[block](d)at(0,-1){$\displaystyle K_d\frac{N}{1+\displaystyle\frac{N}{s}}$};
+
+        \draw[->,ultra thick](-1.5,0)--(-1,0)--(-1,1)--(p.180);
+        \draw[->,ultra thick](-1,0)--(i.180);
+        \draw[->,ultra thick](-1,0)--(-1,-1)--(d.180);
+        \filldraw[black](-1,0)circle(1pt);
+        \node[sum](s)at(1,0){};
+
+        \draw[->,ultra thick](p.0)--(1,1)--(s.90)node[right]{$\scriptscriptstyle\boldsymbol{+}$};
+        \draw[->,ultra thick](i.0)--(s.180)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+        \draw[->,ultra thick](d.0)--(1,-1)--(s.270)node[right]{$\scriptscriptstyle\boldsymbol{+}$};
+        \draw[->,ultra thick](s.0)--(1.5,0);
+    \end{tikzpicture}
+\end{center}
+
+
 Per costruire un derivatore si considera: 
 
 \begin{center}\begin{tikzpicture}[scale=2]
@@ -1305,10 +1341,10 @@ amplificare una frequenza all'infinito.
 
 \begin{center}
     \begin{tikzpicture}[scale=2]
-        \draw[->](0,-0.5)--(0,2)node[right]{$y_p(t)$};
+        \draw[->](0,-0.5)--(0,1.5)node[right]{$y_p(t)$};
         \draw[->](-0.5,0)--(2,0)node[above]{$\omega$};
 
-        \draw[-, very thick]plot[smooth, domain=0:1.5](\x,{(1.5-\x)^0.5});
+        \draw[very thick]plot[smooth, domain=0:1.513](\x,{1-0.25*e^(2.7*(\x-1))});
         \node[below]at(1.5,0){$\omega_t$};
     \end{tikzpicture}
 \end{center}
@@ -1406,10 +1442,10 @@ $90^{\circ}$.
     \omega\to\infty,\:j\omega\tau+1\approx j\omega\Rightarrow\phase{j\omega}=90^{\circ}
 \end{gather}
 
-Per cui $\phase{(j\omega\tau+1)}\in[0^{\circ},90^{\circ})$, in caso si tratti di uno zero, mentre se si considera un polo si avrà: 
+Per cui $\phase{j\omega\tau+1}\in[0^{\circ},90^{\circ})$, in caso si tratti di uno zero, mentre se si considera un polo si avrà: 
 
 \begin{equation}
-    \phase{\displaystyle\frac{1}{j\omega\tau+1}}=\left(\phase{1}-\phase{(j\omega\tau+1)}\right)\in(-90^{\circ},0^{\circ}]
+    \phase{\displaystyle\frac{1}{j\omega\tau+1}}=\phase{1}-\phase{j\omega\tau+1}\in(-90^{\circ},0^{\circ}]
 \end{equation}
 
 Si approsima il cambiamento di fase come se fosse lineare nell'intervallo $\left(\displaystyle\frac{0.1}{\tau},\frac{10}{\tau}\right)$. 
@@ -1443,17 +1479,17 @@ al limite di stabilità.
 Si considera un trinomio $\displaystyle\frac{s^2}{\omega_n^2}+\frac{2\zeta s}{\omega_n}+1\to_{s=j\omega}-\frac{\omega^2}{\omega_n^2}+\frac{2\zeta\omega}{\omega_n}j+1$. 
 Per $\omega>>\omega_n$ il modulo sarà: 
 \begin{gather}
-    \left|-\frac{\omega^2}{\omega_n^2}+\frac{2\zeta\omega}{\omega_n}j+1\right|=20\log{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\zeta^2\omega^2}{\omega_n^2}}\right)\\
+    \left|-\frac{\omega^2}{\omega_n^2}+\frac{2\zeta\omega}{\omega_n}j+1\right|=20\log_{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\zeta^2\omega^2}{\omega_n^2}}\right)\\
     10\log_{10}=\left(4\zeta^2\displaystyle\frac{\omega^2}{\omega_n^2}+\frac{\omega^4}{\omega_n^4}\right)\approx40\log_{10}\left(\displaystyle\frac{\omega}{\omega_n}\right)
 \end{gather}
 Per $\omega<<\omega_n$ il modulo sarà nullo, poiché: 
 \begin{equation}
-    20\log{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\zeta^2\omega^2}{\omega_n^2}}\right)\approx201log_{10}(1)=0
+    20\log_{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\zeta^2\omega^2}{\omega_n^2}}\right)\approx20\log_{10}1=0
 \end{equation}
 Per $\omega=\omega_n$, il modulo dipenderà dallo smorzamento dei poli:
 \begin{gather}
-    20\log{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\zeta^2\omega^2}{\omega_n^2}}\right)=20\log_{10}(2\zeta),\:\zeta\in[0,1]\\
-    20\log_{10}(2\zeta)\in(-\infty,20\log_{10}(2)]
+    20\log_{10}\left(\sqrt{\left(1-\displaystyle\frac{\omega^2}{\omega_n}^2\right)^2+\frac{4\zeta^2\omega^2}{\omega_n^2}}\right)=20\log_{10}2\zeta,\:\zeta\in[0,1]\\
+    20\log_{10}(2\zeta)\in(-\infty,20\log_{10}2]
 \end{gather}
 Per uno smorzamento nullo sarà presenta un asintoto verticale per un valore di $\omega=\omega_n$, se non fosse uguale, allora il diagramma di Bode del modulo presenterebbe 
 un affossamento nell'intorno di $\omega_n$, la cui profondità aumenta all'aumentare dello smorzamento. Questo affossamento è ciò che causa per i poli il fenomeno della 
@@ -1472,11 +1508,12 @@ Viene definito modulo alla risonanza $M_r$ la distanza tra il picco di risonanza
     \end{tikzpicture}
 \end{center}
 
-Per $\omega=0$, a fase del trinomio sarà: $\phase{(1)}=0^{\circ}$, mentre per $\omega\to\infty$, si avrà una fase tendente asintoticamente a: 
+Per $\omega=0$, a fase del trinomio sarà: $\phase{1}=0^{\circ}$, mentre per $\omega\to\infty$, si avrà una fase tendente asintoticamente a: 
 
 \begin{equation}
-    \phase{\left(-\displaystyle\frac{\omega^2}{\omega_n^2}+2\zeta\frac{\omega}{\omega_n}j+1\right)}\to\phase{-\displaystyle\frac{\omega^2}{\omega_n^2}}=-180^{\circ}
+    \phase{-\displaystyle\frac{\omega^2}{\omega_n^2}+2\zeta\frac{\omega}{\omega_n}j+1}\to\phase{-\displaystyle\frac{\omega^2}{\omega_n^2}}=-180^{\circ}
 \end{equation}
+\\
 Mentre per $\omega=\omega_n$, la fase sarà: 
 \begin{equation}
     \phase{2\zeta j}=90^{\circ}
@@ -1519,7 +1556,7 @@ fase $\phase{M(s)}$. Se il cambiamento di fase della funzione rispetto ad $s$ è
 allora la curva ha ruotato $k$ volte attorno all'origine. Per determinare il cambiamento di fase: 
 
 \begin{equation}
-    \phase({M(s)})=\phase{s-a}-\phase{s-b}\\
+    \phase{M(s)}=\phase{s-a}-\phase{s-b}\\
 \end{equation}
 
 Poiché $s$ ruota attorno allo zero $a$, mentre non ruota attorno al polo $b$, il cambiamento di fase $\phase{s-a}$ risulta essere uguale ad una rotazione completa, ovvero 
@@ -1694,8 +1731,8 @@ Viene definito questo guadagno massimo margine di guadagno $m_g$, il valore mass
 \end{equation}
 
 dove $\alpha$ è il punto di intersezione del grafico con l'asse dei reali. Per un guadagno uguale al margine di guadagno, il sistema oscilla sul limite di stabilità, 
-per valori di guadagno maggiore del maringe di guadagno il sistema ha dinamiche oscillatorie marcate. \\
-
+per valori di guadagno maggiore del maringe di guadagno il sistema ha dinamiche oscillatorie marcate. 
+\\
 Viene definito margine di fase $m_{\varphi}$, il massimo angolo di cui si può ruotare il diagramma di Nyquist prima di intersecare il punto $-1$. Ovvero la distanza del diagramma di Bode 
 della fase da $-180^{\circ}$, per $\omega=\omega_t$, dove $\omega_t$ viene definita pulsazione di taglio per cui il modulo in decibel per quella frequenza è nullo. Rappresenta 
 di quando si può sfasare il ciclo aperto. 
@@ -1706,18 +1743,45 @@ di quando si può sfasare il ciclo aperto.
 
 
 In caso si considerasse una funzione con zeri a parte reale positiva, bisogna calcolare i margini per ruotare abbastanza volte intorno al punto $-1$, non si calcolano 
-direttamente dal diagramma di Bode. \\
+direttamente dal diagramma di Bode. 
+
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,thick](-1.5,0)--(1.5,0)node[above]{$\Re$};
+        \draw[->,thick](0,-1.5)--(0,1.5)node[right]{$\Im$};
+
+
+        \draw[very thick]plot[smooth, domain=-1:1](\x,{(1-(\x)^2)^0.5});
+        \draw[very thick]plot[smooth, domain=-1:1](\x,{-(1-(\x)^2)^0.5});
+
+        \draw[very thick]plot[smooth, domain=-0.85:0](\x,{-3*\x*(\x+0.5)});
+
+        \node[above left]at(-1,0){$-1$};
+        \node[above]at(-0.5,0.1){$\alpha$};
+
+        \draw[|-|, ultra thick](-1,0)--(-0.5,0);
+        \node[above]at(-0.75,0){$m_g$};
+
+        \coordinate(o)at(0,0);
+        \coordinate(c)at(-0.773,-0.634);
+        \coordinate(x)at(-0.5,0);
+        \draw[very thick](0,0)--(-0.853,-0.7);
+        \pic["$m_{\varphi}$", draw, angle eccentricity=1.2, angle radius=0.7cm]{angle=x--o--c};
+    \end{tikzpicture}
+\end{center}
 
 Aumentando il guadagno, si diminuiscono gli errori a regime permanente e il tempo di salita, ma si diminuiscono i margini di stabilità, ciò destabilizza il sistema poiché è 
 più suscettibile ad errori. Viene defintia robustezza di un sistema la sua capacità di resistere ad errori. Viene definita resilienza la capacità di un sistema di ritornare 
 autonomamente allo stato di funzionomante in seguito a destabilizzazioni, è necessaria una "coscienza" del sistema per determinare se si trova in uno stato di funzionamento. \\
 
-\subsection{Sistemi con Ritardo}
+\subsection{Sistemi con Ritardo Finito}
 
-Per alcuni sistemi fisici è presente un ritardo nella misurazione dello stato del sistema, indotto da fenomeni intrinsechi al sistema o per esterni ad esso. 
-Nel dominio del tempo un ritardo di tempo $\tau$ su un sistema $f(t)$ viene implementato come: $f(t-\tau)$, nel dominio della frequenza: 
-$\mathscr{L}_-(f(t-\tau))=F(s)e^{-s\tau}$, per cui la funzione di trasferimento di un ritardo viene rappresentata come un esponenziale sulla catena di misura, prima del'oggetto 
-di misurazione. 
+Per alcuni sistemi fisici è presente un ritardo finito nella misurazione dello stato del sistema, indotto da fenomeni intrinsechi al sistema o esterni ad esso. 
+L'uscita $f(t)$ sarà quindi traslata nel tempo di un fattore $\tau$: $f(t-\tau)$, nel dominio della frequenza questo ritardo viene rappresentato come: 
+$\mathscr{L}_-(f(t-\tau))=F(s)e^{-s\tau}$. 
+
+Questo ritardo nella misurazione viene rappresentato come un esponenziale sulla catena di misura che precede il trasduttore. 
 
 \begin{center}\begin{tikzpicture}[scale=2]
 
@@ -1746,9 +1810,17 @@ di misurazione.
 
 \end{tikzpicture}\end{center}
 
-Il modulo del ritardo per una sinusoide in entrata sarà: $|e^{-\tau j\omega}|=1$, per cui avrà un modulo nullo in decibel, mentre la fase sarà: 
-$\phase{e^{-\tau j\omega}}=-\tau\omega$. Per frequenze molto basse il ritardo non diminuisce la fase del sistema, per cui se il ritardo è troppo elevato o se il sistema 
-opera su frequenze elevate può destabilizzare il sistema. 
+Il modulo del ritardo per una sinusoide in entrata sarà: $|e^{-\tau j\omega}|_{dB}=20\log_{10}1=0$. Il ritardo non altererà quindi il modulo della funione a ciclo aperto.  
+Invece avrà una fase: $\phase{e^{-\tau j\omega}}=-\tau\omega$. Poiché il diagramma di Bode esprime la frequenza su una scala logaritmica, questo andamento lineare rispetto alla 
+frequenza risulterà in un andamento che scende in maniera esponenziale. 
+
+Se questo andamento esponenziale compare dopo la pulsazione di taglio $\omega_t$, non influisce sul margine di fase del sistema e quindi sulla sua stabilità. 
+
+Invece se è presente 
+prima della pulsazione di taglio del sistema il margine di fase scenderà esponenzialmente all'aumentare della distanza con $\omega_t$, rischiando di far abbassare la fase al 
+di sotto dei $-180^{\circ}$, rendendo il sistema instabile. Per cui anche per un ritardo $\tau$ relativamente piccolo si potrebbe portare il sistema all'instabilità. 
+Si potrebbe aumentare $\omega_t$ diminuiendo il guadagno del sistema, ma diminuire il guadagno di un sistema compromette la sua abilità nella reiezioni degli errori e 
+nella riproduzione dei segnali.  
 
 \begin{center}
     \includegraphics[width=12cm]{Bode2.png}
@@ -1756,8 +1828,14 @@ opera su frequenze elevate può destabilizzare il sistema.
 
 \subsection{Sistemi a Fase Non Minima}
 
-Se il sistema presenta almeno uno zero a parte reale positiva, scomponendo l'uscita in fratti semplici rispetto ad un'enrata a gradino $\delta_{-1}(t)$, si avrà il residuo 
-del gradino minore di zero, per un numero dispari di zeri a parte reale posisitiva. Il transitorio potrà avere una risposta nel transitorio opposto alla risposta a pieno regime. 
+Un sistema dove sono presenti almeno un polo e o uno zero a parte reale positiva a ciclo aperto, viene chiamato sistema di controllo a fase non minima. I sistemi che presentano 
+solo zeri a parte reale positiva possono essere stabilizzati. In questo caso si avrà una fase che tende a scendere al di sotto dei $-180^{\circ}$, per cui per guadagni elevati 
+il sistema tenderà all'instabilità. 
+
+
+Se il sistema presenta almeno uno zero a parte reale positiva, scomponendo l'uscita in fratti semplici rispetto ad un'entrata a gradino $\delta_{-1}(t)$ si ottiene, per un 
+numero dispari di zeri a parte reale posisitiva, il residuo del gradino minore di zero. Quindi si avrà una risposta nel transitorio opposta all'andamento del sistema a regime 
+permanente, per cui si può notare dalla risposta come un guadagno elevato possa influenzare la convergenza degli andamenti del sistema e quindi la sua stabilità. 
 
 \begin{gather}
     Y(s)=\displaystyle\frac{R_0}{s}+\frac{R_1}{s\tau_1+1}+...+\frac{R_n}{s\tau_n+1},\:R_0<0\\
@@ -1792,7 +1870,9 @@ Per cui un sistema con un controllore ottenuto tramite sintesi diretta presenta 
 \subsection{Guadagno}
 
 Il guadagno ad anello oltre a diminuire l'errore di riproduzione di segnali di tipo $k$ e rigettare disturbi di tipo $k$, diminuisce la sensibilità diretta del 
-sistema, ottenendo presetazioni più costanti. \\
+sistema, ottenendo presetazioni più costanti. 
+
+
 
 \subsubsection{Sensibilità}
 
@@ -1965,7 +2045,9 @@ molto elevato, è possibile aumentare la banda passante considerevolmente senza 
 
 \subsubsection{Linearizzazione}
 
-Un qualsiasi sistema non lineare definito da una funzione $f$, se messo in controreazione con un guadagno $K$, avrà una risposta: 
+Un qualsiasi sistema non lineare definito da una funzione $f$, se messo in controreazione con un guadagno $k$, sarà soggetto ad un azione compensatrice automatica. 
+Qualsiasi variazione del segnale d'uscita provocherà un errore e quindi un azione correttiva. All'aumento del guadagno quest'azione correttiva sarà sempre più 
+evidente e potrà essere approssimato l'andamento del sistema ad un andamento lineare. 
 
 \begin{gather}
     \begin{cases}
@@ -2474,6 +2556,12 @@ Per cui la trasformata di Laplace di un segnale reale periodico sarà anch'essa 
 \end{center}
 
 \subsubsection{Teorema del Campionamento}
+
+Il teorema del campionamento afferma che:
+\begin{quotation}
+    Dato un segnale a banda limitata, nella sua conversione analogico-digitale, la minima frequenza necessaria per evitare aliasing e perdita di informazione nella 
+    ricostruzione del segnale analogico deve essere maggiore del doppio della sua frequenza massima. 
+\end{quotation}
 
 Si definisce un nuovo segnale $\delta_R(t)$, formato da una rastregliera di impulsi unitari ogni $T_c$:
 \begin{equation}
