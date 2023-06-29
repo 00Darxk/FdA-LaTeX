@@ -166,7 +166,7 @@ $\vec{x}(t>t_0)$.
 
 \section{Trasformata di Laplace}
 
-La trasformata di Laplace è un funzionale che trasposrta una funzione nel dominio del tempo nel dominio di Laplace. Si considerano solo oggetti 
+La trasformata di Laplace è un funzionale che trasporta una funzione dal dominio del tempo al dominio di Laplace. Si considerano solo oggetti 
 causali, ovvero definiti e non nulli per tempo $t>$:
 \begin{equation}
     f(t):=
@@ -417,11 +417,11 @@ si svolge.
 \begin{center}
     \begin{tikzpicture}[scale=2]
         \draw[->,thick](-0.5,0)--(1.5,0)node[above]{$t$};
-        \draw[->,thick](0,-0.5)--(0,1.5)node[right]{$f(t)$};
+        \draw[->,thick](0,-0.5)--(0,1.5)node[right]{$R_ie^{-p_it}$};
 
         \draw[-,very thick]plot[smooth, domain=0:1.4](\x,{e^(-1.3*\x)});
         \draw[-,very thick]plot[smooth, domain=-0.25:0](\x,{-1.3*\x+1});
-        \draw[-,very thick](0,1)node[above right]{$R_ie^{-p_it}$}--(0.769,0)node[below]{$\tau$};
+        \draw[-,very thick](0,1)--(0.769,0)node[below]{$\tau$};
     \end{tikzpicture}
 \end{center}
 
@@ -438,7 +438,7 @@ Per cui due poli complessi e coniugati avranno un andamento pseudoperiodico nel 
 \begin{center}
     \begin{tikzpicture}[scale=2]
         \draw[->,thick](-0.5,0)--(2,0)node[above]{$t$};
-        \draw[->,thick](0,-1.5)--(0,1.5)node[right]{$f(t)$};
+        \draw[->,thick](0,-1.5)--(0,1.5)node[right]{$2Me^{\sigma t}cos(j\omega t+\varphi)$};
 
         \draw[-, thick]plot[smooth, domain=0:1.8](\x,{e^(-1.3*\x)});
         \draw[-, thick]plot[smooth, domain=0:1.8](\x,{-e^(-1.3*\x)});   
@@ -451,7 +451,7 @@ rappresentano delle dinamiche al limite di stabilità.
 \begin{center}
     \begin{tikzpicture}[scale=2]
         \draw[->,thick](-0.5,0)--(2,0)node[above]{$t$};
-        \draw[->,thick](0,-1.5)--(0,1.5)node[right]{$f(t)$};
+        \draw[->,thick](0,-1.5)--(0,1.5)node[right]{$2Mcos(j\omega t+\varphi)$};
 
         \draw[-, thick](0,1)--(1.8,1);
         \draw[-, thick](0,-1)--(1.8,-1);
@@ -645,11 +645,32 @@ stabili, e tutti gli oggetti in entrata saranno stabili.
 
 \section{Modellistica}
 
-Per controllare il comportamento di un sistema, dopo aver analizzato l'entrata necessaria per ottenere l'effetto desiderato, si può 
-implementare un controllore $C(s)$, che dato un ingresso lo manipola per poi restituirlo al processo $P(s)$ che agirà in base all'entrata modificata. 
+Per controllare un processo $P(s)$ viene usato un controllore $C(s)$, anch'esso è un oggetto nel dominio di Laplace, usato per ottenere un comportamento specifico dal processo 
+elaborando un valore corrispondente di l'entrata. 
 
 
-Si può ottenere tramite un ciclo a feeedback:
+
+Il sistema più semplice di controllo viene chiamato a catena diretta, consiste in un controllore a valle del processo, senza considerare la differenza tra l'uscita aspettata 
+e l'uscita effettiva del sistema. Questo tipo di controllo è certamente semplice, ma non essendo in grado di modificare opportunamente il controllore in caso di disturbi o 
+rumori esterni la sua efficienza ne risentirà. Viene usato poiché è molto economico. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \node[block](c)at(-0.5,0){$C(s)$};
+        \node[block](p)at(1.5,0){$P(s)$};
+
+        \draw[->,ultra thick](-1.5,0)node[above right]{$U(s)$}--(c.180);
+        \draw[->,ultra thick](c.0)--(p.180);
+        \draw[->,ultra thick](p.0)--(2.5,0)node[above left]{$Y(s)$};
+    \end{tikzpicture}
+\end{center}
+
+Un sistema di controllo più complesso, ma notevolmente migliore, considera una catena aggiuntiva, definita catena di misura, che collega l'uscita del sistema all'entrata 
+mediante un opportuno trasduttore $H(s)$, che trasforma l'uscita in un segnale compatibile con il controllore. Questo sistema viene chiamato a controreazione o a feedback. 
+
+In questo modo è possibile tenere conto di eventuali 
+errori o disturbi che variano l'uscita, confrontardola ad un riferimento, e quindi compensando le entrate future per correggere l'errore. Questa tipologia di controllo è 
+in grado di svolgere attività di regolazione o asservimento, se il riferimento è rispettivamente costante o dipendente dal tempo. 
 
 \begin{center}\begin{tikzpicture}[scale=2]
     \node[sum](sum)at(-1,0){};
@@ -662,20 +683,20 @@ Si può ottenere tramite un ciclo a feeedback:
     \draw[->,ultra thick](2.5,0)--(3,0)node[above left]{$Y$};
     \draw[-,ultra thick](2.5,-0.75)--(2.5,0);
 
-    %\node[block]at(0.75,-0.75)(h){$H(s)$};
+    \node[block]at(0.75,-0.75)(h){$H(s)$};
     \node[block]at(1.75,0)(p){$P(s)$};
 
     \draw[-,ultra thick](p.0)--(2.5,0);
     \draw[->,ultra thick](c.0)--(p.180);
 
-    %\draw[->,ultra thick](2.5,-0.75)--(h.0);
-    %\draw[-,ultra thick](h.180)--(-1,-0.75);
-    \draw[-,ultra thick](2.5,-0.75)--(-1,-0.75);
+    \draw[->,ultra thick](2.5,-0.75)--(h.0);
+    \draw[-,ultra thick](h.180)--(-1,-0.75);
+    %\draw[-,ultra thick](2.5,-0.75)--(-1,-0.75);
     \draw[->,ultra thick](-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
 \end{tikzpicture}\end{center}
 
-Oppure tramite un ciclo a feedforward, che userà un'altra funzione per manipolare l'ingresso non dipendente dalle uscite passate:
-
+Un sistema di controllo più complesso ancora può essere usato in caso sia necessario aggiungendo una catena a feedforward ed un altra funzione di trasferimento $G(s)$, per 
+controllare questo confronto.  
 
 \begin{center}\begin{tikzpicture}[scale=2]
     \node[sum](sum)at(-1,0){};
@@ -700,18 +721,50 @@ Oppure tramite un ciclo a feedforward, che userà un'altra funzione per manipola
     \draw[->,ultra thick](2.5,0)--(3,0)node[above left]{$Y$};
     \draw[-,ultra thick](2.5,-0.75)--(2.5,0);
 
-    %\node[block]at(0.75,-0.75)(h){$H(s)$};
+    \node[block]at(0.75,-0.75)(h){$H(s)$};
     \node[block]at(1.75,0)(p){$P(s)$};
 
     \draw[-,ultra thick](p.0)--(2.5,0);
     \draw[->,ultra thick](c.0)--(sum2.180)node[below]{$\scriptscriptstyle\boldsymbol{+}$};
     \draw[->,ultra thick](sum2.0)--(p.180);
 
-    %\draw[->,ultra thick](2.5,-0.75)--(h.0);
-    %\draw[-,ultra thick](h.180)--(-1,-0.75);
-    \draw[-,ultra thick](2.5,-0.75)--(-1,-0.75);
+    \draw[->,ultra thick](2.5,-0.75)--(h.0);
+    \draw[-,ultra thick](h.180)--(-1,-0.75);
+    %\draw[-,ultra thick](2.5,-0.75)--(-1,-0.75);
     \draw[->,ultra thick](-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
 \end{tikzpicture}\end{center}
+
+Un sistema di controllo a controreazione o a feedforward sono in grado di svolgere attività di regolazione o asservimento, , contrastando gli effetti dei disturbi e 
+delle variazioni parametriche. 
+
+
+In un sistema di regolazione, l'uscita viene confrontata con delle grandezze di riferimento costanti, per cui il controllore tenterà di mantenere l'uscita in un intorno 
+di questo riferimento:
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,thick](-0.25,0)--(1.5,0)node[above]{$t$};
+        \draw[->,thick](0,-0.25)--(0, 1.5)node[right]{$y(t)$};
+
+        \draw[-, blue](0,1)--(1.4,1);
+        \draw[-, very thick]plot[smooth, domain=0:1.4](\x,{1-e^(-4*\x)*cos(16*\x r)});
+    \end{tikzpicture}
+\end{center}
+
+In un sistema di asservimento, l'uscita viene confrontata con dei riferimenti varianti nel tempo, per cui il controllore deve forzare l'uscita ad assumere dei comportamenti 
+proporzionali alla grandezza di ingresso, all'interno di certi margini di tolleranza: 
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,thick](-0.25,0)--(1.5,0)node[above]{$t$};
+        \draw[->,thick](0,-0.25)--(0,1.5)node[right]{$y(t)$};
+
+        \draw[-, blue](0,0)--(1.4,1.4);
+        \draw[-, very thick]plot[smooth, domain=0:1.4](\x,{\x*(1-e^(-3*\x)*cos(20*\x r))});
+    \end{tikzpicture}
+\end{center}
+
+
 
 \subsection{Motore a Corrente Continua}
 Si vuole creare un modello per un motere elettrico, quindi si analizza il suo funzionamento. \\
@@ -1115,8 +1168,8 @@ Per poter rigettare il disturbo bisogna inserire $k$ integratori a monte di esso
 
 Per cui per inseguire o rigettare un polinomio di tipo $k$ in entrata, servono $k$ integratori in catena diretta, a monte del disturbo. Gli integratori nella funzinoe $G_1$ 
 annulano l'errore per un entrata di tipo $k$ e rigettano un disturbo di tipo $k$. Ma l'inserimento di poli nell'orgine 
-destabilizza il sistema, quindi è necessario inserire un altro elemento per recuperare la stabilità. \\ 
-
+destabilizza il sistema, quindi è necessario inserire un altro elemento per recuperare la stabilità. Un sistema in grado di rigettare un disturbo costante viene chiamato astatico. 
+\\
 Considerando il motore a corrente diretta, un possible disturbo potrebbe essere il peso del carico che sta spostando che produrra un momento torcente costante nel tempo, 
 per cui sarà un disturbo di tipo $0$ e necessiterà di un controllore di tipo $0$ a monte del disturbo. Nel caso di un motore, si considera un riferimento ideale legato da 
 una cosante unitaria: $Y_d=U$, ovvero per una qualsiasi entrata, l'uscita la deve seguire esattamente. Per cui l'errore risultarà: $e=\displaystyle\frac{1}{1+K_cK_{DC}}$, 
@@ -1772,14 +1825,18 @@ Se si considera una funzione $G(s,p)$ la sensibiltà del sistema rispetto ad una
 \end{gather}
 
 Considerando un sistema con un errore in catena diretta, si può calcolare l'effetto dell'errore sul sistema tramite la sensibilità diretta. Si considera l'uscita 
-di un errore $d$:
+di un errore $z_1$:
 
 \begin{equation}
-    Y_d(s)=\displaystyle\frac{G_2(s)}{1+G_1(s)G_2(s)H(s)}D(s)=S^W_{G_1}(s)G_2(s)D(s)
+    Y_{z1}(s)=\displaystyle\frac{G_2(s)}{1+G_1(s)G_2(s)H(s)}Z_1(s)=S^W_{G_1}(s)G_2(s)Z_1(s)
 \end{equation}
 
 L'effetto dell'errore è direttamente proporzionale alla sensibilità diretta, per cui all'aumentare del gaudagno ad anello l'effetto dell'errore diminuisce.  
-Se si considera un errore $h$ in catena di misura, non potrà essere alterato facilmente dal guadagno ad anello, per cui risulta più problematico. 
+Se si considera un errore $z_2$ in catena di misura, dipenderà dalla sensibilita complementare. Ma questa non potrà diminuire al di sotto di $1$, per cui risulterà molto più 
+problematico. Per questo convenzionalemte si investe molto per creare una catena di misura molto robusta: 
+\begin{equation}
+    Y_{z2}(s)=\displaystyle\frac{G_1(s)G_2(s)H(s)}{1+G_1(s)G_2(s)H(s)}Z_2(s)=-S^W_H(s)Z_2(s)
+\end{equation}
 
 \begin{center}\begin{tikzpicture}[scale=2]
     \node[sum](sum)at(-1,0){};
@@ -1795,7 +1852,7 @@ Se si considera un errore $h$ in catena di misura, non potrà essere alterato fa
     \filldraw[black](2.5,0)circle(1pt);
 
 
-    \draw[->,ultra thick](0.75,0.5)node[below right]{$z$}--(sum2.90)node[right]{$\scriptscriptstyle\boldsymbol{+}$};
+    \draw[->,ultra thick](0.75,0.5)node[below right]{$z_1$}--(sum2.90)node[right]{$\scriptscriptstyle\boldsymbol{+}$};
 
     \node[block]at(1.75,0)(k){$G_2(s)$};
     \draw[->,ultra thick](sum2.0)--(k.180);
@@ -1806,7 +1863,7 @@ Se si considera un errore $h$ in catena di misura, non potrà essere alterato fa
 
     \node[sum](sum3)at(1.75,-0.75){};
     \draw[->,ultra thick](2.5,-0.75)--(sum3.0)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
-    \draw[->,ultra thick](1.75,-1.25)node[right]{$h$}--(sum3.270)node[left]{$\scriptscriptstyle\boldsymbol{+}$};
+    \draw[->,ultra thick](1.75,-1.25)node[right]{$hz_2$}--(sum3.270)node[left]{$\scriptscriptstyle\boldsymbol{+}$};
 
     \node[block, below of=g, node distance=1.5cm](h){$H(s)$};
     \draw[->,ultra thick](sum3.180)--(h.0);
@@ -1921,20 +1978,47 @@ Un qualsiasi sistema non lineare definito da una funzione $f$, se messo in contr
 Dove $f(x)$ è una funzione non lineare, considerando un guadagno molto elevato $k>>0$, allora $y\propto u-y$, se il sistema non diventa stabile prima. \\
 Un transistor è un oggetto non lineare, ma ha un guadagno molto elevato, per cui viene costruito in controreazione per avere comportamenti lineari. 
 
-\subsection{Errore di Tipo Sinusoidale}
+\subsection{Errore e Disturbi di Tipo Sinusoidale}
 
-Si vuole determinare l'errore $\tilde{e}(t)=\tilde{y}_d-\tilde{y}(t)$ rispetto ad un riferimento ideale per un entrata sinusoidale $\tilde{u}(t)=sin(\tilde{\omega}t)$, di un'uscita 
-$\tilde{y}(t)=Msin(\tilde{\omega}t+{\varphi}(\tilde{\omega}))$, dove $M(\tilde{\omega})=|W(j\omega)|_{\omega=\tilde{\omega}}$ e 
-$\varphi(\tilde{\omega})=\phase{W(j\omega)}_{\omega=\tilde{\omega}}$. 
-L'errore sarà dato da:
+Considerando degli errori di riproduzione di una sinusoide o rumori aleatori, agenti su un sistema in un certo intervallo di frequenza. Per evitare questi errori si controlla 
+a il modulo massimo di questo errore e in quale intervallo di frequenze agisce. Data una frequenza massima su cui è percepibile l'errore $\omega_{max}$, si determina il modulo 
+dell'errore rispetto ad un riferimento sinusoidale $\tilde{u}(t)=sin({\omega}t)$: $\tilde{e}(t)=\tilde{y}_d-\tilde{y}(t)$. L'uscita di questo sistema seguirà l'entrata 
+per cui si avrà: $\tilde{y}(t)=Msin({\omega}t+{\varphi}({\omega}))$. 
 
 \begin{equation}
-    W_e(s)=|Kd-W(j\omega)|=\left|\displaystyle\frac{Kd^2}{Kd+G(j\omega)}\right|=\left|\frac{Kd}{1+F(j\omega)}\right|
+    W_e(s)=|K_d-W(j\omega)|=\left|\displaystyle\frac{K_d^2}{K_d+G(j\omega)}\right|=\left|\frac{K_d}{1+F(j\omega)}\right|\approx\left|\frac{K_d}{F(j\omega)}\right|
 \end{equation}
 
-Per un guadagno ad anello molto elevato si ha un errore piccolo: 
-$|G(j\omega)|>>0\Rightarrow \tilde{e}(\omega)=\displaystyle\frac{Kd}{|F(j\omega)|}<<1$. Intorno alla pulsazione di taglio, si ha un guadagno ad anello basso, per cui si ha un errore 
-$W_e(s)=Kd$. \\
+Per valori abbastanza elevati di modulo.
+
+
+Si considera l'errore massimo percepibile alla frequenza $\omega_{max}$ come un limite di stabilità. Per evitare questo errore si dovrà avere una funzione a ciclo aperto di 
+modulo:
+\begin{equation}
+    W_e(j\omega_{max})=\tilde{e}_{max}=\displaystyle\left|\frac{K_d}{F(j\omega_{max})}\right|\Rightarrow \omega\leq\omega_{max},\:|F(j\omega)|\geq\frac{K_d}{\tilde{e}_{max}}
+\end{equation} 
+
+In caso l'errore sia negativo si avrà:
+\begin{equation}
+    \omega\geq\omega_{min},\:F(j\omega)\leq\displaystyle\frac{K_d}{\tilde{e}_{max}}
+\end{equation}
+
+Viene così definita nel diagramma di Bode del modulo una finestra alta $\displaystyle\frac{K_d}{\tilde{e}_{max}}$ in un intervallo $[\omega_{min},\:\omega_{max}]$. 
+Il sistema sarà soggetto ad un errore in caso il diagramma del modulo della funzione a ciclo aperto intersechi questa zona. 
+
+ 
+Per contrastare dei disturbi agenti sul sistema si usufruisce della funzione sensibiltà, dato che l'effetto di un disturbo su un sistema è proporzionale alla sensibilità. 
+\begin{equation}
+    S^W_G(s)=\displaystyle\frac{1}{1+F(s)}
+\end{equation}
+
+Al diminuire della sensibilità diminuirà anche l'effetto del disturbo sul sistema. Data una sensibilità massima ottenuta per una certa frequenza $\omega_{max}$, 
+$S(j\omega_{max})=S_{max}$, il sistema sarà libero dal disturbo se: 
+\begin{equation}
+    \omega\leq\omega_{max},\:\displaystyle\left|\frac{1}{1+F(j\omega)}\right|\approx\frac{1}{|F(j\omega)|}\leq S_{max}
+\end{equation}
+Viene definita come per gli errori di riproduzione di una sinusoide una finestra di altezza $S_{max}$, su tutto l'intervallo di frequenza su cui agisce il disturbo. Il sistema 
+sarà in grado di rigettare il disturbo se il diagramma di Bode della funzione a ciclo aperto non intersechi questa zona. 
 
 \subsection{Carta di Nichols}
 
@@ -2039,59 +2123,6 @@ rete nel controllore.
 
 
 %circuitikz
-
-\subsection{Rumori Aleatori}
-
-Dei rumori aleatori sono dei tipi di errori che agiscono su un sistema il cui comportamento può essere descritto solo 
-statisticamente. Per rigettare questo tipo di errori, si analizza l'intervallo di frequenze su cui agiscono. 
-
-\begin{center}\begin{tikzpicture}[scale=2]
-    \node[sum](sum)at(-1,0){};
-    \node[sum](sum2)at(0.75,0){};
-    \draw[->,ultra thick](-1.5,0)node[above]{$U(s)$}--(sum.180)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
-
-
-    \node[block, right of=sum, node distance=2cm](g){$G_1(s)$};
-    \draw[->,ultra thick](sum.0)--(g.180);
-    \draw[->,ultra thick](g.0)--(sum2.180)node[below]{$\scriptscriptstyle\boldsymbol{+}$};
-    
-
-    \filldraw[black](2.5,0)circle(1pt);
-
-
-    \draw[->,ultra thick](0.75,0.5)node[below right]{$z$}--(sum2.90)node[right]{$\scriptscriptstyle\boldsymbol{+}$};
-
-    \node[block]at(1.75,0)(k){$G_2(s)$};
-    \draw[->,ultra thick](sum2.0)--(k.180);
-    \draw[-,ultra thick](k.0)--(2.5,0);
-
-    \draw[->,ultra thick](2.5,0)node[above right]{$Y(s)$}--(3,0);
-    \draw[-,ultra thick](2.5,-0.75)--(2.5,0);
-
-    %\node[sum](sum3)at(1.75,-0.75){};
-    %\draw[->,ultra thick](2.5,-0.75)--(sum3.0)node[above]{$\scriptscriptstyle\boldsymbol{+}$};
-    %\draw[->,ultra thick](1.75,-1.25)node[right]{$h$}--(sum3.270)node[left]{$\scriptscriptstyle\boldsymbol{+}$};
-
-
-    \node[block, below of=g, node distance=1.5cm](h){$H(s)$};
-    %\draw[->,ultra thick](sum3.180)--(h.0);
-    \draw[->,ultra thick](2.5,-0.75)--(h.0);
-    \draw[-,ultra thick](h.180)--(-1,-0.75);
-
-    \draw[->,ultra thick](-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
-\end{tikzpicture}\end{center}
-
-A ciclo aperto il rumore ha un effetto sull'uscita $y_{z,F}=G_2z$, a ciclo chiuso ha un effetto $y_{z,W}=\displaystyle\frac{G_2z}{1+F}$. Il rumore ha un fattore di riduzione 
-$1+F$, per determinare l'effetto del rumore sul ciclo chiuso si considera $\displaystyle\frac{y_{z,W}}{y_{z,F}}$. Si considera l'errore massimo causato dal rumore in quell'
-intervallo di frequenze $K$, per poter filtrare il rumore in quell'intervallo di frequenze bisogna che il suo effetto sul ciclo chiuso sia minore di questo errore:
-$\left|\displaystyle\frac{y_{z,W}}{y_{z,F}}\right|=\frac{1}{|1+F|}<\frac{1}{K}\Rightarrow|1+F|>K$. Per poter rigettare l'errore la funzione a ciclo aperto deve avere 
-modulo maggiore di $K$ nell'intervallo di frequenze su cui agisce l'errore. In caso sia presente un errore di aliasing, allora bisongerà avere un modulo minore di un 
-certo valore, in un intervallo di frequenze. \\
-
-Questi tipi di errori vengon rappresentati nel diagramma di Bode del modulo come una finestra o rettangolo di base l'intervallo di frequenza nel cui sono presenti, e di 
-altezza il modulo che la funzione deve supereare per evitare l'errore. Quando si usano reti correttrici per traslare la pulsazione di taglio bisogna considerare se la 
-funzione intersechi completamente o in parte questa finestra, in caso bisona diminuire le aspettative del sistema e scegliere speciche che permettano la stabilità in quella 
-situazione. 
 
 \subsection{Teoria di Lyapunov}
 
