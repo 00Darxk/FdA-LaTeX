@@ -36,7 +36,6 @@
 % V Modellistica;
 % V Ingressi di Tipo Sinusoidale;
 % V Controllori Digitali;
-% V Esonero, potenzialmente;
 % V Laplace;
 %   Eq. Diff;
 % V Sostituire Immagini Screenate da Simulink con Blocchi Fatti in Tikz(https://latexdraw.com/block-diagram-in-latex-step-by-step-tikz-tutorial)e
@@ -54,7 +53,7 @@
 % V Grafico Piano di Gauss x_c(s);
 % V Grafico Shannon \omega_c;
 % V Grafico Filtro Passa-Basso s->t;
-
+% V Gradino Laplace;
 
 \title{Fondamenti di Automatica}
 \author{}
@@ -183,7 +182,7 @@ Questa variabile può essere espressa come $s=\sigma+j\omega$, l'integrale di La
 Dato un esponente negativo dovrebbe sempre convergere, ma essendo una variabile complessa per ottenere la convergenza del termine $e^{-st}$ si considera la parte reale $\sigma$
 di $s$, maggiore di un certo valore $\sigma*$, che garantisce la convergenza dell'esponenziale. Questo valore viene chiamato ascissa di convergenza e divide il piano di Guass 
 in due zone, quella in quella a sinistra non è integrabile, in quella a destra è integrabile. Ciò permette sempre l'esistenza di una zona di convergenza assoluta dove l'integrale 
-di Laplace può essere calcolato, prende alternativamente il valore di $0$ o $-\infty$. 
+di Laplace può essere calcolato, prende alternativamente il valore di $0^-$ o $-\infty$. 
 
 \begin{center}
     \begin{tikzpicture}[scale=2]
@@ -268,19 +267,24 @@ Si definiscono i teoremi del valore iniziale e del valor finale, rispettivamente
 
 Dato una funzione polinomiale di tipo $k$:
 \begin{equation}
-    \delta_k(t):=
+    \delta_{-k}(t):=
     \begin{cases}
         \displaystyle\frac{t^{k-1}}{(k-1)!}&t\geq0\\
         0&t<0
     \end{cases}
 \end{equation}
-\'{E} possibile ricavarsi una funzione del tipo $k+1$, integrando $\delta_k(t)$. Per cui data la trasformata di Laplace del gradino:
+\'{E} possibile ricavarsi una funzione del tipo $k+1$, integrando $\delta_{-(k+1)}(t)$. Per cui data la trasformata di Laplace del gradino:
 \begin{equation}
-    \mathscr{L}_-\{\delta_{-1}(t)\}:=\displaystyle\frac{1}{s}
+    \delta_{-1}(t):=
+    \begin{cases}
+        1 &t>0\\
+        0 &t\leq0
+    \end{cases},\:
+    \mathscr{L}_-\{\delta_{-1}(t)\}:=\displaystyle\int_{0^-}^{+\infty}1\cdot e^{-st}dt=\frac{1}{s}
 \end{equation}
 Sapendo che la trasformata di una funzione integrale è la trasforata del'argomento dell'integrale diviso $s$, per ogni funzione di tipo $k$:
 \begin{equation}
-    \mathscr{L}_-\{\delta_k(t)\}:=\displaystyle\frac{1}{s^k}
+    \mathscr{L}_-\{\delta_{-(k+1)}(t)\}:=\displaystyle\frac{1}{s^{k+1}}
 \end{equation}
 Inoltre è possible derivare la funzione del gradino per ottenere la trasformata dell'impulso $\delta_0(t)$:
 \begin{equation}
@@ -300,7 +304,7 @@ Alcune delle funzioni più comunemente incontrate nello studio di sistemi dinami
     \mathscr{L}_-\left\{\displaystyle\frac{t^{(k-1)}e^{pt}}{(k-1)!}\right\}=\frac{1}{(s-p)^k}
 \end{equation}
 
-\subsection{Trasformata di un'Equazione Differenziale di Ordine Superiore al Primo}
+\subsection{Trasformata di un'Equazione Differenziale}
 
 Dato un sistema definito da un'equazione differenziale $a_ny^{(n)}+\cdots a_0y^{(0)}=b_mu^{(m)}+\cdots+b_0u^{(0)}$, è possibile e più conveniente lavorare nel dominio di 
 Laplac. Il sistema è causale per $m<n$, non è causale per $m>n$, mentre è al limite di stabilità per $m=n$. Per analizzare il sistema si considera la trasformata di Laplace 
@@ -842,7 +846,7 @@ maggiore bisognerà allora aumentare il guadagno della funzione di trasferimento
 
 Un controllore è un oggetto fisico usato per manipolare la stabilità di un sistema, il suo comportamento nel transitorio e a pieno regime. 
 Esistono vari tipi di controllori, il più semplice è un controllore proporzionale che consiste di una costante $K_c$ che moltiplica l'ingresso, in modo 
-che il processo lavori su un'entrata $Kc\cdot U$, se il controllore proporzionale vale $1$, avrà guadagno unitario. Per ottenere della catena 
+che il processo lavori su un'entrata $K_c\cdot U$, se il controllore proporzionale vale $1$, avrà guadagno unitario. Per ottenere della catena 
 diretta si moltiplica il guadagno del controllore, per il guadagno del processo: $K=K_c\cdot K_P$. Considerando un processo 
 $P(s)=\displaystyle\frac{N(s)}{D(s)}$, si avrà una funzione a ciclo chiuso, per un controllore proporzionale: 
 
@@ -896,8 +900,28 @@ Il luogo della radici viene rappresentato su un piano di Gauss.
 Se due poli sono complessi e coinugati, allora il loro comportamento rispetto all'aumentare del guadagno sarà simmetrico. Si può eprimere questo trinomio rispetto ad 
 un'altra parametrizzazione:
 \begin{equation}
-    a_2s^2+a_1s+a_0=(s+p_1)(s+p_1^*)=s^2+2\sigma s+\omega^2=s^2+2\zeta\omega_ns+\omega_n^2
+    a_2s^2+a_1s+a_0=(s+p_1)(s+p_1^*)=s^2+2\sigma s+\omega^2+\sigma^2=s^2+2\zeta\omega_ns+\omega_n^2
 \end{equation}
+
+
+Dove $\zeta=\displaystyle\frac{a_1}{2\omega_n}=cos\varphi$ rappresenta lo smorzamento del polo, quantifica quanto persiste l'oscillazione del sistema in seguito ad un dato ingresso, 
+dove $\varphi$ rappresenta l'angolo con l'orizzontale formato dal segmento distanza tra l'origine ed il polo.
+$\omega_n=\displaystyle\sqrt{a_0}=\sqrt{\omega^2+\sigma^2}$ viene definita pulsazione di risonanza o pulsazione caratteristica, rappresenta graficamente la distanza del polo dall'origine 
+del piano di Guass. Quando si ha una entrata con una pulsazione simile alla pulsazione di risonanza $\omega\approx\omega_n$, avverà il fenomeno della risonanza. Questo 
+fenomeno verrà analizzato ampiamente nell'analisi di entrate di tipo sinusoidale. 
+
+
+In caso abbia smorzamento $\zeta=0$, il polo avrà parte reale nulla $\sigma=0\Rightarrow s^2+\omega_n^2=0\Rightarrow s=\pm j\omega_n$, per cui 
+oscillerà senza mai fermarsi con una pulsazione di risonanza $\omega_n$ coincidente alla pulsazione ntaurale $\omega$.
+
+In caso si abbia $\zeta=1$, allora si avranno solo poli reali $s=\sigma$ per cui non oscillerà. 
+
+In caso si abbia $0<\zeta<1$, allora si avranno poli complessi e coniugati che rappresenteranno delle dinamiche oscillatorie. 
+
+Queste dinamiche descritte dallo smorzamento saranno convergenti per $\sigma<0$ o divergenti per $\sigma>0$. 
+
+Un polo con uno smorzamento maggiore tenderà a diminuire l'oscillazione più velocemente e avrà un tempo caratteristico minore. 
+
 
 Convenzionalmente si analizza una funzione di trasferimento esprimendo i poli e gli zeri a guadagno unitario, ovvero si esprimono i binomi come $(s\tau_i+1)$ e i trinomi 
 come $\displaystyle\frac{s^2}{\omega_n^2}+2\frac{\zeta}{\omega_n}s+1$. In questo modo viene esplicitato il guadagno statico della funzione:
@@ -905,12 +929,6 @@ come $\displaystyle\frac{s^2}{\omega_n^2}+2\frac{\zeta}{\omega_n}s+1$. In questo
 \begin{equation}
     P(s)=K_p\displaystyle\frac{(s\tau_m+1)\cdots(s\tau_i+1)}{(s\tau_n+1)\cdots(s\tau_j+1)}
 \end{equation}
-
-
-Dove $\zeta=\displaystyle\frac{a_1}{2\omega_n}$ rappresenta lo smorzamento del polo, quantifica quanto persiste l'oscillazione del sistema in seguito ad un dato ingresso, è dato da 
-$\zeta=cos\varphi$, dove $\varphi$ rappresenta l'angolo con l'orizzontale formato dal segmento distanza tra l'origine ed il polo. 
-$\omega_n=\displaystyle\sqrt{a_0}$ viene definita pulsazione naturale, è la parte immaginaria del polo e quantifica quanto veloce oscilla. 
-Un polo con uno smorzamento maggiore tenderà a convergere più velocemente, e avrà un tempo caratteristico minore. 
 
 
 
@@ -929,8 +947,7 @@ dinamiche nel tempo, rispetto ad errori.
     \draw[->](-1,0)coordinate(Re)--(0.5,0)node[above]{$Re$};
     \draw[->](0,-1.5)--(0,1.5)coordinate(Im)node[right]{$Im$};
 
-    \draw[-,very thick](O)--(-0.5,1)coordinate(w)node[above]{$p_1$};
-    \draw[dashed](w)--(0,1)node[right]{$\omega_n$};
+    \draw[-,very thick](O)--(-0.5,1)coordinate(w)node[above]{$p_1$}node[right]{$\omega_n$};
     \draw[-,very thick](O)--(-0.5,-1)node[below]{$p_1^*$};
     \draw[dashed](-0.4,0.8)node[below left]{$1$}--(-0.4,0)node[below]{$\zeta$};
     \draw[-,thick](-0.4,0)--(0,0);
@@ -949,7 +966,7 @@ il teorma del valore finale il valore dell'uscita a regime permanente:
     K_Y=\lim_{s\to0}s\cdot Y(s)=\lim_{s\to0}s\displaystyle\frac{K_c N(s)}{D(s)+K_c N(s)}\frac{1}{s}\\
     K_Y=\displaystyle\frac{K_c}{\displaystyle\frac{1}{K_P}+K_c}<1
 \end{gather}
-Dove $K_P$ è il guadagno del proceso $P(s)$. Per valori piccoli di $K_c$, si avrà un errore $e_Y=1-K_Y$ elevato, solo all'umentare di $K_c$ l'errore diminuirà fino a tendere 
+Dove $K_P$ è il guadagno del processo $P(s)$. Per valori piccoli di $K_c$, si avrà un errore $e_Y=1-K_Y$ elevato, solo all'umentare di $K_c$ l'errore diminuirà fino a tendere 
 a $1$ per $K_c\to\infty$: 
 \begin{equation}
     e_Y=1-\lim_{K_c\to\infty}\displaystyle\frac{K_c}{\displaystyle\frac{1}{K_P}+K_c}=1-1=0
@@ -1172,16 +1189,22 @@ Per poter rigettare il disturbo bisogna inserire $k$ integratori a monte di esso
     Y_z=\lim_{s\to0}s\cdot\displaystyle\frac{G_2(s)}{1+\displaystyle\frac{G_1'(s)}{s^k}G_2(s)}\frac{1}{s^{k+1}}=\frac{K_{G_2}}{K_{G_1}K_{G_2}}
 \end{gather}
 
-Per cui per inseguire o rigettare un polinomio di tipo $k$ in entrata, servono $k$ integratori in catena diretta, a monte del disturbo. Gli integratori nella funzinoe $G_1$ 
-annulano l'errore per un entrata di tipo $k$ e rigettano un disturbo di tipo $k$. Ma l'inserimento di poli nell'orgine 
-destabilizza il sistema, quindi è necessario inserire un altro elemento per recuperare la stabilità. Un sistema in grado di rigettare un disturbo costante viene chiamato astatico. 
+Per cui per inseguire o rigettare un polinomio di tipo $k$ in entrata, servono $k$ integratori in catena diretta, a monte del disturbo. 
+Per eliminare completamente il disturbo sono necessari $k+1$ integratori in catena diretta a monte del disturbo, questo comportamento viene chiamato astatismo, ovvero 
+la capacità di un sistema di controllo di poter rigettare completamente un errore costante. Ma l'inserimento di poli nell'orgine 
+destabilizza il sistema, quindi è necessario inserire un altro elemento per recuperare la stabilità. 
+
+Se il disturbo fosse presente in catena di controreazione, il sistema non sarebbe in grado di rigettarlo. 
+\\
 \\
 Considerando il motore a corrente diretta, un possible disturbo potrebbe essere il peso del carico che sta spostando che produrra un momento torcente costante nel tempo, 
 per cui sarà un disturbo di tipo $0$ e necessiterà di un controllore di tipo $0$ a monte del disturbo. Nel caso di un motore, si considera un riferimento ideale legato da 
 una cosante unitaria: $Y_d=U$, ovvero per una qualsiasi entrata, l'uscita la deve seguire esattamente. Per cui l'errore risultarà: $e=\displaystyle\frac{1}{1+K_cK_{DC}}$, 
-dove $K_c$ è il guadagno del controllore di tipo $0$. Se il motore opera dei sistemi precisi, richiederanno un'errore nullo 
+dove $K_c$ è il guadagno del controllore di tipo $0$. 
+\\
+Se il motore opera su dei sistemi precisi, richiederà un'errore nullo 
 indipendentemente dal valore del guadagno del controllore quindi si userà un controllore di tpo $1$, ma ciò renderà il transitorio molto lungo, poiché un integratore 
-prima di diventare utile dovrà caricarsi per un certo intervallo di tempo, prima di agire come richiesto. Ciò altererà i punti di equilibrio del rotore, ma inserire un 
+prima di diventare utile dovrà caricarsi per un certo intervallo di tempo. Ciò altererà i punti di equilibrio del rotore, inserire un 
 altro integratore per rigettare l'errore renderebbe il sistema instabile, per cui si può alterare manualmente il riferimento iniziale su cui opera il sistema. 
 
 \begin{center}\begin{tikzpicture}[scale=2]
@@ -1217,9 +1240,12 @@ una forma di attrito, poiché dipende dalla velocità dell'entrata.
 
 Questo procedimento 
 però non funzionerà per ogni sistema, è possible che un sistema abbia troppo attrito, quindi un riduttore non porterebbe effetti desiderati, agendo su quel sistema.  
-\\
+
+
+
 Un controllore che contiene un parametro proporzionale 
 integrativo e derivativo viene chiamato controllore PID. L'oggetto fisico può escludere il cavo di riferimento, poiché può essere computato. 
+Un controllore PID rappresenta un controllore standard, poiché sono controllori di semplice implementazione e molto diffusi in ambito industriale. 
 
 \begin{center}\begin{tikzpicture}[scale=2]
     \node[sum](sum)at(-1,0){};
@@ -1256,7 +1282,8 @@ inserisce un polo lontano in un valore
 $\displaystyle\frac{1}{\varepsilon}$, per $\varepsilon$ arbitrariamente piccolo, in modo che risenta del polo solo per valori molto alti. Per cui la parte derivativa sarà: 
 $\displaystyle\frac{K_ds}{s\varepsilon+1}$, si può esprimere come: 
 $\displaystyle\frac{K_ds}{s\varepsilon+1}\frac{\displaystyle\frac{1}{s\varepsilon}}{\displaystyle\frac{1}{s\varepsilon}}=\frac{K_dN}{1+\displaystyle\frac{N}{s}}$, dove 
-$N$ rappresenta un valore arbitrariamente grande. Un controllore PID può essere espresso, esplicitando il suo guadano come: 
+$N$ rappresenta un valore arbitrariamente grande. 
+Un controllore PID può essere espresso, esplicitando il suo guadano come: 
 \begin{equation}
     PID(s)=K_p\left(1+K_i\displaystyle\frac{1}{s}+K_d\frac{N}{1+\displaystyle\frac{N}{s}}\right)
 \end{equation}
@@ -1265,7 +1292,6 @@ Questa rappresenta una forma ideale, poiché un controllore PID fisico viene cos
     PID(s)=K_p+K_i\displaystyle\frac{1}{s}+K_d\frac{N}{1+\displaystyle\frac{N}{s}}
 \end{equation}
 
-Per costruire un controllore PID si considerano tre componenti paralleli:
 \begin{center}
     \begin{tikzpicture}[scale=2]
         \node[triangle](p)at(0,1){$K_p$};
@@ -1424,8 +1450,9 @@ di circa $\pm6dB$, nell'intorno dello zero o del polo, chiamato punto di rottura
         \draw[->,thick](0,-0.5)--(0,2)node[right]{$|\:\cdot\:|_{dB}$};
 
 
+        \filldraw[black](-0.05,0)circle(1pt);
 
-        \draw[-,ultra thick](-1,0)--(-0.05,0)node[below]{$\displaystyle\frac{1}{\tau}$};
+        \draw[-,ultra thick](-1,0)--(-0.05,0)node[below left]{$\displaystyle\frac{1}{\tau}$};
         \draw[-,ultra thick](-0.05,0)--(2,0.85);
     \end{tikzpicture}
 \end{center}
@@ -1468,7 +1495,8 @@ Quest'approssimazione presenta un'errore di $\pm6^{\circ}$.
 \end{center}
 
 Per uno zero in $0$, il modulo aumenterà di $20dB$ su tutto l'intervallo di $\omega$, partendo da $-\infty dB$, tagliando il diagramma di Bode per $\omega=1$. 
-Avrà una fase costante pari a $90^{\circ}$. \\
+Avrà una fase costante pari a $90^{\circ}$.
+\\
 Per un polo in $0$, il modulo diminuirà di $20dB$ ogni decade partendo da $+\infty dB$, ed avrà una fase costante di $-90^{\circ}$. Si tratterà di un oggetto 
 al limite di stabilità. 
 
@@ -1494,16 +1522,19 @@ Per $\omega=\omega_n$, il modulo dipenderà dallo smorzamento dei poli:
 Per uno smorzamento nullo sarà presenta un asintoto verticale per un valore di $\omega=\omega_n$, se non fosse uguale, allora il diagramma di Bode del modulo presenterebbe 
 un affossamento nell'intorno di $\omega_n$, la cui profondità aumenta all'aumentare dello smorzamento. Questo affossamento è ciò che causa per i poli il fenomeno della 
 risonanza, dove per una certa pulsazione si avrà un guadagno maggiore del guadagno statico del sistema. Per gli zeri si verifica il fenomeno dell'antirisonanza, dove 
-per una certa pulsazione risulta estremamente attenuata. La sovraelongazione è un effetto dello smorzamento e sarà massima per smorzamento massimo. \\
+per una certa pulsazione risulta estremamente attenuata. La sovraelongazione è un effetto dello smorzamento e sarà massima per smorzamento massimo.
+\\
 Viene definito modulo alla risonanza $M_r$ la distanza tra il picco di risonanza ed il guadadno statico del sistema. 
 
 \begin{center}
     \begin{tikzpicture}[scale=2]
         \draw[->](-1,0)--(1.5,0)node[above]{$\omega$};
         \draw[->](-1,-0.5)--(-1,1.5)node[right]{$dB$};
+
         \draw[-,ultra thick](-1,0)--(-0.2,0);
         \draw[-, ultra thick]plot[smooth, domain=-0.2:1](\x,{1.55-2*e^-(\x-0.3)^2});
-        \draw[dashed](0.3,-0.45)--(0.3,0)node[above]{$\omega_n$};
+
+        \draw[dashed](0.3,-0.45)--(0.3,0)node[above]{$\omega_n$}node[below right]{$M_r$};
         \draw[-,ultra thick](1,0.324)--(1.5,1.324);
     \end{tikzpicture}
 \end{center}
@@ -1518,17 +1549,19 @@ Mentre per $\omega=\omega_n$, la fase sarà:
 \begin{equation}
     \phase{2\zeta j}=90^{\circ}
 \end{equation}
+\\
 Quindi avverrà un cambiamento di fase nell'intorno di $\omega_n$, il cambiamento sarà sempre più rapido per smorzamenti sempre più piccoli, fino a presentare una 
 discontinuità per smorzamenti nulli. Per smorzamenti sempre più piccoli la curva nel diagramma di Bode apparirà sempre più schiacciata. 
-Nei sistemi causali ci saranno sempre più poli che zeri, per cui i loro diagrammi di Bode tenderanno sempre a scendere. \\
-
+Nei sistemi causali ci saranno sempre più poli che zeri, per cui i loro diagrammi di Bode tenderanno sempre a scendere. 
+\\
 \begin{center}
     \includegraphics[width=10cm]{BodeRisonanza}
 \end{center}
 
 \subsection{Diagramma di Nyquist}
-Data una funzione di trasferimento $M(s)=\displaystyle\frac{s-a}{s-b}$. Si definisce una qualsiasi curva chiusa $\mathbf{G}$ sul piano, e un punto $s$ che percorre la curva in senso 
-orario. Allora per uno spostamento di $s$, comporterà uno spostamento di $M(s)$ nel piano di Gauss. 
+Data una funzione di trasferimento $M(s)=\displaystyle\frac{s-a}{s-b}$, e data una qualsiasi curva chiusa $\mathbf{G}$ sul piano, e un punto $s$ che la percorre in senso 
+orario. Allora lo spostamento della variabile complessa $s$ lungo la curva $\mathbf{G}$, sotto certe condizioni, risulterà in uno spostamento della funzione $M(s)$ lungo un'altra 
+curva chiusa attorno all'origine. 
 
 \begin{center}
     \begin{tikzpicture}[scale=3]
@@ -1696,7 +1729,7 @@ con il polo. Può succedere per ogni polo immaginario puro, o per un polo nell'o
         \draw[->,snake it, ultra thick](0,0.1)--(0,0.5);
         \draw[-,snake it, ultra thick](0,0.5)--(0,1);
 
-        \draw[-,snake it,ultra thick](0,0.1)arc(90:-90:0.1cm);
+        \draw[-,ultra thick](0,0.1)arc(90:-90:0.1cm);
         
         \draw[->, snake it, ultra thick](0,1)arc(90:45:1cm);
         \draw[-, snake it, ultra thick](1,0)arc(0:45:1cm);       
@@ -1742,8 +1775,6 @@ di quando si può sfasare il ciclo aperto.
 \end{equation}
 
 
-In caso si considerasse una funzione con zeri a parte reale positiva, bisogna calcolare i margini per ruotare abbastanza volte intorno al punto $-1$, non si calcolano 
-direttamente dal diagramma di Bode. 
 
 
 \begin{center}
@@ -1752,8 +1783,8 @@ direttamente dal diagramma di Bode.
         \draw[->,thick](0,-1.5)--(0,1.5)node[right]{$\Im$};
 
 
-        \draw[very thick]plot[smooth, domain=-1:1](\x,{(1-(\x)^2)^0.5});
-        \draw[very thick]plot[smooth, domain=-1:1](\x,{-(1-(\x)^2)^0.5});
+        \draw[thick]plot[smooth, domain=-1:1](\x,{(1-(\x)^2)^0.5});
+        \draw[thick]plot[smooth, domain=-1:1](\x,{-(1-(\x)^2)^0.5});
 
         \draw[very thick]plot[smooth, domain=-0.85:0](\x,{-3*\x*(\x+0.5)});
 
@@ -1771,9 +1802,54 @@ direttamente dal diagramma di Bode.
     \end{tikzpicture}
 \end{center}
 
-Aumentando il guadagno, si diminuiscono gli errori a regime permanente e il tempo di salita, ma si diminuiscono i margini di stabilità, ciò destabilizza il sistema poiché è 
-più suscettibile ad errori. Viene defintia robustezza di un sistema la sua capacità di resistere ad errori. Viene definita resilienza la capacità di un sistema di ritornare 
-autonomamente allo stato di funzionomante in seguito a destabilizzazioni, è necessaria una "coscienza" del sistema per determinare se si trova in uno stato di funzionamento. \\
+Se la curva della funzione a ciclo aperto $F(s)$ passa a destra del punto $-1$ allora il sistema sarà stabile. Se passa per il punto $-1$ si trova ai limiti di 
+stabilità, si avrà modulo $|F(j\omega)|=1$ e fase $\phase(F(j\omega))=-180^{\circ}$, per cui l'entrata $u(t)=sin(\omega t)$, esce dal sistema ribaltata di $-180^{\circ}$: 
+$y(t)=-sin(\omega t)$ e ritorna ad essere positiva grazie alla catena di controreazione. 
+
+Se il sistema passa a sinistra del punto $-1$ allora sarà instabile, se non ha zeri a parte reale positiva, altrimenti bisogna calcolare il margine di fase per ruotare abbastanza 
+volte intorno al punto $-1$.
+
+
+Tracciando il modulo della funzione a ciclo chiuso rispetto alla frequenza, si individuano il modulo alla risonanza $M_r$ definito come la distanza tra il guadagno statico 
+ed il picco del modulo, se il modulo rispetto alla frequenza è strettamente decrescente, il modulo alla risonanza è nullo. 
+
+
+
+Si definisce banda passante $\omega_{-3}$, la 
+frequenza per cui il modulo della funzione a ciclo chiuso scende al di sotto di $-3\:dB$. Analogamente al tempo caratteristico, rappresenta la massima pulsazione trattata dal 
+sistema prima che l'effetto dimnuisca considerevolmente. 
+
+
+
+La sovraelongazione $s$ è direttamente proporzionale al modulo alla risonanza $s\propto Mr$, entrambi sono legati allo smorzamento del termine trinomio $\zeta$ poiché per uno 
+smorzamento piccolo si avrà una risonanza elevata.
+
+
+
+Il tempo di salita $t_s$ e la banda passante sono circa inversamente proporzionali 
+$t_s\cdot\omega_{-3}\approx cost$ poiché più un sistema risponde velocemente, $t_s<<1$, più è in grado di oscillare velocemente, quindi la frequenza massima supportata $\omega_{-3}$ 
+sarà alta. 
+Per un aumento del guadagno, aumentano sia la banda passante che la pulsazione di taglio, per cui le due frequenze sono direttamente proporzionali, 
+mentre diminuisce il tempo di salita, per cui $\omega_t\propto\omega_{-3}\cdot t_s$.
+
+
+
+Il margine di fase corrisponde alla distanza nel diagramma di Bode della fase tra il grafico della funzione a ciclo aperto nel punto $j\omega_t$ e i $-180^{\circ}$. 
+Mentre il margine di guadagno corrisponde alla distanza nel diagramma di Bode del modulo tra il grafico della funzione a ciclo aperto nel punto dove la fase corrisponde 
+a $-180^{\circ}$ e i $0\:dB$. 
+
+\begin{center}
+    \includegraphics[width=10cm]{Bode3.png}
+\end{center}
+
+Aumentando il guadagno, si diminuiscono gli errori a regime permanente e il tempo di salita, ma si diminuiscono i margini di stabilità poiché il grafico della frequenza 
+viene traslato verso l'alto aumentando sia la banda passante $\omega_{-3}$ che la pulsazione di taglio $\omega_t$. Mentre il tempo di salita $t_s$ ed il margine di fase 
+$m_{\varphi}$ diminuiranno. 
+
+
+
+Viene definita robustezza di un sistema la sua capacità di resistere ad errori. Viene definita resilienza la capacità di un sistema di ritornare 
+autonomamente allo stato di funzionomante in seguito a destabilizzazioni, è necessaria una "coscienza" del sistema per determinare se si trova in uno stato di funzionamento. 
 
 \subsection{Sistemi con Ritardo Finito}
 
@@ -1830,7 +1906,8 @@ nella riproduzione dei segnali.
 
 Un sistema dove sono presenti almeno un polo e o uno zero a parte reale positiva a ciclo aperto, viene chiamato sistema di controllo a fase non minima. I sistemi che presentano 
 solo zeri a parte reale positiva possono essere stabilizzati. In questo caso si avrà una fase che tende a scendere al di sotto dei $-180^{\circ}$, per cui per guadagni elevati 
-il sistema tenderà all'instabilità. 
+il sistema tenderà all'instabilità. Considerando la funzione a ciclo chiuso $W(s)=\displaystyle\frac{N(s)}{K_cN(s)+D(s)}$, all'aumentare del guadagno il denominatore 
+della funzione a ciclo chiuso tenderà al numeratore, per cui tenderà all'instabilità avendo la funzione a ciclo aperto con uno zero a parte reale positiva. 
 
 
 Se il sistema presenta almeno uno zero a parte reale positiva, scomponendo l'uscita in fratti semplici rispetto ad un'entrata a gradino $\delta_{-1}(t)$ si ottiene, per un 
@@ -1867,7 +1944,7 @@ Se si sceglie una funzione $W(s)$ asintoticamente stabile, allora il controllore
 a parte reale positiva, allora il controllore contiene poli a parte reale positiva, analiticamente si cancellano, ma non si possono cancellare le dinamiche di un sistema.  
 Per cui un sistema con un controllore ottenuto tramite sintesi diretta presenta delle dinamiche instabili, non è stabile internamente. 
 
-\subsection{Guadagno}
+\subsection{Sistemi a Guadagno Elevato}
 
 Il guadagno ad anello oltre a diminuire l'errore di riproduzione di segnali di tipo $k$ e rigettare disturbi di tipo $k$, diminuisce la sensibilità diretta del 
 sistema, ottenendo presetazioni più costanti. 
@@ -2104,34 +2181,28 @@ sarà in grado di rigettare il disturbo se il diagramma di Bode della funzione a
 
 \subsection{Carta di Nichols}
 
-Tracciando il modulo della funzione a ciclo chiuso rispetto alla frequenza, si individuano il modulo alla risonanza $Mr$ definito come la distanza tra il guadagno statico 
-ed il picco del modulo, se il modulo rispetto alla frequenza è strettamente decrescente, il modulo alla risonanza è nullo. Si definisce banda passante $\omega_{-3}$, la 
-frequenza per cui il modulo della funzione a ciclo chiuso scende al di sotto di $-3\:dB$. Analogamente al tempo caratteristico, rappresenta la massima pulsazione trattata dal 
-sistema prima che l'effetto dimnuisca considerevolmente. \\
-La sovraelongazione $s$ è direttamente proporzionale al modulo alla risonanza $s\propto Mr$, il tempo di salita $t_s$ e la banda passante sono circa inversamente proporzionali 
-$t_s\cdot\omega_{-3}\approx cost.$. Per un aumento del guadagno, aumentano sia la banda passante che la pulsazione di taglio, per cui le due frequenze sono direttamente proporzionali, 
-mentre diminuisce il tempo di salita, per cui $\omega_t\propto\omega_{-3}\cdot t_s$.
-
-\begin{center}
-    \includegraphics[width=10cm]{Bode3.png}
-\end{center}
-
-La carta di Nichols è un diagramma che rappresenta l'andamento della fase e del modulo di una funzione di trasferimento. Considera la fase nell'intervallo 
-$[-360^{\circ},0^{\circ}]$, ed il modulo in $[-80\:dB, 40\:dB]$, viene usato un sistema di coordinate rettilineo usato per la funzione a ciclo aperto. Mentre per la funzione 
-a ciclo chiusco si usa un sistema di coordinate curvilineo, formato da luogo delle curve a modulo costante, fino a $-3dB$, ed a fase costante. Ovvero si considera o la fase 
+La carta di Nichols è un diagramma che rappresenta l'andamento della fase e del modulo di una funzione di trasferimento. Viene usato un sistema di coordinate rettilineo 
+usato per la funzione a ciclo aperto, equivale a trasporre il diagramma di Bode in questo sistema di riferimento. Mentre per la funzione 
+a ciclo chiusco si usa un sistema di coordinate curvilineo, formato dal luogo delle curve a modulo costante, fino a $-3dB$, ed a fase costante. Ovvero si considera o la fase 
 o il modulo costante e si traccia l'andamento della funzione a ciclo chiuso $W=|W|e^{\phase{W}}$ per la variazione della rimanente. Ha l'origine nel punto 
-$(0\:db,-180^{\circ})$: $-1$. \\
+$(0\:db,-180^{\circ})$: $-1$. 
 
-Data $W=\displaystyle\frac{F}{1+F}$, ci si può ricavare la funzione a ciclo aperto: $F=\displaystyle\frac{W}{1-W}$. Si ricava il modulo della funzione a ciclo chiuso in 
-una data fase dall'intersezione della curva a modulo costante con la funzione a ciclo aperto. Per $|W|_{dB}=-20\:dB$, le curve a modulo costante sono quasi rettilinere nella 
+
+
+Data $W=\displaystyle\frac{F}{1+F}$, ci si può ricavare la funzione a ciclo aperto: $F=\displaystyle\frac{W}{1-W}$. Dall'intersezione delle curve con 
+la funzione a ciclo aperto è possibile determinare il comportamento della funzione a ciclo chiuso. Per $|W|_{dB}=-20\:dB$, le curve a modulo costante sono quasi rettilinere nella 
 carta di Nichols, per cui il comportamento della funzione a ciclo chiuso è molto simile alla funzione a ciclo aperto: 
-$W=\displaystyle\frac{F}{1+\cancelto{\approx0}{F}}\approx F$. \\
+$W=\displaystyle\frac{F}{1+F\approx0}\approx F$. 
 
-Dall'intersezione di $F$ con la curva di modulo $-3\:dB$ si può determinare il valore della banda passante $\omega_{-3}$, dalla fase corrispondente all'intersezione. La 
-distanza sull'asse a $0:dB$ della curva $F$ dall'origine rappresenta il margine di fase $m_{\varphi}$, mentre la distanza sull'asse a $-180^{\circ}$ della curva dall'origine 
-rappresenta il margine di guadagno $m_g$. Per questo curve che passano l'asse a $0\:dB$ da destra avranno una funzione a ciclo chiuso stabile. Il modulo alla risonanza è la 
-curva a modulo costante maggiore che interseca la funzione a ciclo aperto, per $K_d=1$. Per un modulo alla risonanza maggiore, la funzione $F$ si avvicina all'origine della 
-carta di Nichols, dimnuendo il margine di fase, per cui $Mr\propto\displaystyle\frac{1}{m_{\varphi}}$; il fenomeno della risonanza è presente per $m_{\varphi}<<1$. 
+
+
+Dall'intersezione di $F$ con la curva di modulo $-3\:dB$ si può determinare il valore della banda passante $\omega_{-3}$, dalla fase e o modulo corrispondente all'intersezione. 
+La distanza sull'asse a $0\:dB$ della curva $F$ dall'origine rappresenta il margine di fase $m_{\varphi}$, mentre la distanza sull'asse a $-180^{\circ}$ della curva dall'
+origine rappresenta il margine di guadagno $m_g$. 
+Per questo curve che passano l'asse a $0\:dB$ da destra avranno una funzione a ciclo chiuso stabile. Il modulo alla 
+risonanza $M_r$ è la curva a modulo costante maggiore che interseca la funzione a ciclo aperto, per $K_d=1$. Per un modulo alla risonanza maggiore, la funzione $F$ si avvicina 
+all'origine della carta di Nichols, dimnuendo il margine di fase, per cui $Mr\propto\displaystyle\frac{1}{m_{\varphi}}$; il fenomeno della risonanza è presente per 
+$m_{\varphi}<<1$. 
 
 Dalle relazioni ottenute precedentemente: 
 \begin{equation}
@@ -2312,19 +2383,25 @@ controllori schedulati, in grado di avere più di un algoritmo di controllo adat
 Un microcontrollore è un oggetto fisico input-output capace di dialogare con l'ambiente esterno, all'interno di un chip, anche molto economico. Sono oggetti che presentano 
 all'interno un microprocessore, quindi sono in grado di risolvere piccoli problemi di automazione. Dei PLC sono invece dei controllori più sofisticati che permettono di 
 avere frequenze di aggiornamento molto elevate e trasmissione di dati costante. 
-\\
+
+
+
 Un microcontrollore è composto da un microprocessore $\mu P$, convertitori da digitale ad analogico $DAC$, per poter dialogare con un certo processo $P$ da controllare, 
 convertendo i dati del processo in livelli di tensione. Poiché il microprocessore digatale lavora in bit, mentre il processo analogico da controllare è continuo, sarà 
 necessario convertire questi dati. La tensione in uscita dal $DAC$ è di bassa potenza, per cui è presenta a cascata un amplificatore $A$ alimentato da un 
 generatore di tensione esterno $V_{cc}$, per avere in uscita livelli di tensione adeguati. 
-\\
+
+
+
 Per pulire i segnali misurati si usa in catena di misura un filtro-antialiasing, il segnale viene poi passato ad un convertitore $ADC$ che lo trasforma in discreto. 
 Il microprocessore informa il convertitore 
 $ADC$ con un segnale $SOC$ per iniziare la conversione, il quale invia un segnale $EOC$ al microprocessore per segnalare la fine della conversione del dato. A quel punto 
 il microprocessore leggerà sul bus il dato convertito. Si può inserire un circuito di adattamento $a$ tra il filtro antialiasing ed il convertitore $ADC$, per adattare 
 l'uscita in tensione del processo all'ingresso in tensione dei convertitori. Poiché i convertitori hanno un certo intervallo di ingresso accettabile in Volt, il dato 
 ottenuto operando su quello grezzo del sensore viene chiamato dato ingegnerizzato. 
-\\
+
+
+
 Il valore di riferimento $r$ del microcontrollore può essere computato o inserito da un segnale esterno. Il microcontrollore $\mu C$ comprende il microprocessore, ed i convertitori 
 $DAC$ e $ADC$, anche su un singolo chip. I collegamenti tra i convertitori ed il microprocessore sono dei $BUS$ a $n$ bit, mentre il resto dei collegamenti sono 
 segnali continui. 
@@ -2422,9 +2499,13 @@ poiché non può agire su ciò che non può misurare. \`{E} necessario decidere 
 Poiché la quantizzazione è un processo non lineare, si considerererà sempre nelle successive analisi come se si fosse scelto il numero di bit sufficiente per le applicazioni 
 considerate. Verrà considerato alla fine un rumore di quantizzazione dovuto alla differenza tra la suddivisione in gradini e l'andamento lineare. 
 
+
+
 Per scegliere il numero di bit adatto, si analizza l'oscillazione del segnale e si misura la varianza rispetto al valor medio e si calcola il valore di rumore in percentuale 
 $z[\%]$, e si sceglie un numero di bit abbastanza piccolo da non campionare il rumore $n\mbox{ t.c. }\displaystyle\frac{1}{n}>\frac{z}{100}$, poiché essendo casuale il 
 controllore non potrà agire su di esso. 
+
+
 
 Se si scelgono troppi pochi bit, il segnale potrebbe variare senza una variazione nella sua rappresentazione. 
 
@@ -2432,11 +2513,13 @@ In genere i convertitori $ADC$ possono convertire valori di tensioni di queste t
 correnti invece di tensioni. Per adeguare le tensioni delle varie componenti del sistema, vengono usati circuiti di adattamento tra i convertitori in entrata ed in uscita del 
 microcontrollore che applicano le opportune traslazioni e amplificazioni del segnale. 
 
+
+
 Poiché un processore non può convertire costantemente il segnale, sono necessari dei segnali di controllo per iniziare e terminare la conversione. Questi segnali sono $SOC$ e 
 $EOC$, $Start\:Of\:Conversion$ e $End\:Of\:Conversion$, sia per $ADC$ che per il $DAC$. Quindi solo grazie a questi segnali è possibile portare il dato dentro e fuori il 
 microcontrollore in sicurezza, realizzati tramite degli $interrupt$.  
 
-\subsubsection{Tempo di Campionamento}
+\subsubsection{Tempo di Campionamento}  
 
 Il microprocessore invia il segnale $SOC$ al convertitore $ADC$. Il convertitore effettua un $hold$ del segnale in entrata e comincia a campionarlo, alla fine del campionamento  
 invia i dati nel $BUS$ ed invia il segnale $EOC$ al microprocessore. A questo punto il processore legge i dati dal $BUS$ e li elabora, $signal\:\:processing$ in un tempo 
@@ -2470,15 +2553,27 @@ delle operazioni di housekeeping. Questo tempo di campionamento è intrinseco al
 un tempo di campionamento troppo grande. Può essere presente jitter che cambia l'andmaento del processo collegato al controllore. La scelta di un microcontrollore dipenderà 
 quindi dal tempo di campionamento necessario per controllare un dato processo. 
 
+
+
 Per comunicare al microprocessore l'inizio e la fine della conversione vengono usati degli $interrupt$, segnali che avvertono il processore che è successo qualcosa. Ogni 
 volta che è necessario compiere delle azioni periodiche, bisogna associare dei segnali di $interrupt$ a segnali esterni, dei $clock$, oppure da un programma interno. Il 
-programma di controllo definito viene gestito dal sistema operativo. Esistono vari tipi di interrupt mascherabili e non, alcuni si possono disabilitare. In caso un programma 
+programma di controllo definito viene gestito dal sistema operativo. Esistono vari tipi di interrupt mascherabili e non, alcuni si possono disabilitare. 
+
+
+
+In caso un programma 
 sia in idle da molto tempo viene spostato dalla $RAM$ per liberare spazio agli interrupt che arrivano al microprocessore in quel tempo. Il sistema operativo standard ha un 
-tempo di campionamento di $1\:s$ ed un jitter di circa $1:ms$, per cui è difficile avere un tempo di campionamento minore di un $ms$ suu un SO genral purpose. Per questo 
+tempo di campionamento di $1\:s$ ed un jitter di circa $1\:ms$, per cui è difficile avere un tempo di campionamento minore di un $ms$ suu un SO genral purpose. Per questo 
 delle task time critical necessitano di sistemi operativi dedicati ai controllori, dato che alcuni sistemi operativi pre-emptive hanno delle ruotine programmate per essere 
-interrote da alcune operazini del kernel. Di conseguenza alcune operazioni che sembrano real-time avvengono in intervalli precisi per farle sembrare real-time. 
+interrote da alcune operazini del kernel. 
+
+
+
+Di conseguenza alcune operazioni che sembrano real-time avvengono in intervalli precisi per farle sembrare real-time. 
 Si definisce allora una ruotine soft real time, per processi che si aggiornano solo ogni $n\:\:ms$ con un margine di errore elevato, mentre si definisce una ruotine hard real 
 time se il mancato rispetto di una task diviene risulta in danni gravi per l'infrastruttura su cui opera. 
+
+
 
 Per analizzare questo processo bisogna definire un sistema per descrivere oggetti continui nel discreto, tempi multipli del tempo di campionamento, tramite il teorema del 
 campionamento. Viene inoltre definita la trasformata $z$ per studiare elementi totalmente discreti, trasformata omologa a quella di Laplace. 
@@ -2560,7 +2655,10 @@ Per cui la trasformata di Laplace di un segnale reale periodico sarà anch'essa 
 Il teorema del campionamento afferma che:
 \begin{quotation}
     Dato un segnale a banda limitata, nella sua conversione analogico-digitale, la minima frequenza necessaria per evitare aliasing e perdita di informazione nella 
-    ricostruzione del segnale analogico deve essere maggiore del doppio della sua frequenza massima. 
+    ricostruzione del segnale analogico deve essere maggiore del doppio della sua frequenza massima:
+    \begin{equation}
+        \omega_c>2\omega_M
+    \end{equation}
 \end{quotation}
 
 Si definisce un nuovo segnale $\delta_R(t)$, formato da una rastregliera di impulsi unitari ogni $T_c$:
@@ -2569,12 +2667,16 @@ Si definisce un nuovo segnale $\delta_R(t)$, formato da una rastregliera di impu
 \end{equation} 
 \begin{center}
     \begin{tikzpicture}[scale=2]
-        \draw[->](-0.25,0)--(1.3,0)node[above]{$t$};
-        \draw[->](0,-0.25)--(0,1)node[right]{$x$};
-        \draw[->,ultra thick](0,0)--(0,0.8);
-        \draw[->,ultra thick](0.4,0)--(0.4,0.8);
-        \draw[->,ultra thick](0.8,0)--(0.8,0.8);
-        \draw[->,ultra thick](1.2,0)--(1.2,0.8);
+        \draw[->](-0.25,0)--(3,0)node[above]{$t$};
+        \draw[->](0,-0.25)--(0,1.5)node[right]{$x$};
+        \draw[->,ultra thick](0,0)--(0,1);
+        \draw[->,ultra thick](0.4,0)--(0.4,1);
+        \draw[->,ultra thick](0.8,0)--(0.8,1);
+        \draw[->,ultra thick](1.2,0)--(1.2,1);
+        \draw[->,ultra thick](1.6,0)--(1.6,1);
+        \draw[->,ultra thick](2,0)--(2,1);
+        \draw[->,ultra thick](2.4,0)--(2.4,1);
+        \draw[->,ultra thick](2.8,0)--(2.8,1);
         
         \node[below]at(0.5,0){$\delta_R(t)$};
     \end{tikzpicture}
@@ -2609,7 +2711,7 @@ Nei punti di intersezione tra gli impulsi della rastregliera ed il segnale $x(t)
 La funzione rastregliera è periodica, dall'analisi di Fuorier, ogni funzione periodica può essere scritta come una sommatoria di funzioni sinusoidali e consenusoidali, per 
 cui si considera la funzione rastregliera come:
 \begin{equation}
-    \delta_R(t)=c_0+\sum_{k=0}^{\infty}\left(a_ksin(k\omega_ct)+b_kcos(k\omega_ct)\right)
+    \delta_R(t)=c_0+\sum_{k=1}^{\infty}\left(a_ksin(k\omega_ct)+b_kcos(k\omega_ct)\right)
 \end{equation}
 Può essere espressa tramite la rappresetnazione di Eulero in forma esponenziale:
 \begin{equation}
@@ -2621,8 +2723,11 @@ i segnali, trasportandoli dal dominio del tempo nel dominio dellla frequenza. Pe
 proiezione di un vettore $\vec{v}=v_k\hat{k}+v_j\hat{j}$ rispetto ad una coordinata $k$, si considera il prodotto scalare tra il vettore ed il versore della coordinata, 
 per cui si avrà $v_k=\vec{v}\cdot\hat{k}$. 
 
-Analogamente ad un prodotto scalare in uno spazio vettoriale, l'integrale di Fuorier agisce come un'operazione di proiezione. Per cui per trovare le componenti della rastregliera 
-rispetto alla funzione $e^{jk\omega_ct}$ si considera l'integrale di Fuorier, a meno di un fattore di amplificazione: 
+Analogamente ad un prodotto scalare in uno spazio vettoriale, l'operazione di integrale soddisfa i requisiti di prodotto interno tra due funzioni, ovvero rappresenta un 
+operazione di proiezione. Per cui per trovare le componenti della rastregliera rispetto alla forma esponenziale del seno e coseno si considera l'integrale della 
+rastregliera con il coniugato della funzione esponenziale $e^{-jk\omega_ct}$. Poiché è una funzione periodica si 
+considera l'integrale lungo l'intervallo $\left[\displaystyle-\frac{T_c}{2},\:\frac{T_c}{2}\right]$ per ogni valore di $k$. 
+Il coefficiente sarà dato dal valore medio lungo questo intervallo: 
 \begin{equation}
     c_k=\displaystyle\frac{1}{T_c}\int_{-\frac{T_c}{2}}^{\frac{T_c}{2}}\delta_R(t)e^{-jk\omega_ct}dt
 \end{equation}
@@ -2651,20 +2756,19 @@ Il segnale campionato sarà allora:
     x_c(t)=x(t)\delta_R(t)=\displaystyle\frac{1}{T_c}\sum_{k=-\infty}^{\infty}x(t)e^{jk\omega_ct}\\
     X_c(s)=\mathscr{L}_-\{x_c(t)\}=\displaystyle\frac{1}{T_c}\sum_{k=-\infty}^{\infty}\mathscr{L}_-\left\{x(t)e^{jk\omega_ct}\right\}=\frac{1}{T_c}\sum_{k=-\infty}^{\infty}X(s-jk\omega_c)
 \end{gather}
-Per cui il segnale campionato in frequenza non è altro che una sommatoria del segnale originario traslato di una certa quantità, ovvero il teorema di Shannon scritto in 
-Laplace. 
+La trasformata di Laplace del segnale campionato risulta essere costiuito da infinite repliche del segnale originario traslato di multipli della pulsazione di campionamento 
+in positivo o negativo $\omega_ck,\:k\in(-\infty,\:\infty)$. Se si considera solamente la risposta armonica si avrà la stessa funzione descritta dal teorema di Shannon. 
 
 \subsubsection{Ricostruzione}
 
-Per ritornare al teorema di Shannon, si considera solamente la sua rispsosta armonica, $s=j\omega$:
+Per ottenere la risposta armonica della funzione si considera $s=j\omega$:
 \begin{equation}
     X_c(j\omega)=\displaystyle\frac{1}{T_c}\sum_{k=-\infty}^{\infty}X(j(\omega-k\omega_c))
 \end{equation}
 
 Per cui l'oggetto che si ripete in frequenza si è scoperto essere la trasformata di Laplace del 
-segnale originario. Rappresentando le frequenze su un asse delle ascisse e il modulo della risposta armonica sulle ordinate, si può rappresentare la trasformata di Fuorier 
-come un diagramma di Bode. Rappresentando il diagramma di Bode del segnale originario in frequenza, ci sarà una singola curva, chiamata lobo, simmetrica rispetto all'asse 
-delle ordinate, strettamente decrescente, se si considerando solo frequenze positive o negative. 
+segnale originario. Rappresentando il diagramma di Bode del segnale originario in frequenza, ci sarà una singola curva, chiamata lobo, simmetrica rispetto all'asse 
+delle ordinate, con un picco in $\omega=0$.  
 \begin{center}
     \begin{tikzpicture}[scale=2]
         \draw[->](-2,0)--(2,0)node[above]{$\omega$};
@@ -2676,8 +2780,9 @@ delle ordinate, strettamente decrescente, se si considerando solo frequenze posi
     \end{tikzpicture}
 \end{center}
 
-Poiché il segnale campionato in frequenza è una sommatoria delle trasformate di Laplace del segnale originale, traslate di $k\omega_c$, e ridotte di un fattore 
-$\displaystyle\frac{1}{T_c}$, il suo diagramma di Bode sarà formato da una serie di lobi uguali ripetuti. 
+Poiché il segnale campionato in frequenza è una sommatoria delle trasformate di Laplace del segnale originale, traslate di $\omega_ck$, e ridotte di un fattore 
+$\displaystyle\frac{1}{T_c}$, il suo diagramma di Bode sarà formato da una serie di lobi uguali ripetuti. Per cui il campionamento di un segnale replica lo stesso segnale 
+ma a frequenze più elevate. 
 \begin{center}
     \begin{tikzpicture}[scale=1.2]
         \draw[->](-6,0)--(6,0)node[above]{$\omega$};
@@ -2769,12 +2874,58 @@ Si può osservare che il filtro in frequenza è $rect\left(\displaystyle\frac{2\
     \end{tikzpicture}
 \end{center}
 
-Ma questa risposta impulsiva è diversa da zero anche per tempi negativi, per cui comincia ad oscillare prima di un entrata, di conseguenza è anticausale. Inoltre 
+Questa risposta impulsiva è diversa da zero anche per tempi negativi, per cui comincia ad oscillare prima di un entrata, di conseguenza è anticausale. Inoltre 
 se viene computata una convoluzione si osserveranno segnali futuri. Per cui non si può lavorare con questo filtro ideale, usato da Shannon nella sua teoria. 
 
-Ma se sono già 
-noti tutti i campioni è possibile ricostruire il segnale, poiché si conoscone tutte le entrate future. L'uscita sarà una sommatoria di risposte impulsive, moltiplicate per 
-la rispsosta impulsiva del filtro passa-basso, sommando punto per punto si ottiene in uscita il segnale continuo di partenza. Per eseguire questa operazione su un 
+Se sono già 
+noti tutti i campioni è possibile ricostruire il segnale, poiché si conoscone tutte le entrate future. L'uscita sarà data da risposte impulsive, ottenute interpolando 
+le varie $sinc$ con il valore del campione, sommandole punto per punto. Quest'uscita sarà quindi uguale al segnale originario prima del campionamento. 
+
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->](0,-0.25)--(0,2)node[right]{$y(t)$};
+        \draw[->](-1,0)--(3,0)node[above]{$t$};
+
+
+        \draw[]plot[smooth, domain=-0.8:2.8](\x,{1+0.2*sin(2*\x r)});
+
+        \draw[->,ultra thick](0,0)--(0,1);
+        \draw[->,ultra thick](0.4,0)--(0.4,1.141);
+        \draw[->,ultra thick](0.8,0)--(0.8,1.199);
+        \draw[->,ultra thick](1.2,0)--(1.2,1.135);
+        \draw[->,ultra thick](1.6,0)--(1.6,0.988);
+        \draw[->,ultra thick](2,0)--(2,0.848);
+        \draw[->,ultra thick](2.4,0)--(2.4,0.8);
+        \draw[->,ultra thick](2.8,0)--(2.8,0.873);
+
+        \draw[-, thick]plot[smooth,domain=-1:-0.01](\x,{sin(6*(\x) r)/(6*(\x))});
+        \draw[-, thick]plot[smooth,domain=0.01:1](\x,{sin(6*(\x) r)/(6*(\x))});
+
+        \draw[-, thick]plot[smooth,domain=-0.6:0.39](\x,{1.141*sin(6*(\x-0.4) r)/(6*(\x-0.4))});
+        \draw[-, thick]plot[smooth,domain=0.41:1.4](\x,{1.141*sin(6*(\x-0.4) r)/(6*(\x-0.4))});
+
+        \draw[-, thick]plot[smooth,domain=-0.2:0.79](\x,{1.199*sin(6*(\x-0.8) r)/(6*(\x-0.8))});
+        \draw[-, thick]plot[smooth,domain=0.81:1.8](\x,{1.199*sin(6*(\x-0.8) r)/(6*(\x-0.8))});
+
+        \draw[-, thick]plot[smooth,domain=0.2:1.19](\x,{1.135*sin(6*(\x-1.2) r)/(6*(\x-1.2))});
+        \draw[-, thick]plot[smooth,domain=1.21:2.2](\x,{1.135*sin(6*(\x-1.2) r)/(6*(\x-1.2))});
+
+        \draw[-, thick]plot[smooth,domain=0.6:1.59](\x,{0.988*sin(6*(\x-1.6) r)/(6*(\x-1.6))});
+        \draw[-, thick]plot[smooth,domain=1.61:2.6](\x,{0.988*sin(6*(\x-1.6) r)/(6*(\x-1.6))});
+
+        \draw[-, thick]plot[smooth,domain=1:1.99](\x,{0.848*sin(6*(\x-2) r)/(6*(\x-2))});
+        \draw[-, thick]plot[smooth,domain=2.01:2.9](\x,{0.848*sin(6*(\x-2) r)/(6*(\x-2))});
+
+        \draw[-, thick]plot[smooth,domain=1.4:2.39](\x,{0.8*sin(6*(\x-2.4) r)/(6*(\x-2.4))});
+        \draw[-, thick]plot[smooth,domain=2.41:2.9](\x,{0.8*sin(6*(\x-2.4) r)/(6*(\x-2.4))});
+
+        \draw[-, thick]plot[smooth,domain=1.8:2.79](\x,{0.873*sin(6*(\x-2.8) r)/(6*(\x-2.8))});
+        \draw[-, thick]plot[smooth,domain=2.81:2.9](\x,{0.873*sin(6*(\x-2.8) r)/(6*(\x-2.8))});
+    \end{tikzpicture}
+\end{center}
+
+
+Per eseguire questa operazione su un 
 processore, si considera una frequenza di campionamento maggiore, quindi si inseiscono altri impulsi tra i campioni noti, ricavati dalle $sinc$. Alternativamente, poiché 
 l'effetto della $sinc$ diminuisce nella distanza dal campione, per cui il processore calcola un certo numero di $sinc$ in avanti e le somma a quelle passate per ottenere 
 il valore in quel punto. Il numero di $sinc$ che precalcola il processore dipende interamente dalla sua velocità nel calcolarle, poiché deve elaborare il segnale in uscita 
@@ -2784,8 +2935,14 @@ processore, più aumenta la qualità dell'audio corregendo il valore del campion
 Nel caso di controllori automatici, invece non sono noti campioni futuri, per cui anche un piccolo ritardo può generare un'elevata perdita di fase per il controllore, 
 non permettendo il controllo adeguato del sistema. 
 
-Il teorema di Shannon prevede un ricostruttore ideale ovvero è applicabile se e solo se i lobi non si intersecano, in caso contrario si campiona una parte minore del 
-lobo centrale e la parte rimanente crea delle distorsioni nel campione di partenza. Questi disturbi sono delle frequenze che non esistevano, sono degli alias creati a causa 
+
+
+Il teorema di Shannon prevede un ricostruttore ideale ovvero dove la pulsazione di campionamento è maggiore del doppio della pulsazione massima del segnale 
+$\omega_c>2\omega_M$, in caso contrario $\omega_c<2\omega_M$ si campiona una parte minore del 
+lobo centrale e la parte rimanente crea delle distorsioni nel campione di partenza. 
+
+
+Questi disturbi sono delle informazioni che non esistevano, sono degli alias creati a causa 
 della frequenza di campionamento troppo piccola, per cui questo fenomeno viene chiamato aliasing. Ad alte frequenze vengono misurati valori corrispondenti a basse 
 frequenze del polo successivo, ed a basse frequenze vengono misurati contributi del polo precedente ad alte frequenze. 
 
@@ -2819,7 +2976,8 @@ frequenze del polo successivo, ed a basse frequenze vengono misurati contributi 
 Il fenomeno dell'aliasing può verificarsi anche per la riproduzione delle immagini, è quindi un problema informatico e dipende dal fatto che le informazioni digitali sono 
 discrete, ed ogni volta che dovranno rappresentare qualcosa di continuo sarà presente un fenomeno di aliasing. 
 
-Per evitare l'aliasing si ignorano queste frequenze usando un filtro anti-aliasing a monte del campionatore. Questo filtro, proprio perché l'aliasing è un fenomeno comune 
+Per evitare l'aliasing si può aumentare il tempo di campionamento oppure si ignorano queste frequenze usando un filtro anti-aliasing a monte del campionatore. 
+Questo filtro, proprio perché l'aliasing è un fenomeno comune 
 ad ogni fenomeno digitale, è sempre presente. Alle volte viene realizzato digitalmente, può essere implementato un sistema che campiona ad una frequenza maggiore per pulire 
 il segnale e poi lo passa al campionatore. 
 
@@ -2927,26 +3085,45 @@ Per cui ha un guadagno $T_c$, ed è una funzione di trasferimento del primo ordi
         \draw[dashed,blue](1.3,1)--(1.3,0)node[below]{$\displaystyle\frac{1}{T_c}$};
         \draw[-,very thick, green](0,1.02)--(1.6,1.02)--(1.6,0)node[below]{$\displaystyle\frac{\pi}{T_c}$};
 
-        \filldraw[black](0.8,0)node[below]{$\omega_m$}circle(0.5pt);
+        \filldraw[black](0.8,0)node[below]{$\omega_M$}circle(0.5pt);
     \end{tikzpicture}
 \end{center}
 La banda passante di questo sistema con un unico polo a $\displaystyle\frac{1}{T_c}$ coincide con questo polo. Per il ricostruttore di Shannon, la banda passante è esattamente 
 $\displaystyle\frac{\omega_c}{2}=\frac{\pi}{T_c}$. Nel caso reale il modulo scende di $20\:dB$ ogni decade, per quello ideale di Shannon il modulo scende in maniera secca. 
-Per cui la frequenza massima da campionare $\omega_m$ deve essere necessariamente minore di $\displaystyle\frac{1}{T_c}$. Per un ricostruttore ideale ipotizzato da Shannon 
-è sufficiente che la pulsazione di campionamento sia il doppio della pulsazione massima da campionare. Con un ricostruttore ideale la pulsazione di campionamento deve essere 
-minimo $10$ o $20$ volte la pulsazione massima da campionare, ancora meglio se la pulsazione di campionamento è $100$ volta della pulsazione massima, anche se può essere 
-troppo. Per cui una pulsazione di campionamento doppia rispetto a $\omega_m$ ricade solo nel domino ideale. 
 
-Per cui il tempo di campionameto va scelto in base alle tipologie di frequenza che si vogliono campionare. Per alcuni sistemi il tempo di campionamento deve essere variabile, 
+
+Per cui la frequenza massima da campionare $\omega_M$ deve essere necessariamente minore di $\displaystyle\frac{1}{T_c}$. Per un ricostruttore ideale ipotizzato da Shannon 
+è sufficiente che la pulsazione di campionamento sia il doppio della pulsazione massima da campionare $\omega_c>2\omega_M$. Con un organo di tenuta di ordine zero la 
+pulsazione di campionamento deve essere: 
+\begin{equation}
+    \displaystyle \omega_M<\frac{1}{T_c}\Rightarrow \omega_c>2\pi\omega_M\approx6\omega_M
+\end{equation}
+
+In una sistema reale affetto da errori e disturbi la pulsazione di campionamento deve essere 
+minimo $10$ o $20$ volte la pulsazione massima da campionare, può essere neccessario sia maggiore di $100\omega_M$, anche se scegliere una pulsazione di 
+campionamento troppo elevata può presentare altri tipi di problemi a causa del tempo di campionamento molto piccolo. 
+Per cui una pulsazione di campionamento doppia rispetto a $\omega_M$ ricade solo nel domino ideale. 
+
+
+
+Il tempo di campionameto va scelto in base alle tipologie di frequenza che si vogliono campionare. Per alcuni sistemi il tempo di campionamento deve essere variabile, 
 mentre per altri deve rimanere costante. 
+
+
 
 
 Il sistema potrebbe essere misurato da sensori analogi o digitali, in questo caso si avrà una misura discretizzata. Questi encoder possono essere realizzati da un disco 
 forato in rotazione, dei fototransistor possono percepire la luce che passa attravaraso i fori del disco in un intervallo di tempo generando un'onda quadra in uscita con 
 frequenza proporzionale alla velocità di rotazione del disco. La luce fornisce una piccola differenza di potenziale per attivare il transistor, composto da una coppia 
-foto diodo, generando l'onda. Con il fronte di salita si può incrementare un clock oppure si può creare un segnale periodico per controllare il processo. 
+foto diodo, generando l'onda. 
+
+
+Con il fronte di salita si può incrementare un clock oppure si può creare un segnale periodico per controllare il processo. 
 Può presentare un'altra corona più interna con un'altra coppia fotodiodo e fototransistor per ottenere il doppio degli impulsi da usare, possono essere usati in un semplice 
 circuito per determinare il verso di rotazione del disco, agendo come uno XOR. 
+
+
+
 Ponendo i fototransistor uno prima dell'altro, se il circuito ruota un senso il fronte di salita di uno dei due verrà prima del secondo e viceversa, in questo modo 
 sapendo la posizione dei fototransistor è possibile determinare il verso di rotazione. 
 Questi encoder sono utilizzati quando si accende un sistema, senza sapere la posizione in cui si trova. Può anche essere presente un foro centrale in grado di 
@@ -3196,17 +3373,25 @@ Passando per il domino del tempo è sempre possibile trasformare una funzione co
 residui, trasportando ogni residuo nel discreto separatamente:
 \begin{gather}
     C(s)=\displaystyle\sum_{i=0}^{n}\frac{R_i}{s+p_i}\\
-    C(z)=\displaystyle\sum_{i=0}^{n}\frac{R_i}{z+e^{p_iT_c}}
+    C(z)=\displaystyle\sum_{i=0}^{n}\frac{zR_i}{z+e^{p_iT_c}}
 \end{gather}
-Questa trasformazione viene chiamata trasformazione esatta, ed il polo si sposta da $p_i$ a $e^{p_iT_c}$. Il guadagno in Laplace si ottiene ponendo $s=0$, quindi sarà: 
-$\displaystyle\frac{R_i}{p_i}$, per la trasformata $Z$, si pone $z=0$ corrisponde ad un valore di $s=1$, sarà: $\displaystyle\frac{R_i}{e^{p_iT_c}}$. Sorge un problema 
+Questa trasformazione viene chiamata trasformazione esatta, ed il polo si sposta da $p_i$ a $e^{p_iT_c}$. 
+I guadagni per una risposta indiciale si ottengono con i rispettivi teoremi del valore iniziale:
+\begin{gather}
+    K_{(s)}:=\lim_{s\to0}s\cdot\displaystyle\frac{R_i}{s+p_i}\frac{1}{s}=\frac{R_i}{p_i}\\
+    K_{(z)}:=\lim_{z\to1}(1-z^{-1})\cdot\displaystyle\frac{zR_i}{z+e^{p_iT_c}}\frac{1}{1-z^{-1}}=\frac{R_i}{1-e^{p_i}T_c}
+\end{gather} Sorge un problema 
 poiché avranno la stessa risposta impulsiva, ma hanno una risposta al gradino diversa, su cui si calcola il gaudagno. Il guadagno così ottenuto dipenderà anche dal tempo 
 di campionamento scelto, per cui non la trasformazione esatta non è usata. 
 
 Per avere la stessa risposta al gradino si potrebbe 
-moltiplicare la trasformata $Z$ di ogni residuo per un fattore $\displaystyle\frac{e^{p_iT_c}}{p_i}$, in modo da avere la stessa risposta al gradino. Questa trasformazione 
-viene chiamata trasformazione al guadagno. Ma in questo modo 
-avranno una risposta uguale solo ad un'entrata a gradino, per cui questo metodo non viene mai utilizzato. Non esiste una trasformazione "giusta" esistono sono delle 
+moltiplicare la trasformata $Z$ di ogni residuo per un fattore $\displaystyle\frac{1-e^{p_iT_c}}{p_i}$, in modo da avere la stessa risposta al gradino. Questa trasformazione 
+viene chiamata trasformazione al guadagno. 
+In questo modo si può forzare il sistema discreto ad avere la stessa risposta del sistema nel continuo, ma campionando un segnale l'unica informazione che rimane del segnale 
+originario è la sua risposta impulsiva, per cui si avrà solo una risposta impulsiva uguale, dato che questo metodo equivale a forzare il sistema ad avere un andamento 
+che non può avere. 
+
+Non esiste una trasformazione "giusta" esistono sono delle 
 approssimazioni, ed alcune sono più soddisfacienti delle altre in determinate situazioni.  
 
 \subsubsection{Trasformazione ZOH}
@@ -3298,11 +3483,19 @@ Si può ottenere l'approssimazione di un integratore $\displaystyle\frac{1}{s}$ 
     i)\:y_{k+1}=y_k+T_cu_k\\
     Y(z)=Y(z)z^{-1}+T_cU(z)z^{-1}\\
     W(z)=\displaystyle\frac{T_cz_{-1}}{1-z^{-1}}\approx\frac{1}{s}\\
-    s\approx\displaystyle\frac{1}{T_c}\frac{1-z^{-1}}{z^{-1}}\\
+    s\approx\displaystyle\frac{1}{T_c}\frac{1-z^{-1}}{z^{-1}}
+\end{gather}
+
+
+\begin{gather}
     ii)\:y_{k+1}=y_k+T_cu_{k+1}\\
     Y(z)=Y(z)z^{-1}+T_cU(z)\\
     W(z)=\displaystyle\frac{T_c}{1-z^{-1}}\approx\frac{1}{s}\\
-    s\approx\displaystyle\frac{1-z^{-1}}{T_c}\\
+    s\approx\displaystyle\frac{1-z^{-1}}{T_c}
+\end{gather}
+
+
+\begin{gather}
     iii)\:y_{k+1}=y_k+(u_k+u_{k+1})\displaystyle\frac{T_c}{2}\\
     Y(z)=Y(z)z^{-1}+\displaystyle\frac{T_c}{2}U(z)(1+z^{-1})\\
     W(z)=\displaystyle\frac{T_c}{2}\frac{1+z^{-1}}{1-z^{-1}}\approx\frac{1}{s}\\
