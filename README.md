@@ -3,11 +3,12 @@
 Appunti di Fondamenti di Automatica, AA 2022/2023
  Università di Roma Tre. 
 
-Di seguito le possibile domande dell'orale, divise in base ai macroargomenti riguardanti: 
+<details>
+  <summary>Di seguito le possibile domande dell'orale, divise in base ai macroargomenti riguardanti: 
+</summary>
+ <summary>Rappresentazioni Ingresso-Uscita:</summary>
 
-Rappresentazioni Ingresso-Uscita:
-
-• Equazioni differenziali: lo studente dovrà dare la definizione di equazione differenziale e di problema di Cauchy. Dovrà essere mostrata la risoluzione delle equazioni lineari a coefficienti costanti di ordine pari a uno e di ordine superiore.
+ • Equazioni differenziali: lo studente dovrà dare la definizione di equazione differenziale e di problema di Cauchy. Dovrà essere mostrata la risoluzione delle equazioni lineari a coefficienti costanti di ordine pari a uno e di ordine superiore.
 
 • Il controllo a catena aperta e il controllo a controreazione: Dovrà essere illustrato il principio su cui si basano  le due tipologie di controllori, mettendo in evidenza pregi e difetti dei due approcci.
 
@@ -61,12 +62,8 @@ Rappresentazioni Ingresso-Uscita:
 
 • Stabilità dei sistemi non lineari e linearizzazione intorno a un punto di equilibrio.
 
+  <summary>Sistemi a Segnali Campionati:</summary>
 
-
-
-
-
-Sistemi a Segnali Campionati:
 
 • Struttura di un sistema di controllo a segnali campionati: lo studente dovrà disegnare tutti i componenti di un sistema di controllo realistico a segnali campionati: il microprocessore, i convertitori A/D e D/A, il filtro anti-aliasing per finire con il processo e il trasduttore dell'uscita.
 
@@ -89,3 +86,5 @@ Sistemi a Segnali Campionati:
 • Scelta del tempo di campionamento: Il candidato dovrà illustrare come la scelta del tempo di campionamento non sia soltanto legata al soddisfacimento del teorema di Shannon, ma anche a problematiche che riguardano, tra le altre cose, il passo di quantizzazione e la lunghezza di parola del processore utilizzato.
 
 • Sintesi diretta della risposta piatta: Il candidato dovrà spiegare come sia possibile ottenere una risposta a ciclo chiuso pari a z^(-n) e in quali condizioni
+
+</details>
