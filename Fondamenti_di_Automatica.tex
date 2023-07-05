@@ -37,7 +37,7 @@
 % V Ingressi di Tipo Sinusoidale;
 % V Controllori Digitali;
 % V Laplace;
-%   Eq. Diff;
+% V Eq. Diff;
 % V Sostituire Immagini Screenate da Simulink con Blocchi Fatti in Tikz(https://latexdraw.com/block-diagram-in-latex-step-by-step-tikz-tutorial)e
 %                                                                       (https://tex.stackexchange.com/questions/175969/block-diagrams-using-tikz);
 %   Rotore DC grafico in CiruiTikz;
@@ -148,17 +148,533 @@ $\vec{x}(t>t_0)$.
 
 \subsection{Introduzione alle Equazioni Differenziali}
 
+Un sistema fisico può essere analizzato mediante la dinamica o la cinematica:
+\begin{itemize}
+    \item Dinamica: Studia le relazioni matematiche che descrivono l'evoluzione del sistema;
+    \item Cinematica: Studa le relazioni di mmoto tra le componenti del sistema.
+\end{itemize} 
+
+
+Viene definita eqauzione differenziale una funzione che contiene elementi derivati della variabile dipendente. 
+Un equazione differenziale può essere usata per descrivere l'andamento di sistemi dinamici varianti nel tempo. 
+
+
+Lo studio delle equazioni differenziali cominciò nel $1671$, anno in cui Isaac Newton pubblicò il "Methodus fluxiorium et servierum infinitorum" in cui descrisse tre 
+tipologie di equazioni differenziali di primo grado e le loro soluzioni: 
+\begin{gather}
+    \displaystyle\frac{dy}{dx}=f(x)\\
+    \displaystyle\frac{dy}{dx}=f(x,y)\\
+    x_1\displaystyle\frac{\partial y}{\partial x_1}+x_2\frac{\partial y}{\partial x_2}=y
+\end{gather}
+
+
+
+Nel 1695 i fratellil Jacob e Johan Bernoulli descrissero l'omonima equazione differenziale:
+\begin{equation}
+    \dot y+P(x)y=Q(x)y^n
+\end{equation}
+
+
+
+
+Nel 1750 venne descritta l'evoluzione dell'equazione di Eulero-Lagrange, equazione che può essere usata per analizzare il moto di un qualsiasi corpo nel tempo data la 
+lagrangiana $\mathscr{L}(t,q,\dot q)$, funzione dipendente dal tempo, la quantità di moto e la prima derivata della quantità di moto agente sul corpo:
+\begin{equation}
+    \displaystyle\frac{\partial \mathscr{L}}{\partial q}-\frac{d}{dt}\frac{\partial \mathscr{L}}{\partial\dot q}=0
+\end{equation}
+
 \subsection{Equazioni Differenziali Ordinarie}
+
+Viene definita equazione differenziale orinaria un'equazione la cua incognita è una funzione ad una singola variabile $f(x):A\to\mathbb{R}$, deribaile $n$ volte $f\in C^{(n)}(A)$ 
+e i cui termini sono le derivate della funzione stessa di grado massimo $n$.
+
+\begin{equation}
+    F(t,f(t),\cdots,f^{(n)}(t))=0
+\end{equation}
+Dove $F:I\subseteq\mathbb{R}^{n+2}\to\mathbb{R}$, dove $I$ è un insieme aperto. 
+
+Può essere espressa espicitando il termine di grado massimo:
+\begin{equation}
+    y^{(n)}(t)=g(t,y(t),\cdots,y^{(n-1)}(t))
+\end{equation}
+
+Viene definita equazione differenziale ordinaria lineare:
+\begin{equation}
+    y^{(n)}(t)=\displaystyle\sum_{i=0}^{n-1}a_i(t)y^{(i)}(t)+a_{n+1}(t)
+\end{equation}
+Dove il termine $a_{n+1}:I\subseteq\mathbb{R}\to\mathbb{R}$ rappresenta il termine noto, i termini $a_i:I\subseteq\mathbb{R}\to\mathbb{R}$ rappresentano i coefficienti 
+dell'equazioone variabili nel tempo. Per un'equazione a coefficienti costanti si avrà per ogni coefficiente $a_i(t)=a_i$. 
+
+
+Una funzione è lineare se e solo se soddisfa il principio di sovrapposizione degli effetti:
+\begin{equation}
+    F(t_0)+F(t)=F(t_0+t)
+\end{equation}
+
+
+
+
+Data un'equazione differenziale ordinaria lineare a coefficienti costanti, viene definita soluzione locale la funzione $y$ soluzione  
+nell'intervallo $I\subseteq\mathbb{R}$ sottoinsieme dell'insieme $J$ dov'è definita l'equazione differenziale.
+
+Data un'equazione differenziale ordinaria lineare a coefficienti costanti, viene definita soluzione massimale $y$ una funzione per cui non esistono prolungamenti 
+propri di $y$. 
+
+Data un'equazione differenziale ordinaria lineare a coefficienti costanti, viene definita soluzione globale $y$, una funzione che è una soluzione locale 
+nell'intero intervallo $J\subseteq\mathbb{R}$ dov'è definita l'equazione differenziale. 
 
 \subsection{Problema di Cauchy}
 
+Date un'equazione differenziale di una funzione $y(x)$, si definiscono condizioni iniziali o condizioni al contorno i valori delle derivate $n-1$-esime in uno stesso punto 
+$x_0$. Dato il vettore condizioni iniziali $Y=Y(x_=)$ esiste un'unica funzione $y(x)$ che risolve quell'equazione differenziale. Un sistema del genere 
+definito da un'equazione differenziale ordinaria a coefficienti costanti di ordine $n$ e $n$ condizioni inziali viene definito problema di Cauchy:
+\begin{equation}
+    \begin{cases}
+        y^{(n)}(x)=f(x,y^{(0)}(x),\cdots,y^{(n-1)}(x))\\
+        Y(x_0)=\begin{pmatrix}
+            x_0\\
+            y^{(0)}(x_0)\\
+            \vdots\\
+            y^{(n-1)}(x_0)
+        \end{pmatrix}
+    \end{cases}
+\end{equation}
+
+
+
+Data un'equazione differenziale $F:A\subseteq\mathbb{R}^{(n+2)}\to\mathbb{R}$, data una funzione $y=y(x,c_1,\cdots,c_n)$, se per 
+ogni valore diverso del set di parametri variabili $(c_1,\cdots,c_n)$, esiste un intervallo $I\subseteq\mathbb{R}^{(n+1)}$ tale che la funzione $y=y(x,c_1,\cdots,c_n)$ è una soluzione 
+dell'equazione differenziale. E se per ogni valore delle condiioni iniziali $(x_0,y_0,\cdots,y_{n-1})\in A\subseteq\mathbb{R}^{(n+1)}$ allora esiste un'unica funzione 
+$y=y(x,c_1,\cdots,c_n)$, soluzione del problema di Cauchy:
+\begin{equation}
+    \begin{cases}
+        y^{(n)}(x)=f(x,y^{(0)}(x),\cdots,y^{(n-1)}(x))\\
+        Y(x_0)=\begin{pmatrix}
+            x_0\\
+            y^{(0)}(x_0)\\
+            \vdots\\
+            y^{(n-1)}(x_0)
+        \end{pmatrix}
+    \end{cases}
+\end{equation}
+Allora la funzione $y$ è una soluzione generale dell'equazione differenziale. 
+
+Una soluzione particolare dell'equazione differenziale è una soluzione per un valore particolare delle variabili $c_i$. 
+
+%Th esistenza e unictà locale problema di Cauchy
+
+Un'equazione differenziale a variabili separabili è un'equazione del tipo:
+\begin{equation}
+    \displaystyle\frac{dy}{dx}=f(x)g(y)
+\end{equation}
+Dove $f(x):I\subseteq\mathbb{R}\to\mathbb{R}$ e $g(y):J\subseteq\mathbb{R}\to\mathbb{R}$. 
+Le soluzione dell'equazione sono date implicitamente da:
+\begin{equation}
+    \displaystyle\int\frac{dy}{g(y)}=\int f(x)dx
+\end{equation}
+
+
+La soluzione di un problema di Cauchy di un'equazione differenziale a variabili separabili esiste ed è unica localmente se date due funzioni 
+$f(x):I\subseteq\mathbb{R}\to\mathbb{R}$ e $g(y):J\subseteq\mathbb{R}\to\mathbb{R}$, e due valori $x_0\in I$ e $y_0\in J$. Si suppone $f\in C^{(0)}(I)$ e $g\in C^{(1)}(J)$. 
+Allora il problema di Cauchy ammette una ed una sola soluzione massimale definita su $I'\subseteq I,\:\{x_0\}\subset I'$. 
+\begin{equation}
+    \begin{cases}
+        \displaystyle\frac{dy}{dx}=f(x)g(y)\\
+        y(x_0)=y_0
+    \end{cases}
+\end{equation}
+
 \subsection{Equazione Lineare di Primo Ordine}
+
+Un'equazione differenziale lineare di primo ordine è un'equazione del tipo:
+\begin{equation}
+    \displaystyle\frac{dy}{dx}=a(x)y+b(x)
+\end{equation}
+Dove $a,b:I\subseteq\mathbb{R}\to\mathbb{R}$, se $b(x)=0$ allora l'equazione diventa omogenea.
+
+Per risolvere l'equazione omogenea si considera:
+\begin{gather}
+    \displaystyle\frac{dy}{dx}=a(x)y\\
+    \displaystyle\int\frac{dy}{y}=\int a(x)dx\\
+    \displaystyle \ln(y)=\left(\int a(x)dx+c_0\right)=\int a(x)dx\\
+    y=\displaystyle e^{\int a(x)dx}
+\end{gather}
+
+Per risolvere l'equazione non omogenea si considera la soluzione essere una funzione $k(x)$ ignota che moltiplica la soluzione dell'omogenea:
+\begin{gather}
+    y(x)=k(x)e^{\int a(x)dx}\\
+    \displaystyle\frac{dy}{dx}=a(x)y+b(x)\\
+    \displaystyle\frac{dk}{dx}e^{\int a(x)dx}+k(x) a(x)e^{\int a(x)dx}=a(x)k(x)e^{\int a(x)dx}+b(x)\\
+    \displaystyle\frac{dk}{dx}e^{\int a(x)dx}=b(x)\\
+    \displaystyle\int d(k(x))=k(x)=\int b(x)e^{-\int a(x)dx}dx\\
+    k(x)=\displaystyle\int b(x)e^{-\int a(x)dx}dx\\
+    y(x)=\displaystyle e^{\int a(x)dx}\int b(x)e^{-\int a(x)dx}dx
+\end{gather}
+
+Si considera un sistema dinamico descritto da quest'equazione, la sua evoluzione sarà quindi descritta da:
+\begin{gather}
+    A(t)=\displaystyle\int_{t_0}^{t}a(\tau)d\tau\\
+    y(t)=e^{A(t)}\left(\int_{t_0}^{t} b(\tau)e^{-A(\tau)}d\tau+y_0\right)=e^{A(t)}y_0+\int_{t_0}^{t} b(\tau)e^{A(t)-A(\tau)}d\tau
+\end{gather}
+Esplicitando la condizione inziale $y_0$, se la funzione $a(t)=a$ è costante, allora si avrà: $\displaystyle A(t)=\int_{t_0}^{t}a d\tau=a(t-t_0)$ e l'evoluzione del sistema 
+sarà descritta ad:
+\begin{equation}
+    y(t)=e^{a(t-t_0)}y_0+\displaystyle\int_{t_0}^{t} e^{a(t-\tau)}b(\tau)d\tau
+\end{equation}
+Il primo termine corrisponde all'evoluzione libera del sistema, poiché corrisponde all'evoluzione delle condizioni iniziali del sistema nel tempo. Il secondo termine 
+corrisponde alla convoluzione: 
+\begin{equation}
+    \displaystyle\int_{t_0}^{t} e^{a(t-\tau)}b(\tau)d\tau=e^{at}*b(t)
+\end{equation}
+Ovvero corrisponde alla risposta forzata del sistema, su cui è stata applicata un'entrata $b(t)$. La risposta del sistema ad un'entrata $b(t)$ sarà data quindi dalla somma 
+della risposta libera e della risposta forzata:
+\begin{equation}
+    y(t)=e^{a(t-t_0)}y_0+e^{at}*b(t)
+\end{equation}
+
+Il sistema potrà quindi essere rappresentato dal blocco funzionale $e^{at}$, poiché un blocco funzionale non mantiene le condizioni iniziali. Equivale quindi al 
+problema di Cauchy:
+\begin{equation}
+    \begin{cases}
+        \dot y(t)=ay(t)+b(t)\\
+        y(0)=0
+    \end{cases}
+\end{equation}
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \node[block](h)at(0,0){$e^{at}$};
+        \draw[->,ultra thick](-1,0)node[above right]{$b(t)$}--(h.180);
+        \draw[->,ultra thick](h.0)--(1,0)node[above left]{$y(t)$};
+    \end{tikzpicture}
+\end{center}
+
+Il sistema avrà una risposta impulsiva $y(t)=e^{at}$. La rispsota impulsiva di un sistema corrisponde alla sua risposta per un entrata $u(t)=\delta_0(t)$. 
+$\delta_0(t)$ viene chiamato impulso o delta di Dirac, viene definito come il limite di una distribuzione lineare:
+\begin{equation}
+    \delta_0(t):=\displaystyle\lim_{\epsilon\to0}\int_{\mathbb{R}}\delta_{\epsilon}(\tau)d\tau
+\end{equation}
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,very thick](-1.5,0)--(1.5,0)node[above]{$t$};
+        \draw[->,very thick](0,-0.5)--(0,1.5)node[left]{$\delta_\epsilon(t)$};
+
+        \draw[-, ultra thick](-1.5,0)--(-0.5,0)node[below]{$-\displaystyle\frac{\epsilon}{2}$}--(-0.5,1)--(0,1)node[above right]{$\displaystyle\frac{1}{\epsilon}$}--(0.5,1)--(0.5,0)node[below]{$\displaystyle\frac{\epsilon}{2}$}--(1.5,0);
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=2]
+        \draw[->,very thick](-0.5,0)--(0.5,0)node[above]{$t$};
+        \draw[->,very thick](0,-0.5)--(0,1.5)node[right]{$y(t)$};
+
+        \draw[->,ultra thick](0,0)--(0,1)node[left]{$1$}node[right]{$\delta_0(t)$};
+    \end{tikzpicture}
+\end{center}
+La risposta impulsiva di una funzione $f(t)$ viene definita come:
+\begin{equation}
+    f(t)*\delta_0(t)=\int_{\mathbb{R}}f(t)\delta_0(t)dt=f(0)
+\end{equation}
 
 \subsection{Equazione di Grado Superiore al Primo}
 
-\subsubsection{Metodo Geometrico}
+Un sistema dinamico può essere definito dal processo $P$:
+\begin{equation}
+    P:\displaystyle\sum_{i=0}^{n-1}a_ix^{(i)}=\sum_{j=0}^{m-1}b_ju^{(j)}
+\end{equation}
+Si può esprimre come un sistema $S$ di equazioni differenziali:
+\begin{equation}
+    S:
+    \begin{cases}
+        \dot x_1=a_{11}x_1+\cdots+a_{1n}x_n+b_{11}u_1+\cdots+b_{1m}u_m\\
+        \:\vdots \qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad \vdots\\
+        \dot x_n=a_{n1}x_1+\cdots+a_{nn}x_n+b_{n1}u_1+\cdots+b_{nm}u_m
+    \end{cases}
+\end{equation}
+Considerando le matrici colonna:
+\begin{equation}
+    x:=
+    \begin{pmatrix}
+        x_1=x^{(0)}\\
+        \vdots\\
+        x_n=x^{(n-1)}
+    \end{pmatrix}
+    ,\:
+    u:=
+    \begin{pmatrix}
+        u_1=u^{(0)}\\
+        \vdots\\
+        u_m=u^{(m-1)}
+    \end{pmatrix}
+\end{equation}
+Viene definita la matrice stato del sistema $A$:
+\begin{equation}
+    A:=
+    \begin{pmatrix}
+        a_{11}& \cdots &a_{1n}\\
+        \vdots & \ddots & \vdots\\
+        a_{n1} & \cdots&a_{nn}
+    \end{pmatrix}
+\end{equation}
+Viene definita matricce di proiezione degli ingressi $B$:
+\begin{equation}
+    B:=
+    \begin{pmatrix}
+        b_{11}& \cdots &b_{1m}\\
+        \vdots & \ddots & \vdots\\
+        b_{n1} & \cdots&b_{nm}
+    \end{pmatrix}
+\end{equation}
 
-\subsubsection{Metodo Algebrico}
+
+Lo stato del processo potrà quindi essere espresso in forma compagna:
+\begin{equation}
+    \dot x=Ax+Bu
+\end{equation}
+
+Viene definita una matrice colonna delle uscite $y$ e una matrice di uscita $C$:
+\begin{equation}
+    y:
+    \begin{pmatrix}
+        y_1\\
+        \vdots\\
+        y_n
+    \end{pmatrix}
+    ,\:
+    C:=
+    \begin{pmatrix}
+        c_1 \cdots c_n
+    \end{pmatrix}
+\end{equation}
+Per misurare una determinata uscita $y_i$ del sistema si considera un coefficiente $c_i$ non nullo. 
+
+In generale può essere espresso lo stato ingresso-uscita del sistema come:
+\begin{equation}
+    \begin{cases}
+        \dot x=Ax+Bu\\
+        y=Cx
+    \end{cases}
+\end{equation}
+
+Se la matrice di stato del sistema è diagonale $A\in D(n)$ allora ogni componente dello stato del sistema $x_i$ può essere espresso come:
+\begin{equation}
+    \dot x_i=a_{ii}x_i+\displaystyle\sum_{k=0}^{m}b_{ik}u_k
+\end{equation}
+Una matrice $A$ è diagonalizzabile se e solo se si ha:
+\begin{equation}
+    det(A-\lambda I)=0,\:\forall\lambda_i\Rightarrow m(\lambda_i)=|E(\lambda_i)|
+\end{equation}
+Dove $\lambda_i$ rappresenta un autovalore della matrice $A$, soluzione del polinomio caratteristico $P(\lambda_i)=det(A-\lambda_iI)$, e $E(\lambda_i):=Sol(A-\lambda_iI=0)$. 
+Se è diagonalizzabile è possible esprimere la matrice come una matrice diagonale:
+\begin{equation}
+    \tilde A=
+    \begin{pmatrix}
+        \lambda_1 &\cdots& 0\\
+        \vdots& \ddots &\vdots\\
+        0&\cdots&\lambda_n
+    \end{pmatrix}
+\end{equation}
+
+
+Per passare dalla matrice $A$ alla matrice diagonalizzata $\tilde A$, si considera una matrice di passaggio $T:=(t_{ij})$ dove il componente $t_{ij}$ viene ottenuto esprimendo 
+una base $\langle\vec{e}_1,\cdots,\vec{e}_n\rangle$ della matrice $A$ rispetto ad una base $\langle\vec{v}_1,\cdots,\vec{v}_n\rangle$ della matrice $\tilde A$:
+\begin{equation}
+    \vec{v_j}=\displaystyle\sum_{i=0}^{n}t_{ji}\vec{e}_j
+\end{equation}
+
+Per passare tra le due matrici si considera:
+\begin{equation}
+    \tilde A=T^{-1}AT
+\end{equation}
+Per ottenere una matrice diagonale nella rappresentazione ingresso-uscita del sistema si applica la sostituzione $x=Tz$:
+\begin{gather}
+    \begin{cases}
+        T\dot z=ATz+Bu\\
+        y=CTz
+    \end{cases}\\
+    \begin{cases}
+        \dot z=T^{-1}ATz+T^{-1}Bu\\
+        y=CTz
+    \end{cases}\\
+    \begin{cases}
+        \dot z=\tilde Az+T^{-1}Bu\\
+        y=CTz
+    \end{cases}
+\end{gather}
+Si considera $\tilde B=T^{-1}B$ e $\tilde C=CT$, per cui la rappresentazione ingresso uscita considerando una matrice di stato diagonale sarà:
+\begin{equation}
+    \begin{cases}
+        \dot z=\tilde Az+\tilde Bu\\
+        y=\tilde Cz
+    \end{cases}
+\end{equation}
+
+
+
+
+
+Data l'equazione differenziale $y^{(n)}+\displaystyle\sum_{i=0}^{n}a_{n-i}y^{(n-i)}=u$, considerando $c_i=1$ si avrà:
+\begin{equation}
+    \begin{cases}
+        x_1=y\\
+        \vdots\\
+        x_n=y^{(n-1)}
+    \end{cases}
+\end{equation}
+Si può esprimere tramite la rappresentazione ingresso-uscita $\dot x=Ax+Bu$: 
+\begin{equation}
+    \dot x=y^{(n)}=u-\displaystyle\sum_{i=0}^{n}a_{n-i}y^{(n-i)}=u-\sum_{i=0}^{n}a_{n-i}x_{n+1-i}
+\end{equation}
+Per cui la matrice di stato sarà:
+\begin{equation}
+    A=
+    \begin{pmatrix}
+        0 & 1 & \cdots & 0 & 0\\
+        0 & 0 & 1 & \cdots & 0\\
+        \vdots & & \ddots & & \vdots\\
+        0 & \cdots & \cdots & \cdots & 1\\
+        -a_0 & \cdots & \cdots & -a_{n-1} & 0
+    \end{pmatrix}
+\end{equation}
+
+Si avrà un polinomio caratteristico: 
+\begin{gather}
+    P(\lambda)=det(A-\lambda I)=
+    \left|\begin{matrix}
+        -\lambda & 1 & \cdots & 0 & 0\\
+        0 & -\lambda & 1 & \cdots & 0\\
+        \vdots & & \ddots & & \vdots\\
+        0 & \cdots & \cdots & -\lambda & 1\\
+        -a_0 & \cdots & \cdots & -a_{n-1} & -\lambda
+    \end{matrix}\right|=
+    -a_0-a_1\lambda-a_2\lambda^2-\cdots-a_{n-1}\lambda^{n-1}-\lambda^n\\
+    P(\lambda)=\lambda^n+a_{n-1}\lambda^{n-1}+\cdots+a_1\lambda+a_0
+\end{gather}
+Il polinomio caratteristico corrisponde all'equazione differenziale:
+\begin{equation}
+    y^{(n)}+a_{n-1}y^{(n-1)}+\cdots+a_1y^{(1)}+a_0y
+\end{equation}
+La funzione $y=c_ie^{\lambda_it}$ rappresenta una soluzione dell'equazione differenziale se e solo se $P(\lambda_i)=0$:
+\begin{gather}
+    y^{(n)}+a_{n-1}y^{(n-1)}+\cdots+a_1y^{(1)}+a_0y=0\\
+    c_i\lambda_i^ne^{\lambda_it}+\cdots+c_i\lambda_ie^{\lambda_it}+c_ie^{\lambda_it}=0\\
+    c_ie^{\lambda_it}(\lambda^n+a_{n-1}\lambda^{n-1}+\cdots+a_1\lambda+a_0)=0\\
+    c_ie^{\lambda_it}P(\lambda_i)=0
+\end{gather}
+Per $c_ie^{\lambda_it}\neq0$, per cui $c_i\neq0$. 
+
+Di conseguenza per trovare una soluzione di un'equazione differenziale omogenea si può risolvere il polinomio caratteristico della matrice di stato del sistema, e ogni 
+autovalore $\lambda_i\:\Big|P(\lambda_i)=0$ corrisponderà ad una soluzione $c_ie^{\lambda_it},\:c_i\in\mathbb{R}-\{0\}$ all'equazione differenziale. 
+
+
+Data l'equazione differenziale definita dal sistema:
+\begin{equation}
+    \begin{cases}
+        \dot x_1=\displaystyle\sum_{i=0}^na_{i1}x_i+\sum_{j=0}^mb_{j1}u_j\\
+        \vdots\\
+        \dot x_n=\displaystyle\sum_{i=0}^na_{in}x_i+\sum_{j=0}^mb_{in}u_j
+    \end{cases}
+\end{equation}
+
+Si considera la rappresentzione ingresso-uscita $\dot x=Ax+Bu$, allora si potrà, dato il vettore condizioni iniziali $x_0=x(0)$, analizzarla come fosse un'equazione lineare 
+di prim o ordine con $a(t)=A$. Per cui avrà una soluzione:
+\begin{equation}
+    x(t)=e^{At}x_0+\displaystyle\int_{0}^te^{A(t-\tau)}Bu(\tau)d\tau
+\end{equation} 
+La componente $e^{At}$ rappresenta un'esponenziale elevato ad una matrice, si definisce tramite la sua espansione di Taylor: 
+\begin{equation}
+    e^{At}=\displaystyle\sum_{i=0}^{+\infty}\frac{A^it^i}{i!}=1+At+\frac{A^2t^2}{2}+\cdots
+\end{equation}
+
+La soluzione $y(t)$ dell'equazione differenziale è data da:
+\begin{equation}
+    y(t)=Cx(t)=Ce^{At}x_0+\displaystyle\int_{0}^tCe^{A(t-\tau)}Bu(\tau)d\tau=Ce^{At}x_0+Ce^{At}B*u(t)
+\end{equation}
+Il sistema sarà descritto da un blocco funzionale $Ce^{At}B$:
+\begin{center}
+    \begin{tikzpicture}[scale=2]
+        \node[block](h)at(0,0){$Ce^{At}B$};
+        \draw[->,ultra thick](-1,0)node[above right]{$b(t)$}--(h.180);
+        \draw[->,ultra thick](h.0)--(1,0)node[above left]{$y(t)$}; 
+    \end{tikzpicture}
+\end{center}
+
+Per rappresentare la componente esponenziale si considera la matrice diagonalizzata $\tilde A=T^{-1}AT$:
+\begin{gather}
+    \displaystyle e^{T\tilde A T^{-1}t}=\sum_{i=0}^n\frac{(T\tilde AT^{-1})^it^i}{i!}\\
+    (T\tilde{A}T^{-1})^n=T\tilde{A}\cancel{T^{-1}T}\tilde{A}\cancel{T^{-1}T}\cdots\cancel{T^{-1}T}\tilde{A}T^{-1}=TA^nT^{-1}\\
+    \displaystyle e^{T\tilde A T^{-1}t}=T\sum_{i=0}^n\frac{\tilde A^it^i}{i!}T^{-1}=T 
+    \begin{bmatrix}
+        e^{\lambda_1t} & & \\
+        & \ddots & \\
+        & & e^{\lambda_nt}
+    \end{bmatrix}T^{-1}
+\end{gather}
+La risposta del sistema potrà quindi essere espressa come:
+\begin{equation}
+    y(t)=CTe^{\tilde{A}t}T^{-1}x_0+CTe^{\tilde{A}t}T^{-1}B*u(t)
+\end{equation}
+
+Il sistema viene definito stabile se la risposta converge, per cui si considera:
+\begin{gather}
+    \lim_{t\to+\infty}CTe^{\tilde{A}t}T^{-1}x_0+CTe^{\tilde{A}t}T^{-1}B*u(t)=0
+\end{gather}
+Per un entrata $u(t)$ non nulla a regime permanente e matrici non nulle la risposta del sistema convergerà a $0$ se la componente esponenziale converge:
+\begin{gather}
+    \lim_{t\to+\infty}e^{\tilde{A}t}=\lim_{t\to+\infty}\begin{bmatrix}
+        e^{\lambda_1t} & & \\
+        & \ddots & \\
+        & & e^{\lambda_nt}  
+    \end{bmatrix}=0\\
+    \forall i,\:\lim_{t\to+\infty}e^{\lambda_it}=0\iff \lambda_i<0
+\end{gather}
+
+Un sistema dinamico descritto da un'equazione differenziale lineare è stabile se e solo se ogni autovalore della matrice di stato del sistema è negativo. 
+
+Tramite il criterio di Routh è possibile determinare il numero di radici a parte reale negativa in base ai coefficienti di un polinomio, per cui è possible determinare 
+la stabilità di un sistema dinamico analizzando il suo polinomio caratteristico. 
+
+
+
+
+La soluzione di un'equazione differenziale omogenea sarà data dalla somma di ogni soluzione associata ad un autovalore della matrice di stato del sistema:
+\begin{equation}
+    y_0(t)=\displaystyle\sum_{i=0}^nc_ie^{\lambda_it}
+\end{equation} 
+Per trovare i coefficienti $c_i$ sono necessarie $n$-condizioni iniziali, definite condizioni al contorno. 
+
+Se un autovalore ha una molteplicità maggiore di $1$, allora la sua soluzione associata sarà data da:
+\begin{equation}
+    y_{\lambda_i,0}(t)=\left(\displaystyle\sum_{k=1}^{m(\lambda_i)}c_kt^{k}\right)e^{\lambda_it}
+\end{equation}
+
+Se due autovalori sono complessi e coniugati $\lambda_1=\lambda_2^{*}$:
+\begin{gather}
+    \lambda_1=\sigma+j\omega\\
+    \lambda_2=\sigma-j\omega\\
+    y_{\lambda_{1,2},0}(t)=c_1e^{\lambda_1t}+c_2e^{\lambda_2t}=c_1e^{\sigma t +j\omega t}+c_2e^{\sigma t-j\omega t}=e^{\sigma t}((c_1+c_2)cos(\omega t)+j(c_1-c_2)sin(\omega t))
+\end{gather}
+Per ipotesi la soluzione deve essere una funzione reale: 
+\begin{gather}
+    y(t):I\subseteq\mathbb{R}\to\mathbb{R}\\
+    e^{\sigma t}((c_1+c_2)cos(\omega t)+j(c_1-c_2)sin(\omega t))\in\mathbb{R}\\
+    \begin{cases}
+        (c_1+c_2)cos(\omega t)\in\mathbb{R}\\
+        (c_1-c_2)sin(\omega t)\in\mathbb{R}
+    \end{cases}\\
+    \begin{cases}
+        c_1+c_2\in\mathbb{R}\Rightarrow \Im(c_1)=-\Im(c_2)\\
+        (c_1-c_2)j\in\mathbb{R}\Rightarrow \Re(c_1)=\Re(c_2)
+    \end{cases}\\
+    c_1=c_2^*=\rho e^{j\theta}\\
+    y_{\lambda_{1,2},0}(t)=\rho e^{j\theta}e^{\sigma t +j\omega t}+\rho e^{-j\theta}e^{\sigma t-j\omega t}=\rho e^{\sigma t}\left(e^{j(\omega t+\theta)}+e^{-j(\omega t+\theta)}\right)\displaystyle\frac{2}{2}\\
+    2e^{\sigma t}\left(\displaystyle\frac{e^{j(\omega+\theta)}+e^{-j(\omega+\theta)}}{2}\right)=2e^{\sigma t}cos(\omega t+\theta)
+\end{gather}
+
+Per cui si può espandere il criterio di stabilità anche per poli complessi. Un sistema dinamico sarà stabile se e solo se le sue dinamiche sono descritte da autovalori 
+a parte reale negativa. 
+
+Per ottenere la soluzione non omogenea $y_p(t)$ si somma alla soluzione omogenea $y_0(t)$ una qualsiasi soluzione particolare della non omogenea, apparterrà alla stessa classe 
+di funzioni del forzamento $g(t)$ applicato all'equazione differenziale. La soluzione generale dell'equazione differenziale sarà data da:
+\begin{equation}
+    y(t)=y_0(t)+y_p(t)
+\end{equation}
 
 \clearpage
 
@@ -1169,10 +1685,10 @@ considerando il disturbo come unica entrata del sistema.
     \draw[-,ultra thick](2.5,-0.75)--(2.5,0);
 
 
-    %\node[block, below of=g, node distance=1.5cm](h){$H(s)$};
-    %\draw[->,ultra thick](1.25,-0.75)--(h.0);
-    %\draw[-,ultra thick](h.180)--(-1,-0.75);
-    \draw[-,ultra thick](2.5,-0.75)--(-1,-0.75);
+    \node[block, below of=g, node distance=1.5cm](h){$\displaystyle\frac{1}{K_d}$};
+    \draw[->,ultra thick](1.25,-0.75)--(h.0);
+    \draw[-,ultra thick](h.180)--(-1,-0.75);
+    %\draw[-,ultra thick](2.5,-0.75)--(-1,-0.75);
     \draw[->,ultra thick](-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
 \end{tikzpicture}\end{center}
 
@@ -1184,11 +1700,17 @@ Ed un'uscita a regime permanente $Y_z$:
 \begin{equation}
     Y_z=\lim_{s\to0}s\cdot\displaystyle\frac{G_2(s)}{1+G_1(s)G_2(s)}\frac{1}{s^{k+1}}
 \end{equation}
-Per poter rigettare il disturbo bisogna inserire $k$ integratori a monte di esso, ovvero nella funzione $G_1(s)$, l'errore causato a regime permanente allora sarà:
+Si considerano $h$ integratori in catena diretta a monte del disturbo per cui si avrà:
 \begin{gather}
-    Y_z=\lim_{s\to0}s\cdot\displaystyle\frac{G_2(s)}{1+\displaystyle\frac{G_1'(s)}{s^k}G_2(s)}\frac{1}{s^{k+1}}=\frac{K_{G_2}}{K_{G_1}K_{G_2}}
+    Y_z=\lim_{s\to0}s\cdot\displaystyle\frac{G_2(s)}{1+\displaystyle\frac{G_1'(s)}{s^k}G_2(s)\frac{1}{K_d}}\frac{1}{s^{k+1}}=\frac{K_d}{K_{G_1}}\lim_{s\to0}s^{h-k}
+    \begin{cases}
+        0 &h>k\\
+        \displaystyle\frac{K_d}{K_{G_1}} &h=k\\
+        +\infty &h<k
+    \end{cases}
 \end{gather}
 
+Dove $K_{G_1}$ è il guadagno generalizzato della funzione dove sono presenti gli integratori. 
 Per cui per inseguire o rigettare un polinomio di tipo $k$ in entrata, servono $k$ integratori in catena diretta, a monte del disturbo. 
 Per eliminare completamente il disturbo sono necessari $k+1$ integratori in catena diretta a monte del disturbo, questo comportamento viene chiamato astatismo, ovvero 
 la capacità di un sistema di controllo di poter rigettare completamente un errore costante. Ma l'inserimento di poli nell'orgine 
@@ -1765,7 +2287,12 @@ Viene definito questo guadagno massimo margine di guadagno $m_g$, il valore mass
 
 dove $\alpha$ è il punto di intersezione del grafico con l'asse dei reali. Per un guadagno uguale al margine di guadagno, il sistema oscilla sul limite di stabilità, 
 per valori di guadagno maggiore del maringe di guadagno il sistema ha dinamiche oscillatorie marcate. 
-\\
+
+
+
+
+
+
 Viene definito margine di fase $m_{\varphi}$, il massimo angolo di cui si può ruotare il diagramma di Nyquist prima di intersecare il punto $-1$. Ovvero la distanza del diagramma di Bode 
 della fase da $-180^{\circ}$, per $\omega=\omega_t$, dove $\omega_t$ viene definita pulsazione di taglio per cui il modulo in decibel per quella frequenza è nullo. Rappresenta 
 di quando si può sfasare il ciclo aperto. 
@@ -1803,7 +2330,7 @@ di quando si può sfasare il ciclo aperto.
 \end{center}
 
 Se la curva della funzione a ciclo aperto $F(s)$ passa a destra del punto $-1$ allora il sistema sarà stabile. Se passa per il punto $-1$ si trova ai limiti di 
-stabilità, si avrà modulo $|F(j\omega)|=1$ e fase $\phase(F(j\omega))=-180^{\circ}$, per cui l'entrata $u(t)=sin(\omega t)$, esce dal sistema ribaltata di $-180^{\circ}$: 
+stabilità, si avrà modulo $|F(j\omega)|=1$ e fase $\phase{F(j\omega)}=-180^{\circ}$, per cui l'entrata $u(t)=sin(\omega t)$, esce dal sistema ribaltata di $-180^{\circ}$: 
 $y(t)=-sin(\omega t)$ e ritorna ad essere positiva grazie alla catena di controreazione. 
 
 Se il sistema passa a sinistra del punto $-1$ allora sarà instabile, se non ha zeri a parte reale positiva, altrimenti bisogna calcolare il margine di fase per ruotare abbastanza 
@@ -1857,6 +2384,12 @@ Per alcuni sistemi fisici è presente un ritardo finito nella misurazione dello 
 L'uscita $f(t)$ sarà quindi traslata nel tempo di un fattore $\tau$: $f(t-\tau)$, nel dominio della frequenza questo ritardo viene rappresentato come: 
 $\mathscr{L}_-(f(t-\tau))=F(s)e^{-s\tau}$. 
 
+Il ritardo può essere causato dalla dislocazione spaziale del controllore. Come in un laminatoio, un macchinario composto da due rulli di raggio uguale 
+che variano l'altezza di una lastra di metallo e quindi anche la sua velocità di uscita, questa velocità può essere misurata ad una distanza minima 
+pari al raggio del rullo, causando un ritardo. 
+
+Un altro sistema con ritardo è una doccia, dove l'effetto del cambiamento di temperatura appare con un certo di ritardo dopo aver ruotato la manopola. 
+
 Questo ritardo nella misurazione viene rappresentato come un esponenziale sulla catena di misura che precede il trasduttore. 
 
 \begin{center}\begin{tikzpicture}[scale=2]
@@ -1898,6 +2431,11 @@ di sotto dei $-180^{\circ}$, rendendo il sistema instabile. Per cui anche per un
 Si potrebbe aumentare $\omega_t$ diminuiendo il guadagno del sistema, ma diminuire il guadagno di un sistema compromette la sua abilità nella reiezioni degli errori e 
 nella riproduzione dei segnali.  
 
+Per cui per evitare l'instabilità di un sistema con ritardo è necessario che le entrate applicate al sistema siano molto lente avendo delle 
+frequenze molto basse. 
+
+
+
 \begin{center}
     \includegraphics[width=12cm]{Bode2.png}
 \end{center}
@@ -1915,8 +2453,8 @@ numero dispari di zeri a parte reale posisitiva, il residuo del gradino minore d
 permanente, per cui si può notare dalla risposta come un guadagno elevato possa influenzare la convergenza degli andamenti del sistema e quindi la sua stabilità. 
 
 \begin{gather}
-    Y(s)=\displaystyle\frac{R_0}{s}+\frac{R_1}{s\tau_1+1}+...+\frac{R_n}{s\tau_n+1},\:R_0<0\\
-    y(t)=-|R_0|\delta_{-1}(t)+R_1e^{-\tau_1t}+...+R_ne^{-\tau_nt}
+    Y(s)=\displaystyle\frac{R_0}{s}+\cdots+\frac{R_i}{s\tau_i+1}+\cdots+\frac{R_n}{s\tau_n+1},\:R_i<0\\
+    y(t)=R_0\delta_{-1}(t)+\cdots-|R_i|e^{-\tau_it}+\cdots+R_ne^{-\tau_nt}
 \end{gather}
 
 \begin{center}
@@ -1929,7 +2467,7 @@ Dato un sistema avente una funzione a ciclo chiuso $W(s)=\displaystyle\frac{C(s)
 calcolare direttamente un controllore $C(s)$ per ottenerla: 
 
 \begin{gather}
-    W(s)(1+C(sP(s)))=C(s)P(s)\\
+    W(s)(1+C(s)P(s))=C(s)P(s)\\
     C(s)=\displaystyle\frac{1}{P(s)}\cdot\frac{W(s)}{1-W(s)}
 \end{gather}
 
@@ -2128,13 +2666,15 @@ evidente e potrà essere approssimato l'andamento del sistema ad un andamento li
 
 \begin{gather}
     \begin{cases}
-        y=f(v)\\
+        v=f(y)\\
         v=k(u-y)
     \end{cases}\\
-    y=f(k(u-y))\\
+    k(u-y)=f(y)\\
+    k\to+\infty,\:u-y=\cancelto{0}{\displaystyle\frac{f(y)}{k}}\\
+    u=y
 \end{gather}
 
-Dove $f(x)$ è una funzione non lineare, considerando un guadagno molto elevato $k>>0$, allora $y\propto u-y$, se il sistema non diventa stabile prima. \\
+Dove $f(y)$ è una funzione non lineare, considerando un guadagno molto elevato $k>>0$, allora $y\propto u$, se il sistema non diventa stabile prima. \\
 Un transistor è un oggetto non lineare, ma ha un guadagno molto elevato, per cui viene costruito in controreazione per avere comportamenti lineari. 
 
 \subsection{Errore e Disturbi di Tipo Sinusoidale}
@@ -3077,13 +3617,13 @@ $s$ a basse frequenze:
 Per cui ha un guadagno $T_c$, ed è una funzione di trasferimento del primo ordine ad avrà il seguente andamento:
 \begin{center}
     \begin{tikzpicture}[scale=2]
-        \draw[->](-0.25,0)--(2,0)node[above]{$\omega$};
+        \draw[->](-0.25,0)--(2.5,0)node[above]{$\omega$};
         \draw[->](0,-0.25)--(0,1.5)node[right]{$|T(j\omega)|$};
 
         \node[left]at(0,1){$T_c$};
         \draw[-,very thick,blue](0,1)--(1.3,1)--(1.9,-0.3)node[right]{$ZOH$};
-        \draw[dashed,blue](1.3,1)--(1.3,0)node[below]{$\displaystyle\frac{1}{T_c}$};
-        \draw[-,very thick, green](0,1.02)--(1.6,1.02)--(1.6,0)node[below]{$\displaystyle\frac{\pi}{T_c}$};
+        \draw[dashed,blue](1.3,1)--(1.3,0)node[below, black]{$\displaystyle\frac{1}{T_c}$};
+        \draw[-,very thick, green](0,1.02)--(2,1.02)--(2,0)node[below, black]{$\displaystyle\frac{\pi}{T_c}$};
 
         \filldraw[black](0.8,0)node[below]{$\omega_M$}circle(0.5pt);
     \end{tikzpicture}
