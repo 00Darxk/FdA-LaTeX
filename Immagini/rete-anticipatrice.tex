@@ -1,0 +1,14 @@
+\documentclass{standalone}
+\usepackage{tikz, circuitikz}
+\begin{document}
+\begin{circuitikz}
+    \draw(0,0)to[short,*-](2,0)
+    to[R=$R_2$](2,2)
+    to[C=$C$](2,4)
+    to[R=$R_1$,-*](0,4)
+    (2,0)to[short,-*](3,0)
+    (2,4)to[short,-*](3,4);
+    \draw[->](0,0.25)--(0,3.75)node[midway, left]{$v_{in}$};
+    \draw[->](3,0.25)--(3,3.75)node[midway, right]{$v_{out}$};
+\end{circuitikz}
+\end{document}

@@ -1,0 +1,15 @@
+\documentclass{standalone}
+\usepackage{tikz,steinmetz}
+\usetikzlibrary{quotes,angles}
+\begin{document}
+\begin{tikzpicture}[scale=3]
+    \draw[->, very thick](0,0.6)--(1.5,0.6)coordinate(x)node[above]{$\Re$};
+    \draw[->, very thick](0.6,0)--(0.6,1.5)node[right]{$\Im$};
+
+    \draw[->,very thick]plot[smooth]coordinates{(0.3,0.8) (0.2,0.9) (1,1) (1.2,0.6)};
+    \draw[->,very thick]plot[smooth]coordinates{(1.2,0.6) (0.9,0.3) (0.5,0.4) (0.2,0.4)(0.3,0.8)};
+
+    \draw[->](0.6,0.6)coordinate(O)--(1,1)coordinate(M)node[above]{$M(s)$};
+    \pic["$\phase{M(s)}$",draw, angle eccentricity=2.4, angle radius=0.5cm]{angle=x--O--M};
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,10 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\tikzset{ block/.style = {draw, fill=white, very thick, rectangle, minimum height=1cm, minimum width=2cm},}
+\begin{document}
+    \begin{tikzpicture}[scale=2]
+        \node[block, node distance=0cm](g){$G(s)=G_1(s)\cdot G_2(s)$};
+        \draw[->,ultra thick](-1.5,0)--(g.180);
+        \draw[->,ultra thick](g.0)--(1.5,0);
+    \end{tikzpicture}
+\end{document}

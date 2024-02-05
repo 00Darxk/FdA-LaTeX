@@ -1,0 +1,12 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[scale=2]
+    \draw[->,thick](-0.5,0)--(2,0)node[above]{$t$};
+    \draw[->,thick](0,-1.25)--(0,1.25)node[right]{$2M\cos(j\omega t+\varphi)$};
+
+    \draw[-, thick](0,1)--(1.8,1);
+    \draw[-, thick](0,-1)--(1.8,-1);
+    \draw[-,very thick]plot[smooth, domain=0:1.8](\x,{cos(8*\x r)}); 
+\end{tikzpicture}
+\end{document}

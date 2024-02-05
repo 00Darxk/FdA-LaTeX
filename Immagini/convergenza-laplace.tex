@@ -1,0 +1,10 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[scale=2]
+    \draw[->,thick](-0.5,0)--(1.5,0)node[above]{$\Re(s)$};
+    \draw[->,thick](0,-0.5)--(0,1.5)node[right]{$\Im(s)$};
+
+    \draw[dashed](1,-0.5)--(1,0)node[below right]{$\sigma*$}--(1,1.5);
+\end{tikzpicture}
+\end{document}

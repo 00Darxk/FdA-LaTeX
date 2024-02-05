@@ -1,0 +1,64 @@
+\documentclass{standalone}
+\usepackage{tikz,circuitikz}
+\usetikzlibrary{patterns,calc}
+\tikzset{block/.style = {draw, fill=white, very thick, rectangle, minimum height=1cm, minimum width=2cm},}
+\tikzset{sum/.style= {draw, fill=white, very thick, circle, node distance=1cm},}
+\usetikzlibrary{shapes.geometric}
+\tikzset{triangle/.style= {draw, fill=white, very thick, isosceles triangle, minimum height=2cm, minimum width=1cm},}
+\tikzset{lblock/.style={draw,fill=white,very thick, rectangle, minimum height=3cm, minimum width=1cm},}
+\tikzset{nblock/.style = {draw, very thick, rectangle, minimum height=1cm, minimum width=2cm}}
+\begin{document}
+\begin{circuitikz}[scale=2]
+    \node[lblock](mp)at(-0.5,0){$\mu$P};
+    \node[block](dac)at(1,0.5){DAC};
+    \node[block](ad)at(1,-0.5){ADC};
+
+    \draw[-,ultra thick](-0.25,0.45)--(0.42,0.45);
+    \draw[-,ultra thick](-0.25,0.55)--(0.42,0.55);
+    \draw[<-,ultra thick](0.49,0.5)--(dac.180);
+    \draw[-, ultra thick](0.05,0.625)node[right]{$n$}--(0.3,0.375);
+    %       (0.175,0.5)
+    \draw[-,ultra thick](-0.17,-0.45)--(0.5,-0.45);
+    \draw[-,ultra thick](-0.17,-0.55)--(0.5,-0.55);
+    \draw[->,ultra thick](-0.24,-0.5)--(-0.25,-0.5);
+    \draw[-, ultra thick](0.05,-0.625)node[right]{$n$}--(0.3,-0.375);
+
+    \draw[<-,thick, blue](-0.25,0.7)--(0.5,0.7)node[above left]{EOC};
+    \draw[->,thick, blue](-0.25,0.3)node[below right]{SOC}--(0.5,0.3);        
+    \draw[->,thick, red](-0.25,-0.3)node[above right]{SOC}--(0.5,-0.3);        
+    \draw[<-,thick, red](-0.25,-0.7)--(0.5,-0.7)node[below left]{EOC};
+
+
+    \node[triangle](t)at(2.5,0.5){$A$};
+    \draw[->,ultra thick](dac.0)--(t.180);
+    \draw(t.90)node[vcc]{}node[above right]{$V_{cc}$};
+    \draw(t.270)to[short]++(0,-0.25)node[tlground]{};
+
+    \node[block](p)at(4,0.5){$P$};
+    \draw[->,ultra thick](t.0)--(p.180);
+    \node[sum](z)at(5,0.5){};
+    \draw[->,ultra thick](p.0)--(z.180);
+    \draw[->, ultra thick](z.0)--(5.5,0.5);
+    \draw[->, ultra thick](5,1)node[below right]{$z$}--(z.90);
+    \filldraw[black](5.25,0.5)circle(1pt);
+
+
+    \node[nblock](aa)at(3.5,-0.5){};
+    \draw[->, thick](3.2,-0.6)--(3.8,-0.6);
+    \draw[->, thick](3.5,-0.7)--(3.5,-0.3);
+    \draw[-,thick](3.3,-0.4)--(3.7,-0.4);
+    \draw[-,thick](3.3,-0.4)--(3.3,-0.6);
+    \draw[-,thick](3.7,-0.4)--(3.7,-0.6);
+
+    \draw[-,ultra thick](5.25,-0.5)--(5.25,0.5);
+    \draw[->,ultra thick](5.25,-0.5)--(aa.0);
+    \draw[->,ultra thick](aa.180)--(ad.0);
+    \node[sum](ca1)at(2.25,-0.5){$a$};
+    \node[sum](ca2)at(1.9,0.5){$a$};
+
+
+    \draw[->,ultra thick](-1.5,0)node[above right]{$r$}--(mp.180);
+
+    \draw[-,thick](1.7,1)--(1.7,-1)node[midway, left]{$\mu$C}--(-1,-1)--(-1,1)--(1.7,1);
+\end{circuitikz}
+\end{document}

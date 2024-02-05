@@ -1,0 +1,13 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[scale=2]
+    \node[rectangle, draw, very thick, minimum width=2cm, minimum height=1cm](r)at(0,0){$g(y^{(0)},...,y^{(n)},u^{(0)},...,u^{(m)})=0$};
+
+    \draw[->,ultra thick](-2.5,0)--(r.west);
+    \node[below]at(-2,0){$u(t)$};
+
+    \draw[<-,ultra thick](2.5,0)--(r.east);
+    \node[below]at(2,0){$y(t)$};
+\end{tikzpicture}
+\end{document}

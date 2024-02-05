@@ -1,0 +1,16 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[scale=2]
+    \draw[->,thick](-1,0)--(2,0)node[above]{$\lambda$};
+    \draw[->,thick](0,-0.5)--(0,2)node[right]{$|j\omega\tau+1|_{\mathrm{d} B}$};
+
+    \filldraw[black](-0.3,0)circle(0.5pt);
+    \draw[dashed](0.3,0.2)--(0.3,0)node[below]{$\displaystyle\frac{1}{\tau}+\varepsilon$};
+    \filldraw[black](0.3,0.2)circle(0.5pt);
+    \filldraw[black](0.3,0)circle(0.5pt);
+
+    \draw[-,ultra thick](-1,0)--(-0.3,0)node[below]{$\displaystyle\frac{1}{\tau}-\varepsilon$};
+    \draw[-,ultra thick](0.3,0.2)--(2,0.85);
+\end{tikzpicture}
+\end{document}

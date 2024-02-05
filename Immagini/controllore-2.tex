@@ -1,0 +1,30 @@
+\documentclass{standalone}
+\usepackage{tikz,amsmath}
+\usetikzlibrary{shapes.geometric}
+\tikzset{block/.style = {draw, fill=white, very thick, rectangle, minimum height=1cm, minimum width=2cm},}
+\tikzset{sum/.style= {draw, fill=white, very thick, circle, node distance=1cm},}
+\tikzset{triangle/.style= {draw, fill=white, very thick, isosceles triangle, minimum height=2cm, minimum width=1cm},}
+\begin{document}
+\begin{tikzpicture}[scale=2]
+    \node[sum](sum)at(-1,0){};
+    \draw[->,ultra thick](-1.5,0)--(sum.180)node[above left]{$U$}node[above]{$\scriptscriptstyle\boldsymbol{+}$};
+    \node[triangle, right of=sum, node distance=2cm](c){$K_c$};
+
+    \draw[->,ultra thick](sum.0)--(c.180);
+    \filldraw[black](2.5,0)circle(1pt);
+
+    \draw[->,ultra thick](2.5,0)--(3,0)node[above left]{$Y$};
+    \draw[-,ultra thick](2.5,-0.75)--(2.5,0);
+
+    %\node[block]at(0.75,-0.75)(h){$H(s)$};
+    \node[block]at(1.75,0)(p){$P(s)$};
+
+    \draw[-,ultra thick](p.0)--(2.5,0);
+    \draw[->,ultra thick](c.0)--(p.180);
+
+    %\draw[->,ultra thick](2.5,-0.75)--(h.0);
+    %\draw[-,ultra thick](h.180)--(-1,-0.75);
+    \draw[-,ultra thick](2.5,-0.75)--(-1,-0.75);
+    \draw[->,ultra thick](-1,-0.75)--(sum.270)node[right]{$\scriptscriptstyle\boldsymbol{-}$};
+\end{tikzpicture}
+\end{document}

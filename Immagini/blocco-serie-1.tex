@@ -1,0 +1,12 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\tikzset{ block/.style = {draw, fill=white, very thick, rectangle, minimum height=1cm, minimum width=2cm},}
+\begin{document}
+    \begin{tikzpicture}[scale=2]
+        \node[block, node distance=0cm](g1){$G_1(s)$};
+        \node[block, right of=g1, node distance=3cm](g2){$G_2(s)$};
+        \draw[->,ultra thick](g1.0)--(g2.180);
+        \draw[->,ultra thick](-1,0)--(g1.180);
+        \draw[->,ultra thick](g2.0)--(2.25,0);
+    \end{tikzpicture}
+\end{document}

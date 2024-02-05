@@ -1,0 +1,13 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[scale=2]
+    \node[rectangle, draw, very thick, minimum width=2cm, minimum height=1cm](r)at(0,0){$g(\{y_k\},\{u_k\})$};
+
+    \draw[->,ultra thick](-1,0)--(r.west);
+    \node[below]at(-0.8,0){$\{u_k\}$};
+
+    \draw[<-,ultra thick](1,0)--(r.east);
+    \node[below]at(0.8,0){$\{y_k\}$};
+\end{tikzpicture}
+\end{document}

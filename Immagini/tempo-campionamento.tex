@@ -1,0 +1,19 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[scale=3]
+    \draw[->, thick](-0.5,0)--(3,0)node[above]{$t$};
+    \draw[->, thick](0,-0.5)--(0,1);
+
+    \draw[-,ultra thick, red](0.1,0)--(0.1,0.8)--(0.3,0.8)node[black,midway, above]{ADC}--(0.3,0)--(0.1,0);
+    \draw[-,ultra thick, gray](0.32,0)--(0.32,0.8)--(1,0.8)node[black,midway, above]{$\mu$P}--(1,0)--(0.32,0);
+    \draw[-,ultra thick, blue](1.02,0)--(1.02,0.8)node[black,above right]{DAC}--(1.22,0.8)--(1.22,0)--(1.02,0);
+
+    \draw[-,ultra thick, red](2.5,0)--(2.5,0.8)--(2.7,0.8)node[black,midway, above]{ADC}--(2.7,0)--(2.5,0);
+    \draw[-,ultra thick, gray](2.72,0)--(2.72,0.8);
+    \draw[densely dashdotted,ultra thick, gray](2.72,0)--(2.9,0);
+    \draw[densely dashdotted,ultra thick, gray](2.72,0.8)--(2.9,0.8);       
+
+    \draw[|-|,very thick](0.1,-0.1)--(2.5,-0.1)node[midway,below]{$T_c$};
+\end{tikzpicture}
+\end{document}

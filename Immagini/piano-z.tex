@@ -1,0 +1,17 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[scale=2]
+    \draw[->,very thick](-1,0)--(1,0)node[above]{$\Re(z)$};
+    \draw[->,very thick](0,-1)--(0,1)node[right]{$\Im(z)$};
+
+    \draw[->,very thick, red](0.5,0)arc(0:180:0.5);
+    \draw[->,very thick, red](0.5,0)arc(0:-180:0.5);
+    
+    \draw[->,very thick, blue](0.5,0)--(0,0);
+
+    \draw[<-,very thick, cyan](0,0)node[above left,black]{$a$}node[below left,black]{$b$}--(-0.5,0);
+
+    \filldraw[black](0.5,0)node[above right]{$1$}circle(1pt);
+\end{tikzpicture}
+\end{document}

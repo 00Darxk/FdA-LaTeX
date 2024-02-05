@@ -1,0 +1,14 @@
+\documentclass{standalone}
+\usepackage{tikz,circuitikz}
+\begin{document}
+\begin{circuitikz}
+    \draw
+    (-1,0) node[ground]{} to[short] ++(1,0)node[above left]{$v_x$}
+    node[op amp, noinv input up, anchor=+](OA){$A$}
+    (OA.-) -- ++(0,-1) coordinate(FB)
+    to[R=$R$,*-o] ++(0,-2)node[right]{$v_\mathrm\mathrm{in}$}
+    (FB) to[C=$C$, *-] (FB -| OA.out) -- (OA.out)
+    to [short, *-o] ++(1,0) node[above]{$v_\mathrm\mathrm{out}$}
+    ;
+\end{circuitikz}
+\end{document}

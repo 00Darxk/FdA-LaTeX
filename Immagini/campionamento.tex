@@ -1,0 +1,18 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\begin{document}
+\begin{tikzpicture}[scale=2]
+    \draw[->](0,-0.25)--(0,1.5)node[right]{$x$};
+    \draw[->](-0.5,0)--(3,0)node[above]{$t$};
+
+    \draw[very thick]plot[smooth, domain=-0.5:2.8](\x,{1+0.2*sin(2*\x r)});
+    \draw[->,very thick](0,0)node[below left]{$0$}--(0,1);
+    \draw[->,very thick](0.4,0)node[below]{$T_c$}--(0.4,1.141);
+    \draw[->,very thick](0.8,0)--(0.8,1.199);
+    \draw[->,very thick](1.2,0)--(1.2,1.135);
+    \draw[->,very thick](1.6,0)--(1.6,0.988);
+    \draw[->,very thick](2,0)--(2,0.848);
+    \draw[->,very thick](2.4,0)--(2.4,0.8);
+    \draw[->,very thick](2.8,0)node[below]{$kT_c$}--(2.8,0.873)node[above right]{$x(t)$};
+\end{tikzpicture}
+\end{document}

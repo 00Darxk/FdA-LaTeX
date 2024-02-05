@@ -1,0 +1,11 @@
+\documentclass{standalone}
+\usepackage{tikz,circuitikz}
+\begin{document}
+\begin{circuitikz}[voltage dir=old]
+    \draw (0,0)to[european voltage source=$V_a$](0,2)
+    to[R=$R_a$,i<^=$i_a$](2,2)
+    to[L=$L_a$](4,2)
+    (0,0)to[short](4,0)
+    to[european voltage source=$\mathrm{f.c.e.m.}$](4,2);
+\end{circuitikz}
+\end{document}
